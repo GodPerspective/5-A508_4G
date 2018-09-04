@@ -1,0 +1,90 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[DebugChecksum]
+Checksum=-1769489805
+[CodeCoverage]
+Enabled=_ 0
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
+[CallStackLog]
+Enabled=0
+[CallStackStripe]
+ShowTiming=1
+[InterruptLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
+SumSortOrder=0
+[DataLog]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+SumEnabled=0
+ShowTimeSum=1
+[Breakpoints2]
+Bp0=_ 1 "STD_CODE2" "{$PROJ_DIR$\..\User\stm8s_it.c}.368.6" 0 0 1 "" 0 ""
+Count=1
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[Simulator]
+Freq=16000000
+[struct_types]
+Fmt0=struct <Unnamed 5>-act	3	0
+Fmt1=struct <Unnamed 5>-rssi	3	0
+[array_types]
+Fmt0=u8[10]	3	0
+[watch_formats]
+Fmt0={W}1:Len	3	0
+Fmt1={W}1:buf	5	0
+Fmt2={W}1:comma_count	3	0
+Fmt3={W}1:pBuf	4	0
+Fmt4={W}1:pBuf[0]	5	0
+Fmt5={W}1:pBuf[1]	5	0
+Fmt6={W}1:pBuf[3]	5	0
+Fmt7={W}1:pBuf[4]	5	0
+[DataSample]
+LogEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+[Breakpoints]
+Count=0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Aliases]
+Count=0
+SuppressDialog=0
+[DebuggerSettings]
+DisableInterruptsWhenStepping=0
