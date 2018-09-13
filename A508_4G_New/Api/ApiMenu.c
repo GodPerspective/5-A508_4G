@@ -79,37 +79,7 @@ void MenuDisplay(MenuDisplayType id)
     get_screen_display_group_name();//选择显示当前群组昵称（群组或单呼临时群组）
     break;
   case Menu_RefreshAllIco:
-    if(ApiAtCmd_CSQValue()>=31)//5格
-    {
-      api_disp_icoid_output( eICO_IDSPEAKER, TRUE, TRUE);//5格信号
-    }
-    else if(ApiAtCmd_CSQValue()>=25&&ApiAtCmd_CSQValue()<31)
-    {
-      api_disp_icoid_output( eICO_IDSCANPA, TRUE, TRUE);//4格信号
-    }
-    else if(ApiAtCmd_CSQValue()>=20&&ApiAtCmd_CSQValue()<25)
-    {
-      api_disp_icoid_output( eICO_IDSCAN, TRUE, TRUE);//3格信号
-    }
-    else if(ApiAtCmd_CSQValue()>=15&&ApiAtCmd_CSQValue()<20)
-    {
-      api_disp_icoid_output( eICO_IDRXNULL, TRUE, TRUE);//2格信号
-    }
-    else if(ApiAtCmd_CSQValue()>=10&&ApiAtCmd_CSQValue()<15)
-    {
-      api_disp_icoid_output( eICO_IDRXFULL, TRUE, TRUE);//1格信号
-    }
-    else
-    {
-      api_disp_icoid_output( eICO_IDMESSAGE, TRUE, TRUE);//0格信号
-    }
-    
-    if(NetworkType_2Gor3G_Flag==3)
-      api_disp_icoid_output( eICO_IDEmergency, TRUE, TRUE);//3G图标
-    else
-      //api_disp_icoid_output( eICO_IDPOWERL, TRUE, TRUE);//图标：2G
-      api_disp_icoid_output( eICO_IDEmergency, TRUE, TRUE);//3G图标
-    
+    HDRCSQSignalIcons();
     if(LockingState_Flag==FALSE)
       api_disp_icoid_output( eICO_IDBANDWIDTHN, TRUE, TRUE);//无锁屏空图标
     else
@@ -119,10 +89,10 @@ void MenuDisplay(MenuDisplayType id)
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//默认无发射无接收信号图标
 //if(ShowTime_Flag==FALSE)
     {
-      if(VoiceType_FreehandOrHandset_Flag==0)
+      //if(VoiceType_FreehandOrHandset_Flag==0)
         api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//免提模式
-      else
-        api_disp_icoid_output( eICO_IDMONITER, TRUE, TRUE);//听筒模式图标
+      //else
+       // api_disp_icoid_output( eICO_IDMONITER, TRUE, TRUE);//听筒模式图标
       
       if(get_current_working_status()==m_group_mode)
         api_disp_icoid_output( eICO_IDPOWERM, TRUE, TRUE);//显示组呼图标
@@ -158,7 +128,8 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
   case GpsInfoMenu:
      api_lcd_pwr_on_hint(0,2,"                ");//清屏
     api_lcd_pwr_on_hint(0,0,"                ");//清屏
-    if(delay_gps_value_for_display_flag2()==FALSE)
+    DISPLAY_Show(d_longitude_and_latitude0);
+    /*if(delay_gps_value_for_display_flag2()==FALSE)
     {
       DISPLAY_Show(d_longitude_and_latitude0);
     }
@@ -199,6 +170,7 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
       Buf1[19]='\0';
       api_lcd_pwr_on_hint(0,2,Buf2);
     }
+    */
     break;
   case NativeInfoMenu:
     MCU_VERSIONForMenu();

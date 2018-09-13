@@ -1,12 +1,136 @@
 #include "AllHead.h"
 
+#define KEYTIME_SHORT  20    //短按的按键去抖动延时的时间
+#define KEYTIME_LONG   800     //长按的按键去抖动延时的时间
+
+typedef struct{
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_down;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_up;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_menu;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_cancel;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_ok;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_1;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_2;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_3;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_4;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_5;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_6;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_7;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_8;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_9;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_0;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_star;
+  struct{
+    u16 key_time_count;
+    bool key_lock_flag;
+    bool key_short_press_temp_flag;
+    KeyStatesType key_states;
+  }key_well;
+  bool keyboard_press_down_flag_for_backlight;
+  bool keyboard_press_down_flag_for_keylock;
+}KEYBOARDSCAN_DRV;
+
+static KEYBOARDSCAN_DRV KeyboardscanDrvObj;
+
+
+
 bool mcu_key_pad_read(u8 index);
 void mcu_key_pad_set(bool inout, u8 index, bool up);
 void mcu_key_pad_out(u8 index,bool state);
+u32 get_key_value(u8 scan_value);
+u8 get_key_name(u32 lKeyCode);
 
 void mcu_key_initial(void)
 {
     //GPIO_Init(GPIO_Key_11,GPIO_PIN_Key_11,GPIO_MODE_OUT_PP_HIGH_FAST);
+  //不能专心在某件事上的问题和当前状态有很大关系，当前状态不好和之前列的计划任务未完成有关系，也和当下遇到的困难有关系
+  //停止抱怨
 }
 
 bool mcu_key_pad_read(u8 index)
@@ -427,4 +551,706 @@ u8 drv_keypad_scan(void)
 	}
 
 	return key;
+}
+
+u32 get_key_value(u8 scan_value)
+{
+  u32 value = 0;
+  switch (scan_value)
+  {
+  case 0x11://"7"
+    value = 0x00002000;
+    break;
+  case 0x12://"4"
+    value = 0x00000080;
+    break;
+  case 0x13://"1"
+    value = 0x00000002;
+    break;
+  case 0x14://OK
+    value = 0x00000010;
+    break;
+  case 0x21://"8"
+    value = 0x00004000;
+    break;
+  case 0x22://"5"
+    value = 0x00000100;
+    break;
+  case 0x23://"2"
+    value = 0x00000004;
+    break;
+  case 0x24://"DN"
+    value = 0x00010000;
+    break;
+  case 0x31://"9"
+    value = 0x00008000;
+    break;
+  case 0x32://"6"
+    value = 0x00000200;
+    break;
+  case 0x33://"3"
+    value = 0x00000008;
+    break;
+  case 0x34://"UP"
+    value = 0x00000400;
+    break;
+  case 0x41://"#"
+    value = 0x00200000;
+    break;
+  case 0x42://"0"
+    value = 0x00100000;
+    break;
+  case 0x43://"*"
+    value = 0x00080000;
+    break;
+  case 0x44://"Cancel"
+    value = 0x00400000;
+    break;
+  case 0x54://"Menu"
+    value = 0x00800000;
+    break;
+  default:
+    break;
+  }
+  return value;
+}
+
+void keyboard_scan(void)
+{
+  u8 scanvalue = 0;
+  u32 ulAllKeyID = 0x00000000;
+
+  ulAllKeyID = 0x00000000;
+  scanvalue = drv_keypad_scan();
+  ulAllKeyID = get_key_value(scanvalue);
+/********判断是否有按键按下************/
+  if(ulAllKeyID!=0x00000000)
+  {
+    if(KeyboardscanDrvObj.key.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key.key_time_count=0;
+        KeyboardscanDrvObj.key.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key.key_states=m_key_loosen_moment;
+    }
+  }
+/*******键盘down****************************/
+  if(ulAllKeyID==0x00010000)//
+  {
+    if(KeyboardscanDrvObj.key_down.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_down.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_down.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_down.key_time_count=0;
+        KeyboardscanDrvObj.key_down.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_down.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_down.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_down.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_down.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_down.key_states=m_key_loosen_moment;
+    }
+  }
+  
+  
+/*******键盘up****************************/
+  if(ulAllKeyID==0x00000400)//up
+  {
+    if(KeyboardscanDrvObj.key_up.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_up.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_up.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_up.key_time_count=0;
+        KeyboardscanDrvObj.key_up.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_up.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_up.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_up.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_up.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_up.key_states=m_key_loosen_moment;
+    }
+  }
+  
+/*******键盘menu****************************/
+  if(ulAllKeyID==0x00800000)
+  {
+    if(KeyboardscanDrvObj.key_menu.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_menu.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_menu.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_menu.key_time_count=0;
+        KeyboardscanDrvObj.key_menu.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_menu.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_menu.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_menu.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_menu.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_menu.key_states=m_key_loosen_moment;
+    }
+  }
+  
+/*******键盘cancel****************************/
+  if(ulAllKeyID==0x00400000)
+  {
+    if(KeyboardscanDrvObj.key_cancel.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_cancel.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_cancel.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_cancel.key_time_count=0;
+        KeyboardscanDrvObj.key_cancel.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_cancel.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_cancel.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_cancel.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_cancel.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_cancel.key_states=m_key_loosen_moment;
+    }
+  }
+/*******键盘ok****************************/
+  if(ulAllKeyID==0x00000010)
+  {
+    if(KeyboardscanDrvObj.key_ok.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_ok.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_ok.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_ok.key_time_count=0;
+        KeyboardscanDrvObj.key_ok.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_ok.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_ok.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_ok.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_ok.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_ok.key_states=m_key_loosen_moment;
+    }
+  }
+/*******键盘1****************************/
+  if(ulAllKeyID==0x00000002)//
+  {
+    if(KeyboardscanDrvObj.key_1.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_1.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_1.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_1.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_1.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_1.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_1.key_time_count=0;
+        KeyboardscanDrvObj.key_1.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_1.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_1.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_1.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_1.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_1.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_1.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  
+/*******键盘2****************************/
+  if(ulAllKeyID==0x00000004)//
+  {
+    if(KeyboardscanDrvObj.key_2.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_2.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_2.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_2.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_2.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_2.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_2.key_time_count=0;
+        KeyboardscanDrvObj.key_2.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_2.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_2.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_2.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_2.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_2.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_2.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘3****************************/
+  if(ulAllKeyID==0x00000008)
+  {
+    if(KeyboardscanDrvObj.key_3.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_3.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_3.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_3.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_3.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_3.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_3.key_time_count=0;
+        KeyboardscanDrvObj.key_3.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_3.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_3.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_3.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_3.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_3.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_3.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘4****************************/
+  if(ulAllKeyID==0x00000080)
+  {
+    if(KeyboardscanDrvObj.key_4.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_4.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_4.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_4.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_4.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_4.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_4.key_time_count=0;
+        KeyboardscanDrvObj.key_4.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_4.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_4.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_4.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_4.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_4.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_4.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘5****************************/
+  if(ulAllKeyID==0x00000100)
+  {
+    if(KeyboardscanDrvObj.key_5.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_5.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_5.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_5.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_5.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_5.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_5.key_time_count=0;
+        KeyboardscanDrvObj.key_5.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_5.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_5.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_5.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_5.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_5.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_5.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘6****************************/
+  if(ulAllKeyID==0x00000200)
+  {
+    if(KeyboardscanDrvObj.key_6.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_6.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_6.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_6.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_6.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_6.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_6.key_time_count=0;
+        KeyboardscanDrvObj.key_6.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_6.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_6.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_6.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_6.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_6.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_6.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘7****************************/
+  if(ulAllKeyID==0x00002000)
+  {
+    if(KeyboardscanDrvObj.key_7.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_7.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_7.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_7.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_7.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_7.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_7.key_time_count=0;
+        KeyboardscanDrvObj.key_7.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_7.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_7.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_7.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_7.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_7.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_7.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘8****************************/
+  if(ulAllKeyID==0x00004000)
+  {
+    if(KeyboardscanDrvObj.key_8.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_8.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_8.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_8.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_8.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_8.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_8.key_time_count=0;
+        KeyboardscanDrvObj.key_8.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_8.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_8.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_8.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_8.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_8.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_8.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘9****************************/
+  if(ulAllKeyID==0x00008000)
+  {
+    if(KeyboardscanDrvObj.key_9.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_9.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_9.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_9.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_9.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_9.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_9.key_time_count=0;
+        KeyboardscanDrvObj.key_9.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_9.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_9.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_9.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_9.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_9.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_9.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘0****************************/
+  if(ulAllKeyID==0x00100000)
+  {
+    if(KeyboardscanDrvObj.key_0.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_0.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_0.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_0.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_0.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_0.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_0.key_time_count=0;
+        KeyboardscanDrvObj.key_0.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_0.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_0.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_0.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_0.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_0.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_0.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘star*****************************/
+  if(ulAllKeyID==0x00080000)
+  {
+    if(KeyboardscanDrvObj.key_star.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_star.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_star.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_star.key_short_press_temp_flag=TRUE;   //激活按键短按的有效标志  
+      }
+      if(KeyboardscanDrvObj.key_star.key_time_count>80)//长按800ms
+      {
+        KeyboardscanDrvObj.key_star.key_short_press_temp_flag=FALSE;  //清除按键短按的有效标志
+        KeyboardscanDrvObj.key_star.key_time_count=0;
+        KeyboardscanDrvObj.key_star.key_lock_flag=TRUE;  //自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_star.key_states=m_key_long_press; //触发1号键的长按
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_star.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_star.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_star.key_short_press_temp_flag==TRUE)
+    {
+      KeyboardscanDrvObj.key_star.key_short_press_temp_flag=FALSE;
+      KeyboardscanDrvObj.key_star.key_states=m_key_short_press;//触发一号键的短按
+    }
+  }
+  /*******键盘#****************************/
+  if(ulAllKeyID==0x00200000)//well
+  {
+    if(KeyboardscanDrvObj.key_well.key_lock_flag==FALSE)//有按键按下，且是第一次被按下
+    {
+      KeyboardscanDrvObj.key_well.key_time_count++; //累加定时中断次数
+      if(KeyboardscanDrvObj.key_well.key_time_count>2)//短按20ms
+      {
+        KeyboardscanDrvObj.key_well.key_time_count=0;
+        KeyboardscanDrvObj.key_well.key_lock_flag=TRUE;//自锁按键置位,避免一直触发
+        KeyboardscanDrvObj.key_well.key_states=m_key_press_moment;
+      }
+    }
+  }
+  else//按键未被按下，及时清零相关标志位
+  {
+    KeyboardscanDrvObj.key_well.key_lock_flag=FALSE;//按键自锁标志位清零
+    KeyboardscanDrvObj.key_well.key_time_count=0;//按键去抖计数器清零
+    if(KeyboardscanDrvObj.key_well.key_states==m_key_press_moment)
+    {
+      KeyboardscanDrvObj.key_well.key_states=m_key_loosen_moment;
+    }
+  }
+}
+
+KeyStatesType get_keyboard_key_states(void)
+{
+  return KeyboardscanDrvObj.key.key_states;
+}
+KeyStatesType get_keyboard_down_states(void)
+{
+  return KeyboardscanDrvObj.key_down.key_states;
+}
+KeyStatesType get_keyboard_up_states(void)
+{
+  return KeyboardscanDrvObj.key_up.key_states;
+}
+KeyStatesType get_keyboard_menu_states(void)
+{
+  return KeyboardscanDrvObj.key_menu.key_states;
+}
+KeyStatesType get_keyboard_cancel_states(void)
+{
+  return KeyboardscanDrvObj.key_cancel.key_states;
+}
+KeyStatesType get_keyboard_ok_states(void)
+{
+  return KeyboardscanDrvObj.key_ok.key_states;
+}
+KeyStatesType get_keyboard_1_states(void)
+{
+  return KeyboardscanDrvObj.key_1.key_states;
+}
+KeyStatesType get_keyboard_2_states(void)
+{
+  return KeyboardscanDrvObj.key_2.key_states;
+}
+KeyStatesType get_keyboard_3_states(void)
+{
+  return KeyboardscanDrvObj.key_3.key_states;
+}
+KeyStatesType get_keyboard_4_states(void)
+{
+  return KeyboardscanDrvObj.key_4.key_states;
+}
+KeyStatesType get_keyboard_5_states(void)
+{
+  return KeyboardscanDrvObj.key_5.key_states;
+}
+KeyStatesType get_keyboard_6_states(void)
+{
+  return KeyboardscanDrvObj.key_6.key_states;
+}
+KeyStatesType get_keyboard_7_states(void)
+{
+  return KeyboardscanDrvObj.key_7.key_states;
+}
+KeyStatesType get_keyboard_8_states(void)
+{
+  return KeyboardscanDrvObj.key_8.key_states;
+}
+KeyStatesType get_keyboard_9_states(void)
+{
+  return KeyboardscanDrvObj.key_9.key_states;
+}
+KeyStatesType get_keyboard_0_states(void)
+{
+  return KeyboardscanDrvObj.key_0.key_states;
+}
+KeyStatesType get_keyboard_star_states(void)
+{
+  return KeyboardscanDrvObj.key_star.key_states;
+}
+KeyStatesType get_keyboard_well_states(void)
+{
+  return KeyboardscanDrvObj.key_well.key_states;
+}
+void set_keyboard_key_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key.key_states=a;
+}
+void set_keyboard_down_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_down.key_states=a;
+}
+void set_keyboard_up_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_up.key_states=a;
+}
+void set_keyboard_menu_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_menu.key_states=a;
+}
+void set_keyboard_cancel_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_cancel.key_states=a;
+}
+void set_keyboard_ok_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_ok.key_states=a;
+}
+void set_keyboard_1_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_1.key_states=a;
+}
+void set_keyboard_2_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_2.key_states=a;
+}
+void set_keyboard_3_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_3.key_states=a;
+}
+void set_keyboard_4_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_4.key_states=a;
+}
+void set_keyboard_5_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_5.key_states=a;
+}
+void set_keyboard_6_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_6.key_states=a;
+}
+void set_keyboard_7_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_7.key_states=a;
+}
+void set_keyboard_8_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_8.key_states=a;
+}
+void set_keyboard_9_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_9.key_states=a;
+}
+void set_keyboard_0_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_0.key_states=a;
+}
+void set_keyboard_star_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_star.key_states=a;
+}
+void set_keyboard_well_states(KeyStatesType a)
+{
+  KeyboardscanDrvObj.key_well.key_states=a;
 }

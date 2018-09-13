@@ -42,12 +42,12 @@ void LowVoltageDetection(void)
 
   ADValue=OneChannelGetADValue(ADC2_CHANNEL_2,ADC2_SCHMITTTRIG_CHANNEL2);
   
- if(GetTaskId()==Task_Start)
+ if(TaskDrvobj.Id==TASK_LOGIN)
  {
-   if(ADValue<=345&&ADValue>=200)
+   if(ADValue<=355&&ADValue>=200)
    {
      Count3++;
-     if(Count3>200)
+     if(Count3>100)
      {
        LobatteryTask_StartFlag=TRUE;
      } 
@@ -58,76 +58,73 @@ void LowVoltageDetection(void)
    }
    
    if(ADValue<=350&&ADValue>=200)
-      {
-        if(MenuMode_Flag==0)
-          api_disp_icoid_output( eICO_IDBATT , TRUE, TRUE);
-        BatteryLevel=0;
-      }//电池电量0级
-      else if(ADValue<=360&&ADValue>350)
-      {
-        if(MenuMode_Flag==0)
-        api_disp_icoid_output( eICO_IDBATT1, TRUE, TRUE);
-        BatteryLevel=1;
-      }//电池电量1级
-      else if(ADValue<=375&&ADValue>365)
-      {
-        if(MenuMode_Flag==0)
-        api_disp_icoid_output( eICO_IDBATT2, TRUE, TRUE);
-        BatteryLevel=2;
-      }//电池电量2级
-      else if(ADValue<=390&&ADValue>380)
-      {
-        if(MenuMode_Flag==0)
-        api_disp_icoid_output( eICO_IDBATT3, TRUE, TRUE);
-        BatteryLevel=3;
-      }//电池电量3级
-      else if(ADValue<=405&&ADValue>395)
-      {
+   {
+     if(MenuMode_Flag==0)
+       api_disp_icoid_output( eICO_IDBATT , TRUE, TRUE);
+     BatteryLevel=0;
+   }//电池电量0级
+   else if(ADValue<=360&&ADValue>350)
+   {
+     if(MenuMode_Flag==0)
+       api_disp_icoid_output( eICO_IDBATT1, TRUE, TRUE);
+     BatteryLevel=1;
+   }//电池电量1级
+   else if(ADValue<=375&&ADValue>365)
+   {
+     if(MenuMode_Flag==0)
+       api_disp_icoid_output( eICO_IDBATT2, TRUE, TRUE);
+     BatteryLevel=2;
+   }//电池电量2级
+   else if(ADValue<=390&&ADValue>380)
+   {
+     if(MenuMode_Flag==0)
+       api_disp_icoid_output( eICO_IDBATT3, TRUE, TRUE);
+     BatteryLevel=3;
+   }//电池电量3级
+   else if(ADValue<=405&&ADValue>395)
+   {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT4, TRUE, TRUE);
         BatteryLevel=4;
-      }//电池电量4级
-      else if(ADValue<=500&&ADValue>410)
-      {
+   }//电池电量4级
+   else if(ADValue<=500&&ADValue>410)
+   {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);
         BatteryLevel=5;
-      }//电池电量5级
-      else{}
+   }//电池电量5级
+   else{}
  }
  else
  {
     if(ADValue<=345&&ADValue>=200)//345为3.42播报
     {
-      Count2=0;
       Count++;
-      if(Count>=200)
+      if(Count>=100)
       {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT, TRUE, TRUE);
-        SetTaskId(TASK_LOBATT);
+        TaskDrvobj.Id=TASK_LOW_BATTERY;
         LowVoltageDetection_Flag=TRUE;
         Count=0;
       }
     }
     else if(ADValue<355&&ADValue>345)
     {
-      Count=0;
       Count2++;
-      if(Count2>=200)
+      if(Count2>=100)
       {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT, TRUE, TRUE);
-        SetTaskId(Task_NormalOperation);
+        TaskDrvobj.Id=TASK_NORMAL;
         PrimaryLowPower_Flag=TRUE;
         Count2=0;
+        
       }
     }
     else
     {
-      Count=0;
-      Count2=0;
-      SetTaskId(Task_NormalOperation); 
+      TaskDrvobj.Id=TASK_NORMAL;
       if(ADValue<=350&&ADValue>=200)
       {
         if(MenuMode_Flag==0)
@@ -167,7 +164,7 @@ void LowVoltageDetection(void)
       else{}
       if(LowVoltageDetection_Flag==1)//识别从低电量到高电量的状态
       {
-        TASK_PersonalKeyModeSet(FALSE);
+        KEYCMD_PersonalKeyModeSet(FALSE);
         MenuMode_Flag=0;
         get_screen_display_group_name();//选择显示当前群组昵称（群组或单呼临时群组）
         KeyDownUpChoose_GroupOrUser_Flag=0;

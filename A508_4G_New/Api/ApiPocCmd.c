@@ -1,18 +1,12 @@
 #include "ALLHead.h"
 
-#define DrvMC8332_UseId_Len	        200//define UART Tx buffer length value
-#define APIPOC_GroupName_Len            40+5//unicode只存前2位，00不存，32/2=16,屏幕最多显示16个字符
-#define APIPOC_UserName_Len             40+5
-#define APIPOC_Group_Num                10
-#define APIPOC_User_Num                 10
+
 
 const u8 *ucAtPocHead          = "AT+POC=";
 const u8 *ucSetIPAndID         = "010000";
-#ifdef CHINESE
-const u8 *ucPocOpenConfig      = "00000001010100";
-#else
-const u8 *ucPocOpenConfig      = "00000001010101";
-#endif
+
+const u8 *ucPocOpenConfig      = "000000010101";
+
 u8 *ucStartPTT                  = "0B0000";
 u8 *ucEndPTT                    = "0C0000";
 u8 *ucGroupListInfo             = "0d0000";
@@ -25,109 +19,9 @@ u8 *ucAlarm2                    = "0000000020202000";
 u8 *ucAlarm2                    = "00000000736f7300";
 #endif
 u8 *ucSetURL                    = "120000";
-typedef struct{
-  struct{
-    union{
-      struct{
-        u16 bUserInfo	: 3;
-        u16 bUserWrite	: 1;
-        u16 bPocReset	: 1;
-        u16 bPocOpen	: 1;
-        u16 bModeChange	: 1;
-        u16 bMode	: 3;
-        u16 bNetStat	: 2;
-        u16 bUnline	: 1;
-        u16             : 1;
-        u16             : 2;
-      }Bits;
-      u16 Byte;
-    }Msg;
-    struct{
-      struct{
-        u8 bSet	: 1;
-        u8 Len	: 7;
-      }Msg;
-      u8 Buf[DrvMC8332_UseId_Len];
-    }LoginInfo;
-  }NetState;
-  
-  struct{
-    working_status_type current_working_status;
-    PocStatesType PocStatus;
-    GroupStatsType GroupStats;
-    u8 KeyPttState;
-    bool ReceivedVoicePlayStates;
-    bool ReceivedVoicePlayStates_Intermediate;//喇叭
-    bool ReceivedVoicePlayStatesForLED;
-    ReceivedVoicePlayStatesType ReceivedVoicePlayStatesForDisplay;
-    bool ToneState;
-    bool ToneState_Intermediate;
-    bool receive_sos_statas;
-    bool alarm_states;
-    bool first_enter_into_group_flag;
-    bool gps_value_for_display_flag;
-  }States;
-  struct{
-/*****组名**************/
-    struct{
-      u32 ID;
-      u8  Name[APIPOC_GroupName_Len];
-      u8  NameLen;
-    }AllGroupName[APIPOC_Group_Num];//所有群组成员名
-    struct{
-      u32 ID;
-      u8  Name[APIPOC_GroupName_Len];
-      u8  NameLen;
-    }NowWorkingGroupName;//当前工作群组成员名
-/******人名**************/
-    struct{
-      u32 ID;
-      u8  Name[APIPOC_UserName_Len];
-      u8 NameLen;
-    }AllGroupUserName[APIPOC_User_Num];//群组成员名
-    struct{
-      u8 Name[APIPOC_UserName_Len];
-      u8 NameLen;
-    }LocalUserName;//本机用户名
-    struct{
-      u8 Name[APIPOC_UserName_Len];
-      u8 NameLen;
-    }SpeakingUserName;//当前说话人的名字
-    struct{
-      u8 Name[APIPOC_UserName_Len];
-      u8 NameLen;
-    }ReceiveMessagesUserName;
-/**************************/
-  }NameInfo;
-  u8 ReadBuffer[200];//存EEPROM读取的数据使用
-  u8 ReadBuffer2[100];//存EEPROM读取的数据使用
-  u8 NowWorkingGroupNameBuf[APIPOC_GroupName_Len];
-  u8 AllGroupNameBuf[APIPOC_GroupName_Len];
-  u8 AllUserNameBuf[APIPOC_UserName_Len];
-  u8 SpeakingUserNameBuf[APIPOC_UserName_Len];
-  u8 LocalUserNameBuf[APIPOC_UserName_Len];
-  u8 ReceiveMessagesUserNameBuf[APIPOC_UserName_Len];
-  
-  u8 NowWorkingGroupNameForVoiceBuf[APIPOC_GroupName_Len*2+10];
-  u8 AllGroupNameForVoiceBuf[APIPOC_GroupName_Len*2+10];
-  u8 AllUserNameForVoiceBuf[APIPOC_UserName_Len*2+10];
-  u8 LocalUserNameForVoiceBuf[APIPOC_UserName_Len*2+10];
-  u16 offline_user_count;
-  u16 all_user_num;//所有成员（包括离线）
-  u16 GroupXuhao;
-  u16 UserXuhao;
-  u8 GroupIdBuf[10];
-  u8 UserIdBuf[8];
-  u8 gps_info_report[45];
-  struct{
-    u32 longitude_integer ;//度
-    u32 longitude_float;//小数点后的数
-    u32 latitude_integer;//度
-    u32 latitude_float;//小数点后的数
-  }Position;
-}PocCmdDrv;
 
-static PocCmdDrv PocCmdDrvobj;
+
+PocCmdDrv PocCmdDrvobj;
 static bool no_online_user(void);
 
 void ApiPocCmd_PowerOnInitial(void)
@@ -139,7 +33,7 @@ void ApiPocCmd_PowerOnInitial(void)
   PocCmdDrvobj.States.ReceivedVoicePlayStates = FALSE;
   PocCmdDrvobj.States.ReceivedVoicePlayStates_Intermediate = FALSE;//喇叭
   PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED = FALSE;
-  PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay = ReceivedVoiceNone;
+  PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay = ReceivedNone;
   PocCmdDrvobj.States.ToneState = FALSE;
   PocCmdDrvobj.States.ToneState_Intermediate = FALSE;
   PocCmdDrvobj.States.first_enter_into_group_flag=FALSE;
@@ -156,7 +50,6 @@ void ApiPocCmd_PowerOnInitial(void)
 }
 
 
-#if 1//WCDMA 卓智达
 void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
 {
   u8 cBuf[4]={0,0,0,0};
@@ -221,7 +114,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
   case PocComm_EnterGroup:
     DrvGD83_UART_TxCommand("090000", 6);
     memset(PocCmdDrvobj.GroupIdBuf,0,sizeof(PocCmdDrvobj.GroupIdBuf));
-    //COML_HexToAsc(PocCmdDrvobj.NameInfo.AllGroupName[GroupCallingNum].ID,PocCmdDrvobj.GroupIdBuf);
+    COML_HexToAsc(PocCmdDrvobj.NameInfo.AllGroupName[GroupCallingNum].ID,PocCmdDrvobj.GroupIdBuf);
     GroupIdBuf_len=strlen((char const *)PocCmdDrvobj.GroupIdBuf);
     temp_count=8-GroupIdBuf_len;
     for(i=0;i<temp_count;i++)
@@ -234,7 +127,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
   case PocComm_Invite:
     DrvGD83_UART_TxCommand("0a0000", 6);
     memset(PocCmdDrvobj.UserIdBuf,0,sizeof(PocCmdDrvobj.UserIdBuf));
-    //COML_HexToAsc(PocCmdDrvobj.NameInfo.AllGroupUserName[PersonalCallingNum].ID,PocCmdDrvobj.UserIdBuf);
+    COML_HexToAsc(PocCmdDrvobj.NameInfo.AllGroupUserName[PersonalCallingNum].ID,PocCmdDrvobj.UserIdBuf);
     temp_value=strlen((char const*)PocCmdDrvobj.UserIdBuf);
     if(temp_value<8)
     {
@@ -286,7 +179,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     break;
   case PocComm_SetGps:
     DrvGD83_UART_TxCommand(ucSetGPS,strlen((char const *)ucSetGPS));
-#if 1 //经纬度小数位合并换算及参数传递
+#if 0 //经纬度小数位合并换算及参数传递
     PocCmdDrvobj.Position.longitude_integer=beidou_longitude_degree();
     PocCmdDrvobj.Position.longitude_float = ((beidou_longitude_minute()*10000+beidou_longitude_minute())*10/6);//小数点后的数
     PocCmdDrvobj.Position.latitude_integer = beidou_latitude_degree();//度
@@ -329,80 +222,6 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
   DrvMc8332_UART_TxTail();
   DrvMC8332_TxPort_SetValidable(ON);
 }
-#else //CDMA中兴
-void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
-{
-  u8 NetStateBuf[5]={0,0,0,0,0};
-  u8 testData=0;
-  DrvMC8332_TxPort_SetValidable(ON);
-  DrvGD83_UART_TxCommand((u8 *)ucAtPocHead,strlen((char const *)ucAtPocHead));
-  switch(id)
-  {
-  case PocComm_OpenPOC://1
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  case PocComm_SetParam://设置账号密码
-    DrvGD83_UART_TxCommand((u8 *)ucSetIPAndID,strlen((char const *)ucSetIPAndID));
-    //FILE_Read(0,80,ReadBuffer);//80位
-
-   // FILE_Read(28,22,ActiveUserID);
-    //FILE_Read(0x230,250,TestReadBuffer);//0x260-0x2cc
-    DrvGD83_UART_TxCommand(PocCmdDrvobj.ReadBuffer, strlen((char const *)PocCmdDrvobj.ReadBuffer));
-    break;
-  case PocComm_GetParam:
-  case PocComm_Login:
-    break;
-  case PocComm_Logout:
-  case PocComm_Cancel:
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  case PocComm_ModifyPwd:
-    break;
-  case PocComm_EnterGroup:
-    DrvGD83_UART_TxCommand("090000000000", 12);
-    COML_HexToAsc(GroupCallingNum, NetStateBuf);
-    if(strlen((char const*)NetStateBuf)==1)
-    {
-      NetStateBuf[1]=NetStateBuf[0];
-      NetStateBuf[0]=0x30;
-    }
-    else
-    {
-      testData          =NetStateBuf[0];
-      NetStateBuf[0]    =NetStateBuf[1];
-      NetStateBuf[1]    =testData;
-    }
-    DrvGD83_UART_TxCommand(NetStateBuf, 2);
-    break;
-  case PocComm_Invite:
-    DrvGD83_UART_TxCommand("0A0000000000", 12);
-    PocCmdDrvobj.NetState.Buf2[0] = (((PersonalCallingNum+0x64)&0xf0)>>4)+0x30;	// 0x03+0x30
-    PocCmdDrvobj.NetState.Buf2[1] = ((PersonalCallingNum+0x64)&0x0f)+0x30;
-    DrvGD83_UART_TxCommand(PocCmdDrvobj.NetState.Buf2, 2);
-    break;
-  case PocComm_StartPTT://3
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  case PocComm_EndPTT://4
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  case PocComm_GroupListInfo://5
-    DrvGD83_UART_TxCommand(ucGroupListInfo, strlen((char const *)ucGroupListInfo));
-    break;
-  case PocComm_UserListInfo://6
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  case PocComm_Key://7
-    DrvGD83_UART_TxCommand(buf, len);
-    break;
-  default:
-    break;
-  }
-  DrvMc8332_UART_TxTail();
-  DrvMC8332_TxPort_SetValidable(ON);
-}
-#endif
-
 
 //从EEPROM中读取数据传给写频软件
 u8 ApiPocCmd_user_info_get(u8 ** pBuf)
@@ -735,19 +554,29 @@ void ApiPocCmd_10msRenew(void)
       break;
     case 0x8B://通知音频播放状态
       ucId = COML_AscToHex(pBuf+4, 0x02);
-      if(ucId==0x01)
+      if(ucId==0x02)
       {
         PocCmdDrvobj.States.ReceivedVoicePlayStates=TRUE;//喇叭控制
         PocCmdDrvobj.States.ReceivedVoicePlayStates_Intermediate=FALSE;//解决连续按ptt，第二次喇叭不出声
         PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED=TRUE;//指示灯使用
-        PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedVoiceStart;//接收图标/显示呼叫用户名/使用
+        PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedStartTTS;//接收图标/显示呼叫用户名/使用
+      }
+      else if(ucId==0x01)
+      {
+        PocCmdDrvobj.States.ReceivedVoicePlayStates=TRUE;//喇叭控制
+        PocCmdDrvobj.States.ReceivedVoicePlayStates_Intermediate=FALSE;//解决连续按ptt，第二次喇叭不出声
+        PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED=TRUE;//指示灯使用
+        PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedStartVoice;//接收图标/显示呼叫用户名/使用
       }
       else if(ucId==0x00)
       {
         
         PocCmdDrvobj.States.ReceivedVoicePlayStates_Intermediate=TRUE;//喇叭控制使用
         PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED=FALSE;//指示灯使用
-        PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedVoiceEnd;//喇叭控制/接收图标/显示呼叫用户名/使用
+        if(PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay==ReceivedStartVoice||PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay==ReceivedBeingVoice)
+          PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedEndVoice;//喇叭控制/接收图标/显示呼叫用户名/使用
+        else if(PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay==ReceivedStartTTS||PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay==ReceivedBeingTTS)
+          PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedEndTTS;//喇叭控制/接收图标/显示呼叫用户名/使用
       }
       else
       {}
@@ -1511,12 +1340,12 @@ void get_screen_display_group_name(void)
 {
  if(PocCmdDrvobj.States.current_working_status==m_group_mode)//组呼模式
   {
-    //api_lcd_pwr_on_hint(0,2,"                ");
-    //api_lcd_pwr_on_hint4(GetNowWorkingGroupNameForDisplay());
+    api_lcd_pwr_on_hint(0,2,"                ");
+    api_lcd_pwr_on_hint4(GetNowWorkingGroupNameForDisplay());
   }
   else //单呼模式
   {
-    //DISPLAY_Show(d_individualcall);
+    DISPLAY_Show(d_individualcall);
   }
 }
 

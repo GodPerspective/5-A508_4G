@@ -3,14 +3,52 @@
 
 #include "AllHead.h"
 
+typedef struct{
+  union{
+    struct{
+      u16  bCommunicationTest    :1;
+      u16  bSimCardIn            :1;
+      u16  bNoSimCard            :1;
+      u16  bCGDCONT              :1;
+      u16  bZGIPDNS              :1;
+      u16  bZCONSTAT             :1;
+      u16  bZLTENOCELL           :1;
+      u16                        :9;
+    }Bits;
+    u16 Byte;
+  }Msg;
+  struct{
+    u8 rssi;//信号强度指示
+    u8 act;//信号对应的当前制式
+  }csq_param;
+  struct{
+    u8 sys_mode;
+    u8 sys_submode;
+  }mode_param;
+  struct{
+    u8 creg;
+    u8 cgreg;
+    u8 cereg;
+  }network_reg;//网络注册状态CREG/CGREG/CEREG
+  u8 ccid[20];
+}AtCmdDrv;
+
 typedef enum{
-  ATCOMM_CIMI                   = 0x00,
-  ATCOMM_ZPPPOPEN               = 0x01,
-  ATCOMM_CSQ                    = 0x02,
-  ATCOMM_RESET                  = 0x03,
-  ATCOMM_Test                   = 0x04
+  ATCOMM_ATE1                   = 0x00,
+  ATCOMM_DIALMODE               = 0x01,
+  ATCOMM_CGDCONT                = 0x02,
+  ATCOMM_POWERUP                = 0x03,
+  ATCOMM_CGACT                  = 0x04,
+  ATCOMM_ZGACT                  = 0x05,
+  ATCOMM_CSQ                    = 0x06,
+  ATCOMM_ZTTS                   = 0x07,
+  ATCOMM_RESET                  = 0x08,
+  ATCOMM_POWEROFF               = 0x09,
+  ATCOMM_Test                   = 0x0A
 }AtCommType;
 
+
+extern AtCmdDrv AtCmdDrvobj;
 
 #if 1//WCDMA 卓智达
 extern void ApiAtCmd_PowerOnInitial(void);
@@ -34,7 +72,6 @@ extern u8 KeyDownUpChoose_GroupOrUser_Flag;
 extern u8 CSQ_Flag;
 extern bool PositionInfoSendToATPORT_RedLed_Flag;
 extern bool PositionInfoSendToATPORT_InfoDisplay_Flag;
-
 
 extern bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len);
 extern bool ApiAtCmd_PlayVoice(AtVoiceType id, u8 *buf, u8 len);

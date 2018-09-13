@@ -85,7 +85,7 @@ INTERRUPT_HANDLER(SPI_IRQHandler, 10)
 
 INTERRUPT_HANDLER(TIM1_UPD_OVF_TRG_BRK_IRQHandler, 11)
 {
-#if 0
+#if 1
   if(poc_receive_sos_statas()==TRUE)
   {
     tone_count++;
@@ -128,6 +128,8 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
     defined(STM8S005) ||  defined (STM8AF62Ax) || defined (STM8AF52Ax) || defined (STM8AF626x)
  INTERRUPT_HANDLER(TIM3_UPD_OVF_BRK_IRQHandler, 15)
  {
+   
+   key_scan();
    DEL_Interrupt();
    TIM3_ClearITPendingBit(TIM3_IT_UPDATE);
  }
@@ -141,7 +143,7 @@ INTERRUPT_HANDLER(TIM1_CAP_COM_IRQHandler, 12)
 
  INTERRUPT_HANDLER(UART1_TX_IRQHandler, 17)
  {
-   //DrvMC8332_UART_TxInterrupt();
+   DrvMC8332_UART_TxInterrupt();
  }
 
  INTERRUPT_HANDLER(UART1_RX_IRQHandler, 18)
@@ -179,7 +181,7 @@ INTERRUPT_HANDLER(I2C_IRQHandler, 19)
 
  INTERRUPT_HANDLER(UART3_RX_IRQHandler, 21)
  {
-   //UART3_Interrupt();
+   UART3_Interrupt();
  }
 #endif /* (STM8S208) || (STM8S207) || (STM8AF52Ax) || (STM8AF62Ax) */
 

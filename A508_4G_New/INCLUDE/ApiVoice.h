@@ -21,7 +21,8 @@ typedef enum{
   AllUserName           = 0x10,
   NoOnlineUser          = 0x11,
   LowBattery            = 0x12,
-  LoggingIn             = 0x13
+  LoggingIn             = 0x13,
+  SimCardError          = 0x14
 }VOICEPLAY_TYPE;
 typedef enum
 {	

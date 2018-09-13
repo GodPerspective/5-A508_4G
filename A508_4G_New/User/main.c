@@ -1,7 +1,5 @@
 #include "AllHead.h"
 
-
-
 void main_all_init(void);
 void main_task(void);
 
@@ -20,11 +18,17 @@ void main(void)
   
   while(1)
   {
+    LowVoltageDetection();
     DEL_Renew();
     switch(TaskDrvobj.Id)
     {
     case TASK_LOGIN:
       Task_login_progress();
+      if(PocCmdDrvobj.States.GroupStats==EnterGroup)
+      {
+        TaskDrvobj.Id=TASK_NORMAL;
+        TaskDrvobj.login_step=0;
+      }
       break;
     case TASK_NORMAL:
       Task_normal_progress();
@@ -47,9 +51,9 @@ void main_all_init(void)
   disableInterrupts();
   SystemClock_Init(HSE_Clock);
   ITC_SetSoftwarePriority(ITC_IRQ_UART1_RX,ITC_PRIORITYLEVEL_3);
-  //ITC_SetSoftwarePriority(ITC_IRQ_UART1_TX,ITC_PRIORITYLEVEL_3);
-  //ITC_SetSoftwarePriority(ITC_IRQ_UART3_RX,ITC_PRIORITYLEVEL_2);
-  //ITC_SetSoftwarePriority(ITC_IRQ_TIM1_OVF,ITC_PRIORITYLEVEL_2);
+  ITC_SetSoftwarePriority(ITC_IRQ_UART1_TX,ITC_PRIORITYLEVEL_3);
+  ITC_SetSoftwarePriority(ITC_IRQ_UART3_RX,ITC_PRIORITYLEVEL_2);
+  ITC_SetSoftwarePriority(ITC_IRQ_TIM1_OVF,ITC_PRIORITYLEVEL_2);
   ITC_SetSoftwarePriority(ITC_IRQ_TIM3_OVF,ITC_PRIORITYLEVEL_1);
   
   //任务初始化
@@ -68,7 +72,39 @@ void main_all_init(void)
   //定时初始化
   DEL_PowerOnInitial();
   
+  //喇叭控制脚
+  Noise_Mute_Init();
+  
+  //显示屏
+  drv_gt20_pwr_on_init();
+  drv_htg_pwr_on_init();
+  
+  //写频初始化
+  Uart3_Init(); //串口写频使用
+  
+  //按键初始化
+  Key_Init();
+  
+  //指示灯初始化
+  LED_Init();
+  
+  //BEEP
+  BEEP_PowerOnInitial();
+  TONE_PowerOnInitial();
+  
+  //电池电压采集
+  ADC_Init();
+  
   enableInterrupts();
+  
+  AUDIO_IOAFPOW(ON);
+  BEEP_Time(1);
+  MCU_LCD_BACKLIGTH(ON);
+  api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//显示电池满电图标
+  DISPLAY_Show(d_NoSimCard);
+  //IIC-AW87319功放
+  iic_init();
+  ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);
 }
 #else
 void main_all_init(void)

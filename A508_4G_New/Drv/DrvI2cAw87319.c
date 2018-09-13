@@ -1,16 +1,71 @@
 #include "AllHead.h"
-
+u8 test_buf[10]={0};
 static void iic_delay(void);
 static void iic_sda_out(void);
 static void iic_sda_in(void);
+static void set_iic_scl_state(u8 OnOff);
+static void set_iic_sda_state(u8 OnOff);
 
 void iic_init(void)
 {
+  
+  
   //初始化SDA和SCL为输出模式，默认高电平
   GPIO_Init(GPIO_GF_SCL,GPIO_PIN_GF_SCL,GPIO_MODE_OUT_PP_HIGH_FAST);//SCL
   GPIO_Init(GPIO_GF_SDA,GPIO_PIN_GF_SDA,GPIO_MODE_OUT_PP_HIGH_FAST);//SDA
   set_iic_sda_state(1);
   set_iic_scl_state(1);
+  Decive_ReadData(0xB0,0x00,test_buf,10);
+#if 0//output 6.95V
+  Device_WriteData(0xB0,0x64,0x2C);
+  DEL_Soft1ms(200);
+  Device_WriteData(0xB0,0x01,0x00);
+  Device_WriteData(0xB0,0x02,0x00);
+  Device_WriteData(0xB0,0x03,0x00);
+  Device_WriteData(0xB0,0x03,0x00);
+  Device_WriteData(0xB0,0x04,0x00);
+  Device_WriteData(0xB0,0x05,0x00);
+  Device_WriteData(0xB0,0x06,0x00);
+  Device_WriteData(0xB0,0x07,0x00);
+  Device_WriteData(0xB0,0x08,0x00);
+  Device_WriteData(0xB0,0x09,0x00);
+  Decive_ReadData(0xB0,0x00,test_buf,10);
+  Device_WriteData(0xB0,0x00,0x9B);
+  Device_WriteData(0xB0,0x01,0x07);
+  Device_WriteData(0xB0,0x02,0x28);//(battery safemode enable)
+  Device_WriteData(0xB0,0x03,0x07);
+  Device_WriteData(0xB0,0x04,0x04);
+  Device_WriteData(0xB0,0x05,0x0D);
+  Device_WriteData(0xB0,0x06,0x00);
+  Device_WriteData(0xB0,0x07,0x52);
+  Device_WriteData(0xB0,0x08,0x28);
+  Device_WriteData(0xB0,0x09,0x02);//enable AGC1,0.08ms/DB
+#else
+  Device_WriteData(0xB0,0x64,0x2C);
+  DEL_Soft1ms(200);
+  Device_WriteData(0xB0,0x01,0x00);
+  Device_WriteData(0xB0,0x01,0x00);
+  Device_WriteData(0xB0,0x02,0x00);
+  Device_WriteData(0xB0,0x03,0x00);
+  Device_WriteData(0xB0,0x04,0x00);
+  Device_WriteData(0xB0,0x05,0x00);
+  Device_WriteData(0xB0,0x06,0x00);
+  Device_WriteData(0xB0,0x07,0x00);
+  Device_WriteData(0xB0,0x08,0x00);
+  Device_WriteData(0xB0,0x09,0x00);
+  Decive_ReadData(0xB0,0x00,test_buf,10);
+  Device_WriteData(0xB0,0x00,0x9B);
+  Device_WriteData(0xB0,0x01,0x06);
+  Device_WriteData(0xB0,0x02,0x00);
+  Device_WriteData(0xB0,0x03,0x07);
+  Device_WriteData(0xB0,0x04,0x04);
+  Device_WriteData(0xB0,0x05,0x02);
+  Device_WriteData(0xB0,0x06,0x0B);
+  Device_WriteData(0xB0,0x07,0x52);
+  Device_WriteData(0xB0,0x08,0xA8);
+  Device_WriteData(0xB0,0x09,0x03);
+#endif
+  Decive_ReadData(0xB0,0x00,test_buf,10);
 }
 
 //SCL高电平期间，SDA出现一个下降沿表示起始信号
@@ -190,6 +245,37 @@ static void iic_sda_out(void)
 static void iic_sda_in(void)
 {
   GPIO_Init(GPIO_GF_SDA,GPIO_PIN_GF_SDA,GPIO_MODE_IN_FL_NO_IT);
+}
+
+static void set_iic_sda_state(u8 OnOff)
+{
+  switch(OnOff)
+  {
+  case 1:
+    GPIO_WriteHigh(GPIO_GF_SDA, GPIO_PIN_GF_SDA);
+    break;
+  case 0:
+    GPIO_WriteLow(GPIO_GF_SDA, GPIO_PIN_GF_SDA);
+    break;
+  default:
+    GPIO_WriteHigh(GPIO_GF_SDA, GPIO_PIN_GF_SDA);
+    break; 
+  }
+}
+static void set_iic_scl_state(u8 OnOff)
+{
+    switch(OnOff)
+  {
+  case 1:
+    GPIO_WriteHigh(GPIO_GF_SCL, GPIO_PIN_GF_SCL);
+    break;
+  case 0:
+    GPIO_WriteLow(GPIO_GF_SCL, GPIO_PIN_GF_SCL);
+    break;
+  default:
+    GPIO_WriteHigh(GPIO_GF_SCL, GPIO_PIN_GF_SCL);
+    break; 
+  }
 }
 
 static void iic_delay(void)//延时一小会 保证一个可靠的电平

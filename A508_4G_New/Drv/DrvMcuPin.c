@@ -10,27 +10,27 @@ void LED_Init(void)
   GPIO_Init(GPIO_RSSI,GPIO_PIN_RSSI,GPIO_MODE_IN_PU_NO_IT);//RSSI
 }
 
-void Set_GreenLed(u8 state)
+void Set_GreenLed(IO_ONOFF state)
 {
   switch(state)
   {
-  case LED_ON:
+  case ON:
       GPIO_WriteHigh(GPIO_LED_Green, GPIO_PIN_LED_Green);
     break;
-  case LED_OFF:
+  case OFF:
       GPIO_WriteLow(GPIO_LED_Green, GPIO_PIN_LED_Green);
     break;
   }
 }
 
-void Set_RedLed(u8 state)
+void Set_RedLed(IO_ONOFF state)
 {
   switch(state)
   {
-  case LED_ON:
+  case ON:
       GPIO_WriteHigh(GPIO_LED_Red, GPIO_PIN_LED_Red);
     break;
-  case LED_OFF:
+  case OFF:
       GPIO_WriteLow(GPIO_LED_Red, GPIO_PIN_LED_Red);
       break;
   }
@@ -60,48 +60,8 @@ void Tim3_Timer_Init(void)
 /******************************************************************************
 ;--------4-Audio&MIC hardware macro define
 ******************************************************************************/
-void MIC_GPIO_Init(void)
-{GPIO_Init(GPIO_MIC_Mute,GPIO_PIN_MIC_Mute,GPIO_MODE_OUT_PP_LOW_FAST);}
-
-void AF_Mute_Init(void)
-{GPIO_Init(GPIO_AF_Mute,GPIO_PIN_AF_Mute,GPIO_MODE_OUT_PP_LOW_FAST);}
-
 void Noise_Mute_Init(void)
 {GPIO_Init(GPIO_Noise_Mute,GPIO_PIN_Noise_Mute,GPIO_MODE_OUT_PP_LOW_FAST);}
-
-void C_TEST_OUT_SET(void)
-{
-  GPIO_Init(GPIO_MIC_Mute,GPIO_PIN_MIC_Mute,GPIO_MODE_OUT_PP_LOW_FAST);
-}
-
-void MIC_IOMUT(IO_ONOFF OnOff)
-{
-  switch(OnOff)
-  {
-  case ON:
-      GPIO_WriteHigh(GPIO_MIC_Mute,GPIO_PIN_MIC_Mute);
-    break;
-  case OFF:
-      GPIO_WriteLow(GPIO_MIC_Mute,GPIO_PIN_MIC_Mute);
-    break;
-  }
-}
-
-
-
-void AUDIO_IOAFMUT(IO_ONOFF OnOff)
-{
-  switch(OnOff)
-  {
-  case ON:
-      GPIO_WriteHigh(GPIO_AF_Mute, GPIO_PIN_AF_Mute);
-    break;
-  case OFF:
-      GPIO_WriteLow(GPIO_AF_Mute, GPIO_PIN_AF_Mute);
-    break;
-  default:break; 
-  }
-}
 
 void AUDIO_IOAFPOW(IO_ONOFF OnOff)
 {
@@ -117,14 +77,5 @@ void AUDIO_IOAFPOW(IO_ONOFF OnOff)
   }
 }
 
-/******************************************************************************
-;--------5-KEY hardware macro define
-******************************************************************************/
-void Key_Init(void)
-{
-  GPIO_Init(GPIO_Key_2,GPIO_PIN_Key_2,GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(GPIO_Key_3,GPIO_PIN_Key_3,GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(GPIO_Key_4,GPIO_PIN_Key_4,GPIO_MODE_IN_PU_NO_IT);
-  GPIO_Init(GPIO_Key_PTT,GPIO_PIN_Key_PTT,GPIO_MODE_IN_PU_NO_IT);
-}
+
 

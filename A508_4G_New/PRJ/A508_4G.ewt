@@ -1946,7 +1946,28 @@
       <name>$PROJ_DIR$\..\Api\ApiAtCmd.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Api\ApiBattery.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Api\ApiDelay.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiDisplay.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiKeyboard.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiKeyCmd.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiLED.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiMcuVersion.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Api\ApiMenu.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Api\ApiPocCmd.c</name>
@@ -1958,13 +1979,46 @@
   <group>
     <name>DRV</name>
     <group>
-      <name>DrvGT20L16P1Y</name>
+      <name>DrvDisplay</name>
+      <file>
+        <name>$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drv\DrvHTG12832.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drv\GT20L16_STM8_DOUBLE_MEDIUM_IAR.a</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drv\DrvGT20L16P1Y\GT20L16P1Y_D.c</name>
+      </file>
     </group>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvBeep.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvEeprom.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvI2cAw87319.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvKeyboard.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvKeyscan.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\Drv\DrvMcuPin.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Drv\DrvTone.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Drv\DrvUart1.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Drv\DrvUart3.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\Drv\DrvZM389.c</name>
@@ -1979,7 +2033,22 @@
       <name>$PROJ_DIR$\..\INCLUDE\ApiAtCmd.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiBattery.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\INCLUDE\ApiDelay.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiDisplay.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiKeyboard.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiLED.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiMcuVersion.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\ApiPocCmd.h</name>
@@ -1988,7 +2057,31 @@
       <name>$PROJ_DIR$\..\INCLUDE\ApiVoice.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\Suport\CommonLib.c</name>
+      <name>$PROJ_DIR$\..\INCLUDE\DataStructAddr.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvBeep.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvEeprom.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvFont.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvGT20L16S1Y.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvHTG12832.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvI2cAw87319.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvKeyboard.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvKeyscan.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\DrvMcuPin.h</name>
@@ -1997,7 +2090,16 @@
       <name>$PROJ_DIR$\..\INCLUDE\DrvUart1.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\INCLUDE\DrvUart3.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\INCLUDE\DrvZM389.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\GT20L16P1Y.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\GT20L16P1Y_D.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\sysclock.h</name>
@@ -2086,6 +2188,9 @@
   </group>
   <group>
     <name>SUPORT</name>
+    <file>
+      <name>$PROJ_DIR$\..\Suport\CommonLib.c</name>
+    </file>
     <file>
       <name>$PROJ_DIR$\..\Suport\sysclock.c</name>
     </file>

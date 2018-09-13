@@ -1,6 +1,8 @@
 #include "AllHead.h"
 
+
 #ifdef  CHINESE
+const u8 *ucSimCardError                = "6153025f385e";//卡异常
 const u8 *ucPersonalMode                = "2a4e7c54216a0f5f";//个呼模式-
 const u8 *ucABELL                       = "276b0768f95bb28b3a67";//欧标对讲
 const u8 *ucGroupSelected               = "f25d09902d4e";//已选中-
@@ -76,14 +78,17 @@ void VOICE_Play(VOICEPLAY_TYPE id)
 {
   switch(id)
   {
+  case SimCardError:
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucSimCardError,strlen((char const*)ucSimCardError));//个呼模式
+    break;
   case PersonalMode:
-    VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucPersonalMode,strlen((char const*)ucPersonalMode));//personal calling Mode
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucPersonalMode,strlen((char const*)ucPersonalMode));//个呼模式
     break;
   case ABELL:
-    VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucABELL,strlen((char const*)ucABELL));//播报Abell
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucABELL,strlen((char const*)ucABELL));//播报欧标广域对讲机
     break;
   case AllGroupName:
-    //VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(GroupCallingNum),strlen((char const*)GetAllGroupNameForVoice(GroupCallingNum)));
+    VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(GroupCallingNum),strlen((char const*)GetAllGroupNameForVoice(GroupCallingNum)));
     break;
   case GroupSelected:
     VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucGroupSelected,strlen((char const*)ucGroupSelected));//英文播报：Group Selected
@@ -126,7 +131,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucHandfreeMode,strlen((char const*)ucHandfreeMode));//免提模式
     break;
   case AllUserName:
-    //VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(PersonalCallingNum),strlen((char const*)GetAllUserNameForVoice(PersonalCallingNum)));
+    VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(PersonalCallingNum),strlen((char const*)GetAllUserNameForVoice(PersonalCallingNum)));
     break;
   case NoOnlineUser:
     VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucNoOnlineUser,strlen((char const*)ucNoOnlineUser));//No Online User

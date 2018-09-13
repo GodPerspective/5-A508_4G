@@ -10,15 +10,20 @@ typedef enum {
 
 typedef struct{
   TASK_CODE Id;
+  u8 login_set_account;
+  u8 login_step;
 }TaskDrv;
 
 extern TaskDrv TaskDrvobj;
+
+extern u8 Key_PersonalCalling_Flag;
 
 extern void Task_Init(void);
 extern void Task_login_progress(void);
 extern void Task_normal_progress(void);
 extern void Task_low_battery_progress(void);
 extern void Task_write_freq_progress(void);
+
 
 #if 0
 typedef enum{

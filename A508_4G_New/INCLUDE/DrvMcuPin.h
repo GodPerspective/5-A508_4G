@@ -12,7 +12,14 @@ typedef enum{
   LO    = 0x00,
   HI	= 0x01
 }IO_HILO;
-
+typedef union {
+  struct
+  {
+    u16 Low: 8;
+    u16 High: 8;
+  }Byte;
+  unsigned int Word;
+}WordType;
 typedef enum{
   KSTA_UP       = 0x00,
   KSTA_DOWN     = 0x01,
@@ -37,37 +44,36 @@ typedef struct{
 #define GPIO_PIN_LED_Green      GPIO_PIN_3
 #define GPIO_PIN_LED_Red        GPIO_PIN_2
 
-#define LED_ON  0
-#define LED_OFF 1
-
-#define GPIO_RSSI               GPIOB
-#define GPIO_PIN_RSSI           GPIO_PIN_1
-#define ReadInput_PIN_RSSI      GPIO_ReadInputPin(GPIO_RSSI, GPIO_PIN_RSSI)
 /******************************************************************************
 ;--------2-TIM3:DELAY hardware macro define
 ******************************************************************************/
 #define HSE_CLK
 
 /******************************************************************************
-;--------3-UART1:GD83 hardware macro define
+;--------新功放 hardware macro define
 ******************************************************************************/
-//#define GPIO_C_Reset            GPIOB 
-//#define GPIO_C_ONOFF            GPIOB 
-
-//#define GPIO_PIN_C_Reset        GPIO_PIN_4
-//#define GPIO_PIN_C_ONOFF        GPIO_PIN_3
+#define GPIO_GF_SCL              GPIOB
+#define GPIO_PIN_GF_SCL          GPIO_PIN_6
+                                  
+#define GPIO_GF_SDA              GPIOB
+#define GPIO_PIN_GF_SDA          GPIO_PIN_4 
+#define READ_IIC_SDA             GPIO_ReadInputPin(GPIO_GF_SDA, GPIO_PIN_GF_SDA)
 
 /******************************************************************************
-;--------4-Audio&MIC hardware macro define
+;--------noise hardware macro define
 ******************************************************************************/
-#define GPIO_AF_Mute            GPIOD
-#define GPIO_MIC_Mute           GPIOB
 #define GPIO_Noise_Mute         GPIOD
-
-#define GPIO_PIN_AF_Mute        GPIO_PIN_4
-#define GPIO_PIN_MIC_Mute       GPIO_PIN_6
 #define GPIO_PIN_Noise_Mute     GPIO_PIN_7
 
+/******************************************************************************
+;--------模块相关引脚 hardware macro define
+******************************************************************************/
+#define GPIO_Poweroff            GPIOD
+#define GPIO_PIN_Poweroff       GPIO_PIN_4
+
+#define GPIO_RSSI               GPIOB
+#define GPIO_PIN_RSSI           GPIO_PIN_1
+#define ReadInput_PIN_RSSI      GPIO_ReadInputPin(GPIO_RSSI, GPIO_PIN_RSSI)
 /******************************************************************************
 ;--------5-KEY & KEYBOARD hardware macro define
 ******************************************************************************/
@@ -90,7 +96,7 @@ typedef struct{
 #define GPIO_PIN_Key_6          GPIO_PIN_6
 #define GPIO_PIN_Key_7          GPIO_PIN_7
 #define GPIO_PIN_Key_8          GPIO_PIN_0
-#define GPIO_PIN_Key_9          GPIO_PIN_0
+#define GPIO_PIN_Key_9          GPIO_PIN_1
 #define GPIO_PIN_Key_10         GPIO_PIN_3
 
 #define ReadInput_KEY_2         GPIO_ReadInputPin(GPIO_Key_2, GPIO_PIN_Key_2)
@@ -157,8 +163,8 @@ LCD Backlight -PC4         -A0
 
 #define GPIO_PIN_GT20_CLK       GPIO_PIN_0
 #define GPIO_PIN_GT20_CS        GPIO_PIN_0
-#define GPIO_PIN_GT20_SI        GPIO_PIN_0
-#define GPIO_PIN_GT20_SO        GPIO_PIN_0                          
+#define GPIO_PIN_GT20_SI        GPIO_PIN_1
+#define GPIO_PIN_GT20_SO        GPIO_PIN_2                      
                                 
 
 #define MCU_GT20_CS(a)	        if(a)\
@@ -189,23 +195,15 @@ LCD Backlight -PC4         -A0
 /******************************************************************************
 ;--------8-电池电量AD hardware macro define
 ******************************************************************************/
-#define GPIO_VDET               GPIOF//AIN2
+#define GPIO_VDET               GPIOB//AIN2
 #define GPIO_PIN_VDET           GPIO_PIN_2
-/******************************************************************************
-;--------新功放 hardware macro define
-******************************************************************************/
-#define GPIO_GF_SCL              GPIOG
-#define GPIO_PIN_GF_SCL          GPIO_PIN_1
-                                  
-#define GPIO_GF_SDA              GPIOE
-#define GPIO_PIN_GF_SDA          GPIO_PIN_3 
-#define READ_IIC_SDA             GPIO_ReadInputPin(GPIO_GF_SDA, GPIO_PIN_GF_SDA)
+
 /******************************************************************************
 ;--------1-LED hardware macro define
 ******************************************************************************/
 void LED_Init(void);
-void Set_GreenLed(u8 state);
-void Set_RedLed(u8 state);
+void Set_GreenLed(IO_ONOFF state);
+void Set_RedLed(IO_ONOFF state);
 
 /******************************************************************************
 ;--------2-TIM3:DELAY hardware macro define
@@ -232,9 +230,4 @@ void AUDIO_IOAFPOW(IO_ONOFF OnOff);
 ******************************************************************************/
 void Key_Init(void);
 
-/******************************************************************************
-;--------6-显示屏驱动-HTG12832 hardware macro define
-******************************************************************************/
-extern void set_iic_sda_state(u8 OnOff);
-extern void set_iic_scl_state(u8 OnOff);
 #endif
