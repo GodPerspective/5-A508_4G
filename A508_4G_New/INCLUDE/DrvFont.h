@@ -103,12 +103,12 @@ typedef enum
         eICO_IDMESSAGEOff = 24,
 	//zengdi
 	eICO_IDOffStart   = 25,
-	eICO_IDVOXOff,
-	eICO_IDSCANOff,
-	eICO_IDLOCKEDOff,
-	eICO_IDTALKAROff,
+	eICO_IDVOXOff     = 26,
+	eICO_IDSCANOff    = 27,
+	eICO_IDLOCKEDOff  = 28,
+	eICO_IDTALKAROff  = 29,
 	
-	eICO_IDSPEAKEROff,
+	eICO_IDSPEAKEROff = 30,
 	eICO_IDMONITEROff,	
 	eICO_IDEMERGENCYOff,
 	eICO_IDOffEnd,

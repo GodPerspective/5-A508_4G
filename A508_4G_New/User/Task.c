@@ -25,44 +25,51 @@ void Task_login_progress(void)
   case 1:
     if(AtCmdDrvobj.Msg.Bits.bSimCardIn==1)//已插卡
     {
+      VOICE_Play(ABELL);
       ApiAtCmd_WritCommand(ATCOMM_DIALMODE,0,0);//设置为手动拨号
-      ApiAtCmd_WritCommand(ATCOMM_CGDCONT,0,0);//设置APN（暂未设置，只是读取）
+      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_SET,0,0);//设置APN（暂未设置，只是读取）
+      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_READ,0,0);//设置APN（暂未设置，只是读取）
       TaskDrvobj.login_step=2;
     }
     break;
   case 2:
     if(AtCmdDrvobj.Msg.Bits.bCGDCONT==1)
     {
+      ApiAtCmd_WritCommand(ATCOMM_SetNetworkAuto,0,0);//默认自动模式开机
+      Delay_100ms(5);
       ApiAtCmd_WritCommand(ATCOMM_POWERUP,0,0);//开机准备搜网
       TaskDrvobj.login_step=3;
     }
     break;
   case 3:
-    if(AtCmdDrvobj.network_reg.cgreg==1||AtCmdDrvobj.network_reg.cereg==1)
+    if(AtCmdDrvobj.network_reg.creg==1||AtCmdDrvobj.network_reg.cereg==1||AtCmdDrvobj.network_reg.cereg==5
+     ||AtCmdDrvobj.network_reg.cgreg==1||AtCmdDrvobj.network_reg.cgreg==5)
     {
       ApiAtCmd_WritCommand(ATCOMM_CGACT,0,0);//PDP上下文激活
       TaskDrvobj.login_step=4;
     }
     break;
   case 4:
-    if(AtCmdDrvobj.Msg.Bits.bZGIPDNS==1)//收到ZGIPDNS后开始发送指令
+    if(AtCmdDrvobj.ZGIPDNS==2)//收到ZGIPDNS后开始发送指令
     {
-      ApiAtCmd_WritCommand(ATCOMM_ZGACT,0,0);//PDP上下文激活
+      AtCmdDrvobj.ZGIPDNS=0;
+      ApiAtCmd_WritCommand(ATCOMM_ZGACT1,0,0);//PDP上下文激活
       TaskDrvobj.login_step=5;
     }
     break;
   case 5:
-    if(AtCmdDrvobj.Msg.Bits.bZCONSTAT==1)//收到ZCONSTAT:1,1后表示网络链路成功，可以上网了
+    if(AtCmdDrvobj.ZCONSTAT==2)//收到ZCONSTAT:1,1后表示网络链路成功，可以上网了
     {
+      AtCmdDrvobj.ZCONSTAT=0;
       TaskDrvobj.login_step=6;
     }
     break;
   case 6:
     break;
   case 7:
+    VOICE_Play(LoggingIn);
+    DISPLAY_Show(d_LoggingIn);
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
-    //ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
-    //ApiPocCmd_WritCommand(PocComm_SetURL,0,0);//设置URL
     TaskDrvobj.login_step=8;
     break;
   default:

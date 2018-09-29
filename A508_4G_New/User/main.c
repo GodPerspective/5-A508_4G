@@ -22,7 +22,7 @@ void main(void)
     DEL_Renew();
     switch(TaskDrvobj.Id)
     {
-    case TASK_LOGIN:
+     case TASK_LOGIN:
       Task_login_progress();
       if(PocCmdDrvobj.States.GroupStats==EnterGroup)
       {
@@ -98,10 +98,11 @@ void main_all_init(void)
   enableInterrupts();
   
   AUDIO_IOAFPOW(ON);
-  BEEP_Time(1);
+  BEEP_Time(100);
   MCU_LCD_BACKLIGTH(ON);
   api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//显示电池满电图标
-  DISPLAY_Show(d_NoSimCard);
+  
+  DISPLAY_Show(d_ABELL);
   //IIC-AW87319功放
   iic_init();
   ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);

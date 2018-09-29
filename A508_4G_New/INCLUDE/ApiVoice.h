@@ -22,11 +22,21 @@ typedef enum{
   NoOnlineUser          = 0x11,
   LowBattery            = 0x12,
   LoggingIn             = 0x13,
-  SimCardError          = 0x14
+  SimCardError          = 0x14,
+  cs_unknow_network     = 0x15,//CSÎ´ÖªÍøÂç
+  gprs_unknow_network   = 0x16,//GPRSÎ´ÖªÍøÂç
+  gprs_refuse_enroll    = 0x17,//GPRS×¢²á±»¾Ü¾ø 
+  eps_unknow_network    = 0x18,//EPSÎ´ÖªÍøÂç 
+  eps_refuse_enroll     = 0x19,//EPS×¢²á±»¾Ü¾ø 
+  all_unknow_network    = 0x1A,
+  No_service            = 0x1B,
+  set_network_auto      = 0x1C,
+  set_network_wcdma_only= 0x1D,
+  set_network_gsm_only  = 0x1F
 }VOICEPLAY_TYPE;
 typedef enum
 {	
-	VOICE_IDKEY		= 0x00,
+	VOICE_IDKEY	= 0x00,
 	VOICE_IDPOWON	= 0x01,
 	VOICE_IDCHCHG	= 0x02,
 	VOICE_IDLOWBAT	= 0x04,

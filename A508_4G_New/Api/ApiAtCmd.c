@@ -4,14 +4,63 @@
 const u8 *cTxATE1               ="ATE1";
 const u8 *cTxCSQ                ="AT+CSQ";
 const u8 *cTxDIALMODE           ="at+dialmode=0";
-const u8 *cTxCGDCONT            ="at+cgdcont?";
+#if 1//test
+const u8 *cTxCGDCONT_SET0        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET1        ="AT+CGDCONT=1,\"IP\",\"3gnet\"";
+const u8 *cTxCGDCONT_SET2        ="AT+CGDCONT=1,\"IP\",\"internet\"";//
+const u8 *cTxCGDCONT_SET3        ="AT+CGDCONT=1,\"IP\",\"internet.proximus.be\"";//比利时Proximus
+const u8 *cTxCGDCONT_SET4        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET5        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET6        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET7        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET8        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET9        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET10       ="AT+CGDCONT=1,\"IP\",\"\"";//
+#else
+
+//香港
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"hkcsl\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"3gnet\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"web.orangehk.com\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"internet\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"web-g.three.com.hk\"";
+
+//印度
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"bplgprs.com\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"Cellular internet\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"gprsmtnlmum\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"portalnmms\"";
+
+//阿联酋
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"mnet\"";
+
+//南非
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"internet\"";
+
+//土耳其
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
+//
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"bplgprs.com\""
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"Cellular internet\""
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"gprsmtnlmum\""
+const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"portalnmms\""
+
+#endif
+const u8 *cTxCGDCONT_READ       ="at+cgdcont?";
 const u8 *cTxPOWERUP            ="at+cfun=1";
 const u8 *cTxCGACT              ="at+cgact=1,1";
-const u8 *cTxZGACT              ="at+zgact=1,1";
+const u8 *cTxZGACT1              ="at+zgact=1,1";
+const u8 *cTxZGACT0              ="at+zgact=0,1";
 const u8 *cRequestOpenPoc       ="at+poc=000000010101";
 const u8 *cTxPlayZtts           ="AT+ZTTS=";
 const u8 *cTxRESET              ="at+cfun=1,1";
 const u8 *cTxPOWEROFF           ="at+cfun=0,0";
+const u8 *cTxSetNetworkAuto     ="AT^sysconfig=2,0,1,2";
+const u8 *cTxSetNetworkGsmOnly  ="AT^sysconfig=13,0,1,2";
+const u8 *cTxSetNetworkWcdmaOnly="AT^sysconfig=14,0,1,2";
 
 const u8 *cRxZICCID             ="ZICCID: ";
 const u8 *cRxCSQ                ="CSQ: ";
@@ -19,7 +68,7 @@ const u8 *cRxCREG               ="CREG: ";
 const u8 *cRxCGREG              ="CGREG: ";
 const u8 *cRxCEREG              ="CEREG: ";
 const u8 *cRxMODE               ="^MODE: ";
-const u8 *cRxZGIPDNS            ="ZGIPDNS: ";
+const u8 *cRxZGIPDNS            ="ZGIPDNS: 1";
 const u8 *cRxZCONSTAT           ="ZCONSTAT: 1,1";
 const u8 *cRxZLTENOCELL         ="ZLTENOCELL";
 const u8 *cRxZMSRI              ="ZMSRI";
@@ -65,17 +114,60 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
   case ATCOMM_DIALMODE:
     DrvGD83_UART_TxCommand((u8*)cTxDIALMODE, strlen((char const*)cTxDIALMODE));
     break;
-  case ATCOMM_CGDCONT:
-    DrvGD83_UART_TxCommand((u8*)cTxCGDCONT, strlen((char const*)cTxCGDCONT));
+  case ATCOMM_CGDCONT_SET:
+    FILE_Read(0x247,1,AtCmdDrvobj.apn_set);//
+    switch(AtCmdDrvobj.apn_set[0])
+    {
+    case 0:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET0, strlen((char const*)cTxCGDCONT_SET0));
+      break;
+    case 1:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET1, strlen((char const*)cTxCGDCONT_SET1));
+      break;
+    case 2:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET2, strlen((char const*)cTxCGDCONT_SET2));
+      break;
+    case 3:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET3, strlen((char const*)cTxCGDCONT_SET3));
+      break;
+    case 4:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET4, strlen((char const*)cTxCGDCONT_SET4));
+      break;
+    case 5:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET5, strlen((char const*)cTxCGDCONT_SET5));
+      break;
+    case 6:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET6, strlen((char const*)cTxCGDCONT_SET6));
+      break;
+    case 7:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET7, strlen((char const*)cTxCGDCONT_SET7));
+      break;
+    case 8:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET8, strlen((char const*)cTxCGDCONT_SET8));
+      break;
+    case 9:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET9, strlen((char const*)cTxCGDCONT_SET9));
+      break;
+    case 10:
+      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET10, strlen((char const*)cTxCGDCONT_SET10));
+      break;
+    default:
+      break;
+    }
+    break;
+  case ATCOMM_CGDCONT_READ:
+    DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_READ, strlen((char const*)cTxCGDCONT_READ));
     break;
   case ATCOMM_POWERUP:
     DrvGD83_UART_TxCommand((u8*)cTxPOWERUP, strlen((char const*)cTxPOWERUP));
     break;
   case ATCOMM_CGACT:
     DrvGD83_UART_TxCommand((u8*)cTxCGACT, strlen((char const*)cTxCGACT));
+    AtCmdDrvobj.ZGIPDNS=1;
     break;
-  case ATCOMM_ZGACT:
-    DrvGD83_UART_TxCommand((u8*)cTxZGACT, strlen((char const*)cTxZGACT));
+  case ATCOMM_ZGACT1:
+    DrvGD83_UART_TxCommand((u8*)cTxZGACT1, strlen((char const*)cTxZGACT1));
+    AtCmdDrvobj.ZCONSTAT=1;
     break;
   case ATCOMM_CSQ:
     DrvGD83_UART_TxCommand((u8*)cTxCSQ, strlen((char const*)cTxCSQ));
@@ -91,6 +183,18 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
     break;
   case ATCOMM_Test:
     DrvGD83_UART_TxCommand(buf, len);
+    break;
+  case ATCOMM_ZGACT0:
+    DrvGD83_UART_TxCommand((u8*)cTxZGACT0, strlen((char const*)cTxZGACT0));
+    break;
+  case ATCOMM_SetNetworkAuto:
+    DrvGD83_UART_TxCommand((u8*)cTxSetNetworkAuto, strlen((char const*)cTxSetNetworkAuto));
+    break;
+  case ATCOMM_SetNetworkGsmOnly:
+    DrvGD83_UART_TxCommand((u8*)cTxSetNetworkGsmOnly, strlen((char const*)cTxSetNetworkGsmOnly));
+    break;
+  case ATCOMM_SetNetworkWcdmaOnly:
+    DrvGD83_UART_TxCommand((u8*)cTxSetNetworkWcdmaOnly, strlen((char const*)cTxSetNetworkWcdmaOnly));
     break;
   default:
     break;
@@ -152,16 +256,28 @@ void ApiCaretCmd_10msRenew(void)
     ucRet=memcmp(pBuf,cRxMODE,7);
     if(ucRet==0x00)
     {
-      for(i = 0x00; i < Len; i++)
+      if(pBuf[7]=='0')//^MODE: 0
       {
-        if(pBuf[i]==',')
+        AtCmdDrvobj.mode_param.sys_mode=0x18;//自定义0x18为无服务
+        AtCmdDrvobj.mode_param.sys_submode=0x00;
+      }
+      else
+      {
+        for(i = 0x00; i < Len; i++)
         {
-            memcpy(temp_buf1,pBuf+7,i-7);
-            AtCmdDrvobj.mode_param.sys_mode=CHAR_TO_Digital(temp_buf1,i-7);
-            
-            memcpy(temp_buf2,pBuf+i+1,Len-i-1);
-            AtCmdDrvobj.mode_param.sys_submode=CHAR_TO_Digital(temp_buf2,Len-i-1);
+          if(pBuf[i]==',')
+          {
+              memcpy(temp_buf1,pBuf+7,i-7);
+              AtCmdDrvobj.mode_param.sys_mode=CHAR_TO_Digital(temp_buf1,i-7);
+              
+              memcpy(temp_buf2,pBuf+i+1,Len-i-1);
+              AtCmdDrvobj.mode_param.sys_submode=CHAR_TO_Digital(temp_buf2,Len-i-1);
+          }
         }
+      }
+      if(MenuMode_Flag==0)
+      {
+        NetworkModeIcons();
       }
     }
 /*************************************************/
@@ -251,33 +367,39 @@ void ApiAtCmd_10msRenew(void)
     {
       AtCmdDrvobj.network_reg.creg=CHAR_TO_Digital(pBuf+6,1);
     }
+    
     ucRet = memcmp(pBuf, cRxCGREG, 7);
     if(ucRet==0x00)
     {
       AtCmdDrvobj.network_reg.cgreg=CHAR_TO_Digital(pBuf+7,1);
     }
+    
     ucRet = memcmp(pBuf, cRxCEREG, 7);
     if(ucRet==0x00)
     {
       AtCmdDrvobj.network_reg.cereg=CHAR_TO_Digital(pBuf+7,1);
     }
+
 /*****主动上报IP地址/DNS服务器地址ZGIPDNS***************/
-    ucRet = memcmp(pBuf, cRxZGIPDNS, 9);
+    ucRet = memcmp(pBuf, cRxZGIPDNS, 10);
     if(ucRet==0x00)
     {
-      AtCmdDrvobj.Msg.Bits.bZGIPDNS=1;
+      AtCmdDrvobj.ZGIPDNS=2;
     }
 /*****发送zgact回复RNDIS链接情况***************/
     ucRet = memcmp(pBuf, cRxZCONSTAT, 13);
     if(ucRet==0x00)
     {
-      AtCmdDrvobj.Msg.Bits.bZCONSTAT=1;
+      AtCmdDrvobj.ZCONSTAT=2;
+      AtCmdDrvobj.network_reg.creg=0;
+      AtCmdDrvobj.network_reg.cereg=0;
+      AtCmdDrvobj.network_reg.cgreg=0;
     }
 /********LTE丢网指示***********************/
     ucRet = memcmp(pBuf, cRxZLTENOCELL, 10);
     if(ucRet==0x00)
     {
-      AtCmdDrvobj.Msg.Bits.bZLTENOCELL=1;
+      AtCmdDrvobj.ZLTENOCELL=1;
     }
 /****未插卡CMEERROR**********************/
 
@@ -412,12 +534,51 @@ bool ApiAtCmd_PlayVoice(AtVoiceType id, u8 *buf, u8 len)
 
 
 #if 1//ZM389
+void NetworkModeIcons(void)
+{
+  switch(AtCmdDrvobj.mode_param.sys_submode)
+  {
+  case 0:
+    api_disp_icoid_output( eICO_IDSPEAKEROff, TRUE, TRUE);//显示× 无服务
+    break;
+  case 1:
+  case 2:
+    api_disp_icoid_output( eICO_IDPOWERL, TRUE, TRUE);//显示2G 
+    break;
+  case 3:
+    api_disp_icoid_output( eICO_IDVOXOff, TRUE, TRUE);//显示E
+    break;
+  case 4:
+    api_disp_icoid_output( eICO_IDEmergency, TRUE, TRUE);//显示3G
+    break;
+  case 5:
+  case 6:
+  case 7:
+    api_disp_icoid_output( eICO_IDSCANOff, TRUE, TRUE);//显示H
+    break;
+  case 8:
+    api_disp_icoid_output( eICO_IDTALKAROff, TRUE, TRUE);//显示T
+    break;
+  case 9:
+  case 10:
+    api_disp_icoid_output( eICO_IDOffStart, TRUE, TRUE);//显示4G
+    break;
+  case 11:
+    api_disp_icoid_output( eICO_IDLOCKEDOff, TRUE, TRUE);//显示H+
+    break;
+  default:
+    break;
+  }
+}
 void HDRCSQSignalIcons(void)
 {
     switch(AtCmdDrvobj.csq_param.act)
     {
+    case 0:
+      api_disp_icoid_output( eICO_IDMESSAGE, TRUE, TRUE);//0格信号
+      break;
     case 3://GSM/GPRS模式
-      api_disp_icoid_output( eICO_IDPOWERL, TRUE, TRUE);//显示2G
+      
       if(AtCmdDrvobj.csq_param.rssi==99||AtCmdDrvobj.csq_param.rssi==0)//当无信号时
       {
         api_disp_icoid_output( eICO_IDMESSAGE, TRUE, TRUE);//0格信号
@@ -449,7 +610,6 @@ void HDRCSQSignalIcons(void)
       break;
     case 5://WCDMA模式
     case 15://TD-SCDMA
-      api_disp_icoid_output( eICO_IDEmergency, TRUE, TRUE);//3G图标
         AtCmdDrvobj.csq_param.rssi=AtCmdDrvobj.csq_param.rssi-100;
         if(AtCmdDrvobj.csq_param.rssi==99||AtCmdDrvobj.csq_param.rssi==0)//当无信号时
         {
@@ -477,7 +637,6 @@ void HDRCSQSignalIcons(void)
         }
       break;
     case 17://LTE
-        api_disp_icoid_output( eICO_IDOffStart, TRUE, TRUE);//4G图标
         AtCmdDrvobj.csq_param.rssi=AtCmdDrvobj.csq_param.rssi-100;
         if(AtCmdDrvobj.csq_param.rssi==99||AtCmdDrvobj.csq_param.rssi==0)//当无信号时
         {

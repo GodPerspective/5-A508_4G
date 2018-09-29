@@ -12,7 +12,7 @@ u8 VoiceType_FreehandOrHandset_Flag=0;
 u8 KeyDownUpChoose_GroupOrUser_Flag=0;
 bool LockingState_EnterOK_Flag=FALSE;
 u8 TheMenuLayer_Flag=0;//所处菜单层级；默认状态：1 一级菜单：1 二级菜单：2
-
+u8 network_count;
 void keyboard_process(void)
 {
 /*********键盘down*****************************************************************************/
@@ -166,22 +166,34 @@ void keyboard_process(void)
 
     
 /*********键盘menu*****************************************************************************/
-    if(get_keyboard_menu_states()==m_key_short_press)//处理短按按键清除当前标志位m_key_idle
+    if(get_keyboard_menu_states()==m_key_loosen_moment)//处理短按按键清除当前标志位m_key_idle
     {
-      Set_GreenLed(ON);
-      Delay_100ms(1);
+      if(LockingState_Flag==TRUE)
+      {}
+      else
+      {
+        switch(network_count)
+        {
+        case 0:
+          VOICE_Play(set_network_wcdma_only);
+          ApiAtCmd_WritCommand(ATCOMM_ZGACT0,0,0);
+          Delay_100ms(5);
+          ApiAtCmd_WritCommand(ATCOMM_SetNetworkWcdmaOnly,0,0);
+          network_count=1;
+          break;
+        case 1:
+          VOICE_Play(set_network_auto);
+          ApiAtCmd_WritCommand(ATCOMM_ZGACT0,0,0);
+          Delay_100ms(5);
+          ApiAtCmd_WritCommand(ATCOMM_SetNetworkAuto,0,0);
+          network_count=0;
+          break;
+        default:
+          network_count=0;
+          break;
+        }
+      }
       set_keyboard_menu_states(m_key_idle);
-    }
-    else if(get_keyboard_menu_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
-    {
-      Set_RedLed(ON);
-      Delay_100ms(1);
-      set_keyboard_menu_states(m_key_idle);
-    }
-    else
-    {
-      //Set_GreenLed(OFF);
-      //Set_RedLed(OFF);
     }
  /*********键盘cancel*****************************************************************************/
     if(get_keyboard_cancel_states()==m_key_loosen_moment)//处理短按按键清除当前标志位m_key_idle

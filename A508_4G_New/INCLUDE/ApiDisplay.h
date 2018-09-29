@@ -40,6 +40,14 @@ typedef enum{
   d_version                     = 0x15,
   d_press_ok_then_well          = 0x16,
   d_status_offline              = 0x17,
+  d_SimCardError                = 0x18,
+  d_cs_unknow_network           = 0x19,
+  d_gprs_unknow_network         = 0x1A,
+  d_gprs_refuse_enroll          = 0x1B,
+  d_eps_unknow_network          = 0x1C,
+  d_eps_refuse_enroll           = 0x1D,
+  d_all_unknow_network          = 0x1F,
+  d_no_service                  = 0x20,
 }DISPLAY_TYPE;
 
 typedef struct

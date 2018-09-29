@@ -6,7 +6,7 @@ const u8 *ucSimCardError                = "6153025f385e";//卡异常
 const u8 *ucPersonalMode                = "2a4e7c54216a0f5f";//个呼模式-
 const u8 *ucABELL                       = "276b0768f95bb28b3a67";//欧标对讲
 const u8 *ucGroupSelected               = "f25d09902d4e";//已选中-
-const u8 *ucNoSimCard                   = "2a67d2636153";//未插卡
+const u8 *ucNoSimCard                   = "f78bd2636153";//请插卡
 const u8 *ucNetworkSearching            = "1c64227d517fdc7e";//搜索网络-
 const u8 *ucPowerLowPleaseCharge        = "3575cf914e4f0cfff78b45513575";//电量低，请充电-
 const u8 *ucLowBattery                  = "3575cf914e4f";//电量低-
@@ -21,6 +21,17 @@ const u8 *ucHandsetMode                 = "2c54527b216a0f5f";//听筒模式-
 const u8 *ucHandfreeMode                = "4d51d063216a0f5f";//免提模式-
 const u8 *ucNoOnlineUser                = "e0652857bf7e10625854";//无在线成员
 const u8 *ucLoggingIn                   = "636b28577b764696";//正在登陆- 
+
+const u8 *ucCs_unknow_network           = "430053002a67e577517fdc7e";//CS未知网络
+const u8 *ucGprs_unknow_network         = "67007000720073002a67e577517fdc7e";//GPRS未知网络
+const u8 *ucGprs_refuse_enroll          = "6700700072007300e86c8c51ab88d262dd7e";//GPRS注册被拒绝 
+const u8 *ucEps_unknow_network          = "4500500053002a67e577517fdc7e";//EPS未知网络 
+const u8 *ucEps_refuse_enroll           = "450050005300e86c8c51ab88d262dd7e";//EPS注册被拒绝 
+const u8 *ucAll_unknow_network          = "6300730040620967517fdc7e025f385e";//所有网络异常
+const u8 *ucNo_service                  = "e0650d67a152";//无服务
+const u8 *ucSet_network_auto            = "517fdc7ebe8b6e7f3a4eea81a852216a0f5f";//网络设置为自动模式
+const u8 *ucSet_network_wcdma_only      = "517fdc7ebe8b6e7f3a4ec54e5096094ec45b";//网络设置为仅限3G
+const u8 *ucSet_network_gsm_only        = "517fdc7ebe8b6e7f3a4ec54e50968c4ec45b";//网络设置为仅限2G
 #else
 const u8 *ucPersonalMode                = "50006500720073006f006e0061006c0020004d006f0064006500";//personal mode
 const u8 *ucABELL                       = "4100620065006C006C00";//ABELL
@@ -141,6 +152,36 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     break;
   case LoggingIn:
     VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucLoggingIn,strlen((char const*)ucLoggingIn));//Account Config
+    break;
+  case cs_unknow_network://CS未知网络
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucCs_unknow_network,strlen((char const*)ucCs_unknow_network));
+    break;
+  case gprs_unknow_network://GPRS未知网络
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucGprs_unknow_network,strlen((char const*)ucGprs_unknow_network));
+    break;
+  case gprs_refuse_enroll://GPRS注册被拒绝 
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucGprs_refuse_enroll,strlen((char const*)ucGprs_refuse_enroll));
+    break;
+  case eps_unknow_network://EPS未知网络 
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucEps_unknow_network,strlen((char const*)ucEps_unknow_network));
+    break;
+  case eps_refuse_enroll://EPS注册被拒绝 
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucEps_refuse_enroll,strlen((char const*)ucEps_refuse_enroll));
+    break;
+  case all_unknow_network://所有网络异常
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucAll_unknow_network,strlen((char const*)ucAll_unknow_network));
+    break;
+  case No_service:
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucNo_service,strlen((char const*)ucNo_service));
+    break;
+  case set_network_auto:
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucSet_network_auto,strlen((char const*)ucSet_network_auto));
+    break;
+  case set_network_wcdma_only:
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucSet_network_wcdma_only,strlen((char const*)ucSet_network_wcdma_only));
+    break;
+  case set_network_gsm_only:
+    VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucSet_network_gsm_only,strlen((char const*)ucSet_network_gsm_only));
     break;
   default:
     break;

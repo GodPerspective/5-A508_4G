@@ -10,13 +10,14 @@ typedef struct{
       u16  bSimCardIn            :1;
       u16  bNoSimCard            :1;
       u16  bCGDCONT              :1;
-      u16  bZGIPDNS              :1;
-      u16  bZCONSTAT             :1;
-      u16  bZLTENOCELL           :1;
-      u16                        :9;
+      u16                        :12;
     }Bits;
     u16 Byte;
   }Msg;
+  bool network_activated_flag;
+  u8 ZLTENOCELL;
+  u8 ZGIPDNS;
+  u8 ZCONSTAT;
   struct{
     u8 rssi;//信号强度指示
     u8 act;//信号对应的当前制式
@@ -31,20 +32,26 @@ typedef struct{
     u8 cereg;
   }network_reg;//网络注册状态CREG/CGREG/CEREG
   u8 ccid[20];
+  u8 apn_set[1];
 }AtCmdDrv;
 
 typedef enum{
   ATCOMM_ATE1                   = 0x00,
   ATCOMM_DIALMODE               = 0x01,
-  ATCOMM_CGDCONT                = 0x02,
-  ATCOMM_POWERUP                = 0x03,
-  ATCOMM_CGACT                  = 0x04,
-  ATCOMM_ZGACT                  = 0x05,
-  ATCOMM_CSQ                    = 0x06,
-  ATCOMM_ZTTS                   = 0x07,
-  ATCOMM_RESET                  = 0x08,
-  ATCOMM_POWEROFF               = 0x09,
-  ATCOMM_Test                   = 0x0A
+  ATCOMM_CGDCONT_SET            = 0x02,
+  ATCOMM_CGDCONT_READ           = 0x03,
+  ATCOMM_POWERUP                = 0x04,
+  ATCOMM_CGACT                  = 0x05,
+  ATCOMM_ZGACT1                  = 0x06,
+  ATCOMM_CSQ                    = 0x07,
+  ATCOMM_ZTTS                   = 0x08,
+  ATCOMM_RESET                  = 0x09,
+  ATCOMM_POWEROFF               = 0x0A,
+  ATCOMM_Test                   = 0x0B,
+  ATCOMM_SetNetworkAuto         = 0x0C,
+  ATCOMM_SetNetworkWcdmaOnly    = 0x0D,
+  ATCOMM_SetNetworkGsmOnly      = 0x0E,
+  ATCOMM_ZGACT0                 = 0x0F
 }AtCommType;
 
 
@@ -75,6 +82,7 @@ extern bool PositionInfoSendToATPORT_InfoDisplay_Flag;
 
 extern bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len);
 extern bool ApiAtCmd_PlayVoice(AtVoiceType id, u8 *buf, u8 len);
+extern void NetworkModeIcons(void);
 extern void HDRCSQSignalIcons(void);
 extern void ApiAtCmd_100msRenew(void);
 extern void ApiCaretCmd_10msRenew(void);

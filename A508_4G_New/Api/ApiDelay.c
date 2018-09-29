@@ -41,6 +41,10 @@ typedef struct {
     u8 TimeCount2;
     u8 receive_sos_statas_count;
     u8 login_step_6_count;
+    u8 sys_mode_count;
+    u8 network_activated_flag_count;
+    u8 ZGIPDNS_count;
+    u8 ZCONSTAT_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -443,14 +447,28 @@ static void DEL_500msProcess(void)			//delay 500ms process server
   {
     DelDrvObj.Msg.Bit.b500ms = DEL_IDLE;
     VOICE_1sProcess();
-/********播报搜索网络*********/
+    /********^MODE:0播报无服务*********/
+    if(AtCmdDrvobj.mode_param.sys_mode==0x18)//无服务
+    {
+      DelDrvObj.Count.sys_mode_count++;
+      if(DelDrvObj.Count.sys_mode_count>=2*5)
+      {
+        DelDrvObj.Count.sys_mode_count=0;
+        VOICE_Play(No_service);
+        DISPLAY_Show(d_no_service);
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.sys_mode_count=0;
+    }
    /* if(AtCmdDrvobj.Msg.Bits.bZGIPDNS==0)
     {
       DelDrvObj.Count.network_search_count++;
       if(DelDrvObj.Count.network_search_count>5*2)
       {
         DelDrvObj.Count.network_search_count=0;
-        VOICE_Play(NetworkSearching);
+        (NetworkSearching);
         DISPLAY_Show(d_NetworkSearching);
       }
     }
@@ -465,8 +483,8 @@ static void DEL_500msProcess(void)			//delay 500ms process server
         if(DelDrvObj.Count.nosimcard_count>2*8)
         {
           DelDrvObj.Count.nosimcard_count=0;
-          //VOICE_Play(NoSimCard);
-          //DISPLAY_Show(d_NoSimCard);
+          VOICE_Play(NoSimCard);
+          DISPLAY_Show(d_NoSimCard);
         }
     }
     else
@@ -474,15 +492,11 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       DelDrvObj.Count.nosimcard_count=0;
     }
 /*********卡异常*****************/
-    if(AtCmdDrvobj.Msg.Bits.bZLTENOCELL==1)
+    if(AtCmdDrvobj.ZLTENOCELL==1)
     {
-      DelDrvObj.Count.lte_no_cell_count++;
-        if(DelDrvObj.Count.lte_no_cell_count>2*8)
-        {
-          DelDrvObj.Count.lte_no_cell_count=0;
-          //VOICE_Play(SimCardError);
-          //DISPLAY_Show(d_NoSimCard);
-        }
+      VOICE_Play(SimCardError);
+      DISPLAY_Show(d_SimCardError);
+      AtCmdDrvobj.ZLTENOCELL=2;
     }
 /*********定时5s发一次[AT+CSQ?]*************************************************/
     DelDrvObj.Count.csq_count++;
@@ -490,16 +504,154 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.csq_count=0;
       ApiAtCmd_WritCommand(ATCOMM_CSQ,0, 0);
-      //VOICE_Play(NetworkSearching);
-      //DISPLAY_Show(d_NoSimCard);
-     /* if(GetTaskId()==Task_Start&&task_status_account_config()==FALSE&&ApiAtCmd_CSQValue()<25)//如果处于开机状态、未写入账号状态、网络信号小于25状态
+      if(TaskDrvobj.Id==TASK_LOGIN&&TaskDrvobj.login_step<=6)//播报搜索网络
       {
-        
+        VOICE_Play(NetworkSearching);
         DISPLAY_Show(d_NetworkSearching);
       }
-
-      HDRCSQSignalIcons();*/
     }
+/******网络注册异常处理********/
+    switch(AtCmdDrvobj.network_reg.creg)
+    {
+    case 4://CS未知网络
+      if(AtCmdDrvobj.network_reg.cgreg==4&&AtCmdDrvobj.network_reg.cereg==4)
+      {
+        DISPLAY_Show(d_all_unknow_network);
+        VOICE_Play(all_unknow_network);
+        AtCmdDrvobj.network_reg.creg=0;
+        AtCmdDrvobj.network_reg.cgreg=0;
+        AtCmdDrvobj.network_reg.cereg=0;
+      }
+      else
+      {
+        DISPLAY_Show(d_cs_unknow_network);
+        VOICE_Play(cs_unknow_network);
+        AtCmdDrvobj.network_reg.creg=0;
+      }
+      break;
+    default:
+      //0:CS网络没有注册
+      //1:CS注册了本地网络
+      //2:CS没有注册，正在搜索新运营商
+      //3:CS网络注册被拒绝
+      //5:CS注册了漫游网络
+      break;
+    }
+    switch(AtCmdDrvobj.network_reg.cgreg)
+    {
+    case 3://GPRS网络注册被拒绝
+      DISPLAY_Show(d_gprs_refuse_enroll);
+      VOICE_Play(gprs_refuse_enroll);
+      AtCmdDrvobj.network_reg.cgreg=0;
+      break;
+    case 4://GPRS未知网络
+      if(AtCmdDrvobj.network_reg.creg!=4)
+      {
+        DISPLAY_Show(d_gprs_unknow_network);
+        VOICE_Play(gprs_unknow_network);
+        AtCmdDrvobj.network_reg.cgreg=0;
+      }
+      break;
+    default:
+      //0:GPRS网络没有注册
+      //1:GPRS注册了本地网络
+      //2:GPRS没有注册，正在搜索新运营商
+      //5:注册了漫游网络
+      break;
+    }
+    
+    switch(AtCmdDrvobj.network_reg.cereg)
+    {
+    case 3://EPS网络注册被拒绝
+      DISPLAY_Show(d_eps_refuse_enroll);
+      VOICE_Play(eps_refuse_enroll);
+      AtCmdDrvobj.network_reg.cereg=0;
+      break;
+    case 4://EPS未知网络
+      if(AtCmdDrvobj.network_reg.creg!=4)
+      {
+        DISPLAY_Show(d_eps_unknow_network);
+        VOICE_Play(eps_unknow_network);
+        AtCmdDrvobj.network_reg.cereg=0;
+      }
+      break;
+    default:
+      //0:EPS网络没有注册
+      //1:EPS注册了本地网络
+      //2:EPS没有注册，正在搜索新运营商
+      //5:EPS注册了漫游网络
+      break;
+    }
+    
+/****如果未收到CGDCONT，则过5秒发一次*****/
+    if(AtCmdDrvobj.ZGIPDNS==1)
+    {
+      DelDrvObj.Count.ZGIPDNS_count++;
+      if(DelDrvObj.Count.ZGIPDNS_count>2*5)
+      {
+        DelDrvObj.Count.ZGIPDNS_count=0;
+        ApiAtCmd_WritCommand(ATCOMM_CGACT,0,0);//PDP激活上下文1
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.ZGIPDNS_count=0;
+    }
+
+    if(AtCmdDrvobj.ZCONSTAT==1)
+    {
+      DelDrvObj.Count.ZCONSTAT_count++;
+      if(DelDrvObj.Count.ZCONSTAT_count>2*5)
+      {
+        ApiAtCmd_WritCommand(ATCOMM_ZGACT1,0,0);//PDP激活上下文2
+        DelDrvObj.Count.ZCONSTAT_count=0;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.ZCONSTAT_count=0;
+    }
+/******满足条件登录POC********/
+    if(TaskDrvobj.login_step==6&&AtCmdDrvobj.csq_param.rssi>=30&&AtCmdDrvobj.csq_param.rssi!=0&&AtCmdDrvobj.csq_param.rssi!=99)//收到ZCONSTAT联网指示后延迟2s登录POC
+    {
+      DelDrvObj.Count.login_step_6_count++;
+      if(DelDrvObj.Count.login_step_6_count>2*2)
+      {
+        TaskDrvobj.login_step=7;
+        DelDrvObj.Count.login_step_6_count=0;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.login_step_6_count=0;
+    }
+/********正常模式下切换网络后收到creg、cereg、cgreg处理***********/
+    if(TaskDrvobj.Id==TASK_NORMAL&&(AtCmdDrvobj.network_reg.cereg==1||AtCmdDrvobj.network_reg.cereg==5
+     ||AtCmdDrvobj.network_reg.cgreg==1||AtCmdDrvobj.network_reg.cgreg==5))
+    {
+      DelDrvObj.Count.network_activated_flag_count++;
+      if(DelDrvObj.Count.network_activated_flag_count==1)
+      {
+        ApiAtCmd_WritCommand(ATCOMM_CGACT,0,0);
+      }
+      else if(DelDrvObj.Count.network_activated_flag_count>2*5)
+      {
+        DelDrvObj.Count.network_activated_flag_count=11;
+      }
+      else
+      {}
+    }
+    else
+    {
+      DelDrvObj.Count.network_activated_flag_count=0;
+    }
+    
+    if(TaskDrvobj.Id==TASK_NORMAL&&AtCmdDrvobj.ZGIPDNS==2)
+    {
+      ApiAtCmd_WritCommand(ATCOMM_ZGACT1,0,0);
+      AtCmdDrvobj.ZGIPDNS=0;
+    }
+    
 /*******收到离线指令，屏幕提示离线状态*******/
     if(TaskDrvobj.Id==TASK_NORMAL&&poccmd_states_poc_status()==OffLine)
     {
@@ -520,20 +672,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.poc_status_count=0;
     }
-/**************/
-    if(TaskDrvobj.login_step==6)//收到ZCONSTAT联网指示后延迟2s登录POC
-    {
-      DelDrvObj.Count.login_step_6_count++;
-      if(DelDrvObj.Count.login_step_6_count>2*2)
-      {
-        TaskDrvobj.login_step=7;
-        DelDrvObj.Count.login_step_6_count=0;
-      }
-    }
-    else
-    {
-      DelDrvObj.Count.login_step_6_count=0;
-    }
+
     
 /**登录成功后更新群组信息，若获取不完整则重新获取直到完整**/
     if(poc_first_enter_into_group_flag()==TRUE)
@@ -597,9 +736,9 @@ static void DEL_500msProcess(void)			//delay 500ms process server
 
 static void DEL_1msProcess(void)
 {
-  //if (DelDrvObj.Msg.Bit.b1ms == DEL_RUN)
+  if (DelDrvObj.Msg.Bit.b1ms == DEL_RUN)
   {
-    //DelDrvObj.Msg.Bit.b1ms = DEL_IDLE;
+    DelDrvObj.Msg.Bit.b1ms = DEL_IDLE;
     //ApiPocCmd_83_1msRenew();
     ApiPocCmd_10msRenew();
     ApiCaretCmd_10msRenew();
