@@ -8,6 +8,7 @@ void LED_Init(void)
   GPIO_Init(GPIO_LED_Green,GPIO_PIN_LED_Green,GPIO_MODE_OUT_PP_LOW_FAST);
   GPIO_Init(GPIO_LED_Red,GPIO_PIN_LED_Red,GPIO_MODE_OUT_PP_LOW_FAST);
   GPIO_Init(GPIO_RSSI,GPIO_PIN_RSSI,GPIO_MODE_IN_PU_NO_IT);//RSSI
+  GPIO_Init(GPIO_Poweroff,GPIO_PIN_Poweroff,GPIO_MODE_OUT_PP_HIGH_FAST);
 }
 
 void Set_GreenLed(IO_ONOFF state)
@@ -76,6 +77,5 @@ void AUDIO_IOAFPOW(IO_ONOFF OnOff)
   default:break; 
   }
 }
-
 
 

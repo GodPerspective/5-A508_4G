@@ -173,60 +173,70 @@ const u8 Ico_DataBuf[32][32]=
 };
 
 #ifdef CHINESE
-const u8 *dp_abell              = "   Å·±ê¶Ô½²»ú   ";
-const u8 *dp_personal_mode      = "   ¸öºôÄ£Ê½     ";
-const u8 *dp_no_sim_card        = "   Çë²å¿¨       ";
-const u8 *dp_network_search     = "ËÑË÷ÍøÂç...     ";
-const u8 *dp_account_config     = "ÕýÔÚµÇÂ¼...     ";
-const u8 *dp_please_charge      = "µçÁ¿µÍ,Çë³äµç   ";
-const u8 *dp_menu               = "²Ëµ¥            ";
-const u8 *dp_group_select       = "Èº×éÑ¡Ôñ        ";
-const u8 *dp_gps_information    = "GPSÐÅÏ¢         ";
-const u8 *dp_backlight_time     = "±³¹âµÆÊ±¼ä      ";
-const u8 *dp_keypad_lock_time   = "¼üÅÌËøÊ±¼ä      ";
-const u8 *dp_software_version   = "Èí¼þ°æ±¾        ";
-const u8 *dp_press_well         = "Çë°´#¼ü         ";
-const u8 *dp_latitude0          = "Î³¶È:00.000000  ";
-const u8 *dp_longitude0         = "¾­¶È:000.000000 ";
-const u8 *dp_backlight          = "±³¹âµÆÊ±¼ä      ";
-const u8 *dp_keypad_lock        = "¼üÅÌËøÊ±¼ä      ";
-const u8 *dp_close              = "¹Ø±Õ            ";
-const u8 *dp_individual_call    = "ÁÙÊ±Èº×é        ";
-const u8 *dp_version            = "Èí¼þ°æ±¾        ";
-const u8 *dp_press_ok_then_well = "ÏÈ°´OK¼üÔÙ°´#¼ü ";
-const u8 *dp_status_offline     = "×´Ì¬£ºÀëÏß      ";
-const u8 *dp_SimCardError       = "¿¨Òì³£          ";
+const u8 *dp_abell              = "   Å·±ê¶Ô½²»ú   ";//1
+const u8 *dp_personal_mode      = "   ¸öºôÄ£Ê½     ";//2
+const u8 *dp_no_sim_card        = "   Çë²å¿¨       ";//3
+const u8 *dp_network_search     = "ËÑË÷ÍøÂç...     ";//4
+const u8 *dp_account_config     = "ÕýÔÚµÇÂ¼...     ";//5
+const u8 *dp_please_charge      = "µçÁ¿µÍ,Çë³äµç   ";//6
+const u8 *dp_menu               = "²Ëµ¥            ";//7
+const u8 *dp_group_select       = "Èº×éÑ¡Ôñ        ";//8
+const u8 *dp_gps_information    = "GPSÐÅÏ¢         ";//9
+const u8 *dp_backlight_time     = "±³¹âµÆÊ±¼ä      ";//10
+const u8 *dp_keypad_lock_time   = "¼üÅÌËøÊ±¼ä      ";//11
+const u8 *dp_software_version   = "Èí¼þ°æ±¾        ";//12
+const u8 *dp_press_well         = "Çë°´#¼ü         ";//13
+const u8 *dp_latitude0          = "Î³¶È:00.000000  ";//14
+const u8 *dp_longitude0         = "¾­¶È:000.000000 ";//15
+const u8 *dp_backlight          = "±³¹âµÆÊ±¼ä      ";//16
+const u8 *dp_keypad_lock        = "¼üÅÌËøÊ±¼ä      ";//17
+const u8 *dp_close              = "¹Ø±Õ            ";//18
+const u8 *dp_individual_call    = "ÁÙÊ±Èº×é        ";//19
+const u8 *dp_version            = "Èí¼þ°æ±¾        ";//20
+const u8 *dp_press_ok_then_well = "ÏÈ°´OK¼üÔÙ°´#¼ü ";//21
+const u8 *dp_status_offline     = "×´Ì¬£ºÀëÏß      ";//22
 
-const u8 *dp_cs_unknow_network  = "CSÎ´ÖªÍøÂç      ";
-const u8 *dp_gprs_unknow_network= "GPRSÎ´ÖªÍøÂç    ";
-const u8 *dp_gprs_refuse_enroll = "GPRS×¢²á±»¾Ü¾ø  ";
-const u8 *dp_eps_unknow_network = "EPSÎ´ÖªÍøÂç     ";
-const u8 *dp_eps_refuse_enroll  = "EPS×¢²á±»¾Ü¾ø   ";
-const u8 *dp_all_unknow_network = "ËùÓÐÍøÂçÒì³£    ";
-const u8 *dp_no_service         = "ÎÞ·þÎñ          ";
+const u8 *dp_SimCardError       = "¿¨Òì³£          ";//
+const u8 *dp_cs_unknow_network  = "CSÎ´ÖªÍøÂç      ";//
+const u8 *dp_gprs_unknow_network= "GPRSÎ´ÖªÍøÂç    ";//
+const u8 *dp_gprs_refuse_enroll = "GPRS×¢²á±»¾Ü¾ø  ";//
+const u8 *dp_eps_unknow_network = "EPSÎ´ÖªÍøÂç     ";//
+const u8 *dp_eps_refuse_enroll  = "EPS×¢²á±»¾Ü¾ø   ";//
+const u8 *dp_all_unknow_network = "ËùÓÐÍøÂçÒì³£    ";//
+const u8 *dp_no_service         = "ÎÞ·þÎñ          ";//
 #else
-const u8 *dp_abell              = "     ABELL      ";
-const u8 *dp_personal_mode      = "Personal Mode   ";
-const u8 *dp_no_sim_card        = "No SIM Card     ";
-const u8 *dp_network_search     = "Network Search  ";
-const u8 *dp_account_config     = "Account Config..";
-const u8 *dp_please_charge      = " Please charge  ";
-const u8 *dp_menu               = "Menu            ";
-const u8 *dp_group_select       = "Group Select    ";
-const u8 *dp_gps_information    = "GPS Information ";
-const u8 *dp_backlight_time     = "Backlight Time  ";
-const u8 *dp_keypad_lock_time   = "Keypad Lock Time";
-const u8 *dp_software_version   = "Software Version";
-const u8 *dp_press_well         = "Press #         ";
-const u8 *dp_latitude0          = "Lat :00.000000  ";
-const u8 *dp_longitude0         = "Lng :000.000000 ";
-const u8 *dp_backlight          = "Backlight       ";
-const u8 *dp_keypad_lock        = "Keypad Lock     ";
-const u8 *dp_close              = "Close           ";
-const u8 *dp_individual_call    = "Individual Call ";
-const u8 *dp_version            = "Version:        ";
-const u8 *dp_press_ok_then_well = "Press OK then # ";
-const u8 *dp_status_offline     = "Status:Offline  ";
+const u8 *dp_abell              = "     ABELL      ";//1
+const u8 *dp_personal_mode      = "Personal Mode   ";//2
+const u8 *dp_no_sim_card        = "No SIM Card     ";//3
+const u8 *dp_network_search     = "Network Search  ";//4
+const u8 *dp_account_config     = "Account Config..";//5
+const u8 *dp_please_charge      = " Please charge  ";//6
+const u8 *dp_menu               = "Menu            ";//7
+const u8 *dp_group_select       = "Group Select    ";//8
+const u8 *dp_gps_information    = "GPS Information ";//9
+const u8 *dp_backlight_time     = "Backlight Time  ";//10
+const u8 *dp_keypad_lock_time   = "Keypad Lock Time";//11
+const u8 *dp_software_version   = "Software Version";//12
+const u8 *dp_press_well         = "Press #         ";//13
+const u8 *dp_latitude0          = "Lat :00.000000  ";//14
+const u8 *dp_longitude0         = "Lng :000.000000 ";//15
+const u8 *dp_backlight          = "Backlight       ";//16
+const u8 *dp_keypad_lock        = "Keypad Lock     ";//17
+const u8 *dp_close              = "Close           ";//18
+const u8 *dp_individual_call    = "Individual Call ";//19
+const u8 *dp_version            = "Version:        ";//20
+const u8 *dp_press_ok_then_well = "Press OK then # ";//21
+const u8 *dp_status_offline     = "Status:Offline  ";//22
+
+const u8 *dp_SimCardError       = "SIM card error  ";//
+const u8 *dp_cs_unknow_network  = "CS NET unknow   ";//
+const u8 *dp_gprs_unknow_network= "GPRS NET unknow ";//
+const u8 *dp_gprs_refuse_enroll = "GPRS Signup Fail";//
+const u8 *dp_eps_unknow_network = "EPS NET unknow  ";//
+const u8 *dp_eps_refuse_enroll  = "EPS Signup Fail ";//
+const u8 *dp_all_unknow_network = "All NET unknow  ";//
+const u8 *dp_no_service         = "No service      ";//
+
 #endif
 
 void DISPLAY_Show(DISPLAY_TYPE id)
@@ -234,105 +244,105 @@ void DISPLAY_Show(DISPLAY_TYPE id)
   switch(id)
   {
   case d_ABELL:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_abell);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell);
       break;
   case d_PersonalMode:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_personal_mode);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode);
     break;
   case d_AllGroupName:
-    api_lcd_pwr_on_hint(0,2,"                ");//ÇåÆÁ
-    api_lcd_pwr_on_hint4(GetAllGroupNameForDisplay(GroupCallingNum));//ÏÔÊ¾µ±Ç°Ñ¡ÖÐµÄÈº×éÃû
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");//ÇåÆÁ
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//ÏÔÊ¾µ±Ç°Ñ¡ÖÐµÄÈº×éÃû
     break;
   case d_NoSimCard:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_no_sim_card);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card);
     break;
   case d_NetworkSearching:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_network_search);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search);
     break;
   case d_AllUserName:
-    api_lcd_pwr_on_hint(0,2,"                ");//ÇåÆÁ
-    api_lcd_pwr_on_hint4(GetAllUserNameForDisplay(PersonalCallingNum));//ÏÔÊ¾µ±Ç°Ñ¡ÖÐµÄÈº×éÃû
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");//ÇåÆÁ
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetAllUserNameForDisplay(PersonalCallingNum));//ÏÔÊ¾µ±Ç°Ñ¡ÖÐµÄÈº×éÃû
     break;
   case d_LoggingIn:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_account_config);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config);
     break;
   case d_PowerLowPleaseCharge:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_please_charge);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge);
     break;
   case d_menu:
-    api_lcd_pwr_on_hint(0,0,(u8 *)dp_menu);
+    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu);
     break;
   case d_menu_groupselect:
-    api_lcd_pwr_on_hint(13,0,"1/5");
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_group_select);
+    api_lcd_pwr_on_hint(13,0,GBK,"1/5");
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select);
     break;
   case d_menu_gpsinformation:
-    api_lcd_pwr_on_hint(13,0,"2/5");
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_gps_information);
+    api_lcd_pwr_on_hint(13,0,GBK,"2/5");
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information);
     break;
   case d_menu_backlighttime:
-    api_lcd_pwr_on_hint(13,0,"3/5");
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_backlight_time);
+    api_lcd_pwr_on_hint(13,0,GBK,"3/5");
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time);
     break;
   case d_menu_keypadlocktime:
-    api_lcd_pwr_on_hint(13,0,"4/5");
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_keypad_lock_time);
+    api_lcd_pwr_on_hint(13,0,GBK,"4/5");
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time);
     break;
   case d_menu_softwareversion:
-    api_lcd_pwr_on_hint(13,0,"5/5");
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_software_version);
+    api_lcd_pwr_on_hint(13,0,GBK,"5/5");
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version);
     break;
   case d_presswell:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_press_well);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well);
     break;
   case d_longitude_and_latitude0:
-    api_lcd_pwr_on_hint(0,0,(u8 *)dp_latitude0);//ÇåÆÁ
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_longitude0);//ÇåÆÁ
+    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude0);//ÇåÆÁ
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude0);//ÇåÆÁ
     break;
   case d_backlight:
-    api_lcd_pwr_on_hint(0,0,(u8 *)dp_backlight);
+    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight);
     break;
   case d_keypadlock:
-    api_lcd_pwr_on_hint(0,0,(u8 *)dp_keypad_lock);
+    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock);
     break;
   case d_close:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_close);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close);
     break;
   case d_individualcall:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_individual_call);//Individual CallÁÙÊ±Èº×é
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call);//Individual CallÁÙÊ±Èº×é
     break;
   case d_version:
-    api_lcd_pwr_on_hint(0,0,(u8 *)dp_version);
+    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version);
     break;
   case d_press_ok_then_well:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_press_ok_then_well);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well);
     break;
   case d_status_offline:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_status_offline);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline);
     break;
   case d_SimCardError:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_SimCardError);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError);
     break;
   case d_cs_unknow_network:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_cs_unknow_network);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network);
     break;
   case d_gprs_unknow_network:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_gprs_unknow_network);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network);
     break;
   case d_gprs_refuse_enroll:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_gprs_refuse_enroll);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll);
     break;
   case d_eps_unknow_network:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_eps_unknow_network);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network);
     break;
   case d_eps_refuse_enroll:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_eps_refuse_enroll);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll);
     break;
   case d_all_unknow_network:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_all_unknow_network);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network);
     break;
   case d_no_service:
-    api_lcd_pwr_on_hint(0,2,(u8 *)dp_no_service);
+    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service);
     break;
   default:
     break;
@@ -356,7 +366,7 @@ void api_disp_char_output2(DISP_CHAR CharInfo, u8 *CharData)//UNICODEÏÔÊ¾£¬Èº×éÐ
 	DISP_MulTypePro2(CharInfo, CharData);
 	return;
 }
-void api_lcd_pwr_on_hint(u8 x,u8 y,u8 *CharData)
+void api_lcd_pwr_on_hint(u8 x,u8 y,ENCODETYPE encode,u8 *CharData)
 {
 	DISP_CHAR stCharInfo;
 	stCharInfo.DispType  = DISP_IDCNASC816;
@@ -365,9 +375,18 @@ void api_lcd_pwr_on_hint(u8 x,u8 y,u8 *CharData)
 	stCharInfo.DispAddX  = x;//Ò»ÐÐ16¸öÓ¢ÎÄ×Ö·û
         stCharInfo.DispLenth = LCD_DISP_LEN_MAX;
         
-	api_disp_char_output(stCharInfo,CharData);
-
-	//MCU_LCD_BACKLIGTH(OFF);
+        if(encode==GBK)
+        {
+          api_disp_char_output(stCharInfo,CharData);
+        }
+        else//encode==UNICODE
+        {
+#ifdef CHINESE
+          api_disp_char_output2(stCharInfo,CharData);//UNICODEÏÔÊ¾£¬Èº×éÐÅÏ¢ÏÔÊ¾ÆÁÏÔÊ¾Ê¹ÓÃ
+#else
+          api_disp_char_output(stCharInfo,CharData);
+#endif
+        }
 	api_disp_all_screen_refresh();// È«ÆÁÍ³Ò»Ë¢ÐÂ
 }
 void api_lcd_pwr_on_hint4(u8 *CharData)//UNICODEÏÔÊ¾

@@ -18,7 +18,7 @@ void DrvUart1_init(void)
     UART1_ITConfig(UART1_IT_RXNE_OR, ENABLE);
     UART1_Cmd(ENABLE);
     
-#if 0 //WCDMA 卓智达
+#if 1 //WCDMA 卓智达
     GPIO_Init(GPIOA,GPIO_PIN_4,GPIO_MODE_IN_PU_NO_IT );//接收
 #endif
 }

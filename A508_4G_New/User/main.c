@@ -15,7 +15,6 @@ void main(void)
 #endif
 
   main_all_init();
-  
   while(1)
   {
     LowVoltageDetection();

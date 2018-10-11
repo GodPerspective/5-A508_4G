@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-1236766155
+Checksum=1081772002
 [CodeCoverage]
 Enabled=_ 0
 [CallStack]
@@ -70,35 +70,36 @@ Fmt4={W}1:CharData[5]	4	0
 Fmt5={W}1:CharData[6]	4	0
 Fmt6={W}1:CharData[7]	4	0
 Fmt7={W}1:CharData[8]	4	0
-Fmt8={W}1:Len	3	0
-Fmt9={W}1:buf	5	0
-Fmt10={W}1:cBuf	4	0
-Fmt11={W}1:cBuf[0]	4	0
-Fmt12={W}1:cBuf[1]	4	0
-Fmt13={W}1:cBuf[2]	4	0
-Fmt14={W}1:cID	4	0
-Fmt15={W}1:ccid_temp_count	3	0
-Fmt16={W}1:comma_count	3	0
-Fmt17={W}1:iCode	4	0
-Fmt18={W}1:pBuf	4	0
-Fmt19={W}1:pBuf[0]	5	0
-Fmt20={W}1:pBuf[1]	5	0
-Fmt21={W}1:pBuf[3]	5	0
-Fmt22={W}1:pBuf[4]	5	0
-Fmt23={W}1:ulAllKeyID	4	0
+Fmt8={W}1:GroupCallingNum	4	0
+Fmt9={W}1:Len	3	0
+Fmt10={W}1:buf	5	0
+Fmt11={W}1:cBuf	4	0
+Fmt12={W}1:cBuf[0]	4	0
+Fmt13={W}1:cBuf[1]	4	0
+Fmt14={W}1:cBuf[2]	4	0
+Fmt15={W}1:cID	4	0
+Fmt16={W}1:ccid_temp_count	3	0
+Fmt17={W}1:comma_count	3	0
+Fmt18={W}1:iCode	4	0
+Fmt19={W}1:pBuf	4	0
+Fmt20={W}1:pBuf[0]	5	0
+Fmt21={W}1:pBuf[1]	5	0
+Fmt22={W}1:pBuf[3]	5	0
+Fmt23={W}1:pBuf[4]	5	0
+Fmt24={W}1:ulAllKeyID	4	0
 [DataSample]
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.774.1" 0 0 0 0 "" 0 ""
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.793.1" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c}.342.1" 0 0 0 0 "" 0 ""
 Count=2
 [Aliases]

@@ -45,6 +45,10 @@ typedef struct {
     u8 network_activated_flag_count;
     u8 ZGIPDNS_count;
     u8 ZCONSTAT_count;
+    u8 ztts_states_intermediate_count;
+    u8 ztts_states_count;
+    u8 ReceivedVoicePlayStatesCount;
+    u8 ToneStateCount;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -678,13 +682,13 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     if(poc_first_enter_into_group_flag()==TRUE)
     {
       DelDrvObj.Count.poc_first_enter_into_group_flag_count++;
-      if(DelDrvObj.Count.poc_first_enter_into_group_flag_count==1)
+      if(DelDrvObj.Count.poc_first_enter_into_group_flag_count==3)
       {
         ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
       }
-      if(DelDrvObj.Count.poc_first_enter_into_group_flag_count>=2)
+      if(DelDrvObj.Count.poc_first_enter_into_group_flag_count>=3)
       {
-        DelDrvObj.Count.poc_first_enter_into_group_flag_count=2;
+        DelDrvObj.Count.poc_first_enter_into_group_flag_count=4;
       }
     }
 /********收到0x8a则进入一键报警********/
@@ -708,8 +712,52 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.receive_sos_statas_count=0;
     }
+    
 /******喇叭控制相关函数************************/
-
+    if(ApiAtCmd_bZTTSStates_Intermediate()==1)//语音播报喇叭延迟2秒关闭
+    {
+      DelDrvObj.Count.ztts_states_intermediate_count++;
+      if(DelDrvObj.Count.ztts_states_intermediate_count>2*2)
+      {
+        set_ApiAtCmd_bZTTSStates_Intermediate(0);
+        set_ApiAtCmd_bZTTSStates(0);
+        DelDrvObj.Count.ztts_states_intermediate_count = 0;
+      }
+    }
+    else
+    {
+      if(ApiAtCmd_bZTTSStates()==1)
+      {
+        DelDrvObj.Count.ztts_states_count++;
+        if(DelDrvObj.Count.ztts_states_count>2*20)
+        {
+          set_ApiAtCmd_bZTTSStates(0);
+          DelDrvObj.Count.ztts_states_count=0;
+        }
+      }
+    }
+    
+    if(ApiPocCmd_ReceivedVoicePlayStatesIntermediate()==TRUE)//对讲语音
+    {
+      DelDrvObj.Count.ReceivedVoicePlayStatesCount++;  
+      if(DelDrvObj.Count.ReceivedVoicePlayStatesCount>1)
+      {
+        ApiPocCmd_ReceivedVoicePlayStatesIntermediateSet(FALSE);
+        ApiPocCmd_ReceivedVoicePlayStatesSet(FALSE);
+        DelDrvObj.Count.ReceivedVoicePlayStatesCount=0;
+      }
+    }
+    
+    if(ApiPocCmd_ToneStateIntermediate()==TRUE||ApiPocCmd_ToneState()==TRUE)//bb音
+    {
+      DelDrvObj.Count.ToneStateCount++;
+      if(DelDrvObj.Count.ToneStateCount>1)
+      {
+        ApiPocCmd_ToneStateSet(FALSE);
+        ApiPocCmd_ToneStateIntermediateSet(FALSE);
+        DelDrvObj.Count.ToneStateCount=0;
+      }
+    }
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 
 /******登录状态下的低电报警**********************************************/

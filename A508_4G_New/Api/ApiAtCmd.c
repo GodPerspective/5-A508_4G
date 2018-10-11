@@ -4,57 +4,27 @@
 const u8 *cTxATE1               ="ATE1";
 const u8 *cTxCSQ                ="AT+CSQ";
 const u8 *cTxDIALMODE           ="at+dialmode=0";
+
 #if 1//test
 const u8 *cTxCGDCONT_SET0        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET1        ="AT+CGDCONT=1,\"IP\",\"3gnet\"";
-const u8 *cTxCGDCONT_SET2        ="AT+CGDCONT=1,\"IP\",\"internet\"";//
-const u8 *cTxCGDCONT_SET3        ="AT+CGDCONT=1,\"IP\",\"internet.proximus.be\"";//比利时Proximus
-const u8 *cTxCGDCONT_SET4        ="AT+CGDCONT=1,\"IP\",\"\"";//
+const u8 *cTxCGDCONT_SET2        ="AT+CGDCONT=1,\"IP\",\"etisalat.ae\"";//
+const u8 *cTxCGDCONT_SET3       ="AT+CGDCONT=1,\"IP\",\"internet\"";//
+const u8 *cTxCGDCONT_SET4        ="AT+CGDCONT=1,\"IP\",\"internet.proximus.be\"";//比利时Proximus
 const u8 *cTxCGDCONT_SET5        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET6        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET7        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET8        ="AT+CGDCONT=1,\"IP\",\"\"";//
-const u8 *cTxCGDCONT_SET9        ="AT+CGDCONT=1,\"IP\",\"\"";//
-const u8 *cTxCGDCONT_SET10       ="AT+CGDCONT=1,\"IP\",\"\"";//
-#else
-
-//香港
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"hkcsl\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"3gnet\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"web.orangehk.com\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"internet\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"web-g.three.com.hk\"";
-
-//印度
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"airtelgprs.com\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"bplgprs.com\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"Cellular internet\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"gprsmtnlmum\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"portalnmms\"";
-
-//阿联酋
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"mnet\"";
-
-//南非
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"internet\"";
-
-//土耳其
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"aycell\"";
-//
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"bplgprs.com\""
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"Cellular internet\""
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"gprsmtnlmum\""
-const u8 *cTxCGDCONT_SET        ="AT+CGDCONT=1,\"IP\",\"portalnmms\""
-
+const u8 *cTxCGDCONT_SET9       ="AT+CGDCONT=1,\"IP\",\"\"";//
 #endif
+
+
+
 const u8 *cTxCGDCONT_READ       ="at+cgdcont?";
 const u8 *cTxPOWERUP            ="at+cfun=1";
 const u8 *cTxCGACT              ="at+cgact=1,1";
-const u8 *cTxZGACT1              ="at+zgact=1,1";
-const u8 *cTxZGACT0              ="at+zgact=0,1";
-const u8 *cRequestOpenPoc       ="at+poc=000000010101";
+const u8 *cTxZGACT1             ="at+zgact=1,1";
+const u8 *cTxZGACT0             ="at+zgact=0,1";
 const u8 *cTxPlayZtts           ="AT+ZTTS=";
 const u8 *cTxRESET              ="at+cfun=1,1";
 const u8 *cTxPOWEROFF           ="at+cfun=0,0";
@@ -73,6 +43,8 @@ const u8 *cRxZCONSTAT           ="ZCONSTAT: 1,1";
 const u8 *cRxZLTENOCELL         ="ZLTENOCELL";
 const u8 *cRxZMSRI              ="ZMSRI";
 const u8 *cRxCGDCONT            ="CGDCONT:";
+const u8 *cRxPASTATE1          ="PASTATE:1";
+const u8 *cRxZTTS0             ="ZTTS:0";
 #else
 const u8 *ucTxCIMI              ="AT+CIMI";
 const u8 *ucTxZPPPOPEN          ="AT+ZPPPOPEN";
@@ -98,6 +70,41 @@ AtCmdDrv AtCmdDrvobj;
 
 void ApiAtCmd_PowerOnInitial(void)
 {
+  FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
+  FILE_Read(0x23F,1,&(AtCmdDrvobj.language_value));//FILE_Read
+  FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));
+  switch(AtCmdDrvobj.language_value)
+  {
+  case 0:
+    break;
+  case 1:
+    break;
+  default:
+    break;
+  }
+  
+#if 1//侧键1播报语音类型
+  switch(AtCmdDrvobj.Key3_PlayValue)
+  {
+  case 0x00:
+    AtCmdDrvobj.Key3Option=Key3_OptionZero;
+    break;
+  case 0x01:
+    AtCmdDrvobj.Key3Option=Key3_OptionOne;
+    break;
+  case 0x02:
+    AtCmdDrvobj.Key3Option=Key3_OptionTwo;
+    break;
+  case 0x03:
+    AtCmdDrvobj.Key3Option=Key3_OptionThree;
+    break;
+  case 0x04:
+    AtCmdDrvobj.Key3Option=Key3_OptionFour;
+    break;
+  default:
+    break;
+  }
+#endif
   AtCmdDrvobj.Msg.Byte = 0;
 }
 
@@ -115,8 +122,7 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
     DrvGD83_UART_TxCommand((u8*)cTxDIALMODE, strlen((char const*)cTxDIALMODE));
     break;
   case ATCOMM_CGDCONT_SET:
-    FILE_Read(0x247,1,AtCmdDrvobj.apn_set);//
-    switch(AtCmdDrvobj.apn_set[0])
+    switch(AtCmdDrvobj.apn_set)
     {
     case 0:
       DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET0, strlen((char const*)cTxCGDCONT_SET0));
@@ -147,9 +153,6 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
       break;
     case 9:
       DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET9, strlen((char const*)cTxCGDCONT_SET9));
-      break;
-    case 10:
-      DrvGD83_UART_TxCommand((u8*)cTxCGDCONT_SET10, strlen((char const*)cTxCGDCONT_SET10));
       break;
     default:
       break;
@@ -401,15 +404,25 @@ void ApiAtCmd_10msRenew(void)
     {
       AtCmdDrvobj.ZLTENOCELL=1;
     }
+/*******语音播放喇叭控制标志位*******************/
+    ucRet = memcmp(pBuf, cRxPASTATE1, 9);
+    if(ucRet == 0x00)
+    {
+      AtCmdDrvobj.Msg.Bits.bZTTSStates=1;
+      AtCmdDrvobj.Msg.Bits.bZTTSStates_Intermediate = 0;//播报新语音时将中间变量清零，等待收到ztts0重新打开标志位
+    }
+    ucRet = memcmp(pBuf, cRxZTTS0, 6);
+    if(ucRet == 0x00)
+    {
+      AtCmdDrvobj.Msg.Bits.bZTTSStates_Intermediate = 1;
+    }
 /****未插卡CMEERROR**********************/
 
 /****数据业务拨号ZPPPSTATUS*************/
 
 /****信号获取及判断CSQ*********************/
     
-/*******语音播放喇叭控制标志位*******************/
 
-/************************/
   }
 }
 
@@ -751,4 +764,19 @@ void  CHAR_TO_DIV_CHAR(u8 * pPrimary, u8 * pDestination, u8 Len)
 		}
 	}
 }
-
+u16 ApiAtCmd_bZTTSStates(void)
+{
+  return AtCmdDrvobj.Msg.Bits.bZTTSStates;
+}
+void set_ApiAtCmd_bZTTSStates(u16 a)
+{
+  AtCmdDrvobj.Msg.Bits.bZTTSStates = a;
+}
+u16 ApiAtCmd_bZTTSStates_Intermediate(void)
+{
+  return AtCmdDrvobj.Msg.Bits.bZTTSStates_Intermediate;
+}
+void set_ApiAtCmd_bZTTSStates_Intermediate(u16 a)
+{
+  AtCmdDrvobj.Msg.Bits.bZTTSStates_Intermediate = a;
+}

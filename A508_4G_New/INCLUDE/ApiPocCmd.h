@@ -4,8 +4,8 @@
 #include "AllHead.h"
 
 #define DrvMC8332_UseId_Len	        200//define UART Tx buffer length value
-#define APIPOC_GroupName_Len            40+5//unicode只存前2位，00不存，32/2=16,屏幕最多显示16个字符
-#define APIPOC_UserName_Len             40+5
+#define APIPOC_GroupName_Len            64+5//unicode只存前2位，00不存，32/2=16,屏幕最多显示16个字符
+#define APIPOC_UserName_Len             64+5
 #define APIPOC_Group_Num                10
 #define APIPOC_User_Num                 10
 typedef enum{

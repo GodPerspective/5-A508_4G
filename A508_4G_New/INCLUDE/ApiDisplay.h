@@ -17,6 +17,11 @@
 #define LCD_DISP_LEN_MAX 	16
 
 typedef enum{
+  GBK           =0x00,
+  UNICODE       =0x01
+}ENCODETYPE;
+
+typedef enum{
   d_PersonalMode                = 0x00,
   d_ABELL                       = 0x01,
   d_AllGroupName                = 0x02,
@@ -56,6 +61,7 @@ typedef struct
 	u8  xLen;
 	u8  yLen;
 }ICO_INF;
+
 typedef struct
 {
 	DISP_TYPE DispType;
@@ -77,7 +83,7 @@ extern void api_disp_icoid_output(u8 IcoIdIndex, bool IcoDefault,bool on_off);
 extern void api_disp_all_screen_refresh(void);
 extern void api_disp_all_screen_refresh(void);
 #if 1//WCDMA ×¿ÖÇ´ï
-void api_lcd_pwr_on_hint(u8 x,u8 y,u8 *CharData);
+extern void api_lcd_pwr_on_hint(u8 x,u8 y,ENCODETYPE encode,u8 *CharData);
 #else
 extern void api_lcd_pwr_on_hint(u8 *CharData);
 extern void api_lcd_pwr_on_hint2(u8 *CharData);

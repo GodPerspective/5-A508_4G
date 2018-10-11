@@ -2,15 +2,20 @@
 #define __APIATCMD_H
 
 #include "AllHead.h"
-
+typedef enum{
+  m_CHINESE       = 0x00,
+  m_ENGLISH       = 0x01
+}LANGUAGE_TYPE;
 typedef struct{
   union{
     struct{
-      u16  bCommunicationTest    :1;
-      u16  bSimCardIn            :1;
-      u16  bNoSimCard            :1;
-      u16  bCGDCONT              :1;
-      u16                        :12;
+      u16  bCommunicationTest           :1;
+      u16  bSimCardIn                   :1;
+      u16  bNoSimCard                   :1;
+      u16  bCGDCONT                     :1;
+      u16  bZTTSStates                  :1;
+      u16  bZTTSStates_Intermediate     :1;
+      u16                               :10;
     }Bits;
     u16 Byte;
   }Msg;
@@ -32,7 +37,11 @@ typedef struct{
     u8 cereg;
   }network_reg;//ÍøÂç×¢²á×´Ì¬CREG/CGREG/CEREG
   u8 ccid[20];
-  u8 apn_set[1];
+  u8 apn_set;
+  u8 language_value;
+  LANGUAGE_TYPE language_set;
+  u8 Key3_PlayValue;
+  Key3_OptionType Key3Option;
 }AtCmdDrv;
 
 typedef enum{

@@ -101,6 +101,6 @@
 #include "KeyCmd.h"
 #endif
 //Ê¹ÄÜÓ¢ÎÄÓïÒô
-#define CHINESE
+//#define CHINESE
 
 #endif

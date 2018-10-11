@@ -7,7 +7,7 @@ typedef struct{
 }KeyCmdDrv;
 
 static KeyCmdDrv KeyCmdDrvObj;
-
+static void Key3_PlayVoice(void);
 //将APIKeyCMD修改为按键处理程序
 void key_process(void)
 {
@@ -57,8 +57,31 @@ void key_process(void)
 /*********按键Key3*****************************************************************************/
     if(get_key_3_states()==m_key_short_press)//处理短按按键清除当前标志位m_key_idle
     {
-      Set_GreenLed(ON);
-      Delay_100ms(10);
+      if(get_current_working_status()==m_personal_mode)//单呼状态按返回键
+      {
+        DEL_SetTimer(0,40);
+        while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+        ApiPocCmd_WritCommand(PocComm_EnterGroup,0,0);
+      }
+      else
+      {
+        if(TheMenuLayer_Flag!=0)//解决组呼键影响菜单界面信息显示，现在只要按组呼键就会退出菜单
+        {
+          MenuDisplay(Menu_RefreshAllIco);
+          MenuModeCount=1;
+          TheMenuLayer_Flag=0;
+          MenuMode_Flag=0;
+          ApiMenu_SwitchGroup_Flag=0;
+          ApiMenu_SwitchCallUser_Flag=0;
+          ApiMenu_SwitchOnlineUser_Flag=0;
+          ApiMenu_GpsInfo_Flag=0;
+          ApiMenu_BacklightTimeSet_Flag=0;
+          ApiMenu_KeylockTimeSet_Flag=0;
+          ApiMenu_NativeInfo_Flag=0;
+          ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+        }
+        Key3_PlayVoice();
+      }
       set_key_3_states(m_key_idle);
     }
     else if(get_key_3_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
@@ -93,6 +116,69 @@ void key_process(void)
       //Set_GreenLed(OFF);
       //Set_RedLed(OFF);
     }
+}
+
+void Key3_PlayVoice(void)
+{
+  switch(AtCmdDrvobj.Key3Option)
+  {
+  case Key3_OptionZero://播报本机账号、当前群组、电池电量
+    //当前用户：
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetLocalUserNameForDisplay());
+    VOICE_SetOutput(ATVOICE_FreePlay,GetLocalUserNameForVoice(),strlen((char const *)GetLocalUserNameForVoice()));//播报本机用户
+    DEL_SetTimer(0,200);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    //当前群组
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());
+    VOICE_SetOutput(ATVOICE_FreePlay,GetNowWorkingGroupNameForVoice(),strlen((char const *)GetNowWorkingGroupNameForVoice()));//播报当前用户手机号
+    DEL_SetTimer(0,260);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    //电量播报
+    KeyBatteryReport();
+    break;
+  case Key3_OptionOne://播报本机账号、电池电量
+    //当前用户：
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetLocalUserNameForDisplay());
+    VOICE_SetOutput(ATVOICE_FreePlay,GetLocalUserNameForVoice(),strlen((char const *)GetLocalUserNameForVoice()));//播报本机用户
+    DEL_SetTimer(0,200);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    //当前群组
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");//显示当前群组昵称
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());
+    //电量播报
+    KeyBatteryReport();
+    break;
+  case Key3_OptionTwo://播报本机账号
+    //当前用户：
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetLocalUserNameForDisplay());
+    VOICE_SetOutput(ATVOICE_FreePlay,GetLocalUserNameForVoice(),strlen((char const *)GetLocalUserNameForVoice()));//播报本机用户
+    DEL_SetTimer(0,200);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    //当前群组
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());
+    break;
+  case Key3_OptionThree://播报当前群组
+    //当前群组
+    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());
+    VOICE_SetOutput(ATVOICE_FreePlay,GetNowWorkingGroupNameForVoice(),strlen((char const *)GetNowWorkingGroupNameForVoice()));//播报当前用户手机号
+    DEL_SetTimer(0,20);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    break;
+  case Key3_OptionFour://播报电池电量
+    //电量播报
+    KeyBatteryReport();
+    DEL_SetTimer(0,20);
+    while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+    break;
+  default:
+    break;
+  }
 }
 
 bool KEYCMD_PersonalKeyMode(void)

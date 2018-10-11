@@ -8,6 +8,8 @@ typedef enum {
   TASK_WRITE_FREQ       = 0x03
 }TASK_CODE;
 
+
+
 typedef struct{
   TASK_CODE Id;
   u8 login_set_account;
@@ -24,8 +26,6 @@ extern void Task_normal_progress(void);
 extern void Task_low_battery_progress(void);
 extern void Task_write_freq_progress(void);
 
-
-#if 0
 typedef enum{
   Key3_OptionZero       =       0x00,
   Key3_OptionOne        =       0x01,
@@ -35,13 +35,18 @@ typedef enum{
   Key3_OptionFive       =       0x05
 }Key3_OptionType;
 
+
+
+#if 0
+
+
 extern void Task_PowerOnInitial(void);
 extern bool task_status_account_config(void);
 extern bool TASK_PersonalKeyMode(void);
 extern void TASK_PersonalKeyModeSet(bool a);
 
 TASKAPI bool KEY_4_Flag;
-TASKAPI Key3_OptionType Key3Option;
+
 TASKAPI bool EnterPttMoment_Flag;
 TASKAPI bool NoUseNum;
 TASKAPI u8 NetworkType_2Gor3G_Flag;
