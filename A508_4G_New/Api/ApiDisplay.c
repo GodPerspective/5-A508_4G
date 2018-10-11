@@ -172,7 +172,7 @@ const u8 Ico_DataBuf[32][32]=
  0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//31
 };
 
-#ifdef CHINESE
+
 const u8 *dp_abell              = "   欧标对讲机   ";//1
 const u8 *dp_personal_mode      = "   个呼模式     ";//2
 const u8 *dp_no_sim_card        = "   请插卡       ";//3
@@ -204,147 +204,258 @@ const u8 *dp_eps_unknow_network = "EPS未知网络     ";//
 const u8 *dp_eps_refuse_enroll  = "EPS注册被拒绝   ";//
 const u8 *dp_all_unknow_network = "所有网络异常    ";//
 const u8 *dp_no_service         = "无服务          ";//
-#else
-const u8 *dp_abell              = "     ABELL      ";//1
-const u8 *dp_personal_mode      = "Personal Mode   ";//2
-const u8 *dp_no_sim_card        = "No SIM Card     ";//3
-const u8 *dp_network_search     = "Network Search  ";//4
-const u8 *dp_account_config     = "Account Config..";//5
-const u8 *dp_please_charge      = " Please charge  ";//6
-const u8 *dp_menu               = "Menu            ";//7
-const u8 *dp_group_select       = "Group Select    ";//8
-const u8 *dp_gps_information    = "GPS Information ";//9
-const u8 *dp_backlight_time     = "Backlight Time  ";//10
-const u8 *dp_keypad_lock_time   = "Keypad Lock Time";//11
-const u8 *dp_software_version   = "Software Version";//12
-const u8 *dp_press_well         = "Press #         ";//13
-const u8 *dp_latitude0          = "Lat :00.000000  ";//14
-const u8 *dp_longitude0         = "Lng :000.000000 ";//15
-const u8 *dp_backlight          = "Backlight       ";//16
-const u8 *dp_keypad_lock        = "Keypad Lock     ";//17
-const u8 *dp_close              = "Close           ";//18
-const u8 *dp_individual_call    = "Individual Call ";//19
-const u8 *dp_version            = "Version:        ";//20
-const u8 *dp_press_ok_then_well = "Press OK then # ";//21
-const u8 *dp_status_offline     = "Status:Offline  ";//22
 
-const u8 *dp_SimCardError       = "SIM card error  ";//
-const u8 *dp_cs_unknow_network  = "CS NET unknow   ";//
-const u8 *dp_gprs_unknow_network= "GPRS NET unknow ";//
-const u8 *dp_gprs_refuse_enroll = "GPRS Signup Fail";//
-const u8 *dp_eps_unknow_network = "EPS NET unknow  ";//
-const u8 *dp_eps_refuse_enroll  = "EPS Signup Fail ";//
-const u8 *dp_all_unknow_network = "All NET unknow  ";//
-const u8 *dp_no_service         = "No service      ";//
+const u8 *dp_abell2              = "     ABELL      ";//1
+const u8 *dp_personal_mode2      = "Personal Mode   ";//2
+const u8 *dp_no_sim_card2        = "No SIM Card     ";//3
+const u8 *dp_network_search2     = "Network Search  ";//4
+const u8 *dp_account_config2     = "Account Config..";//5
+const u8 *dp_please_charge2      = " Please charge  ";//6
+const u8 *dp_menu2               = "Menu            ";//7
+const u8 *dp_group_select2       = "Group Select    ";//8
+const u8 *dp_gps_information2    = "GPS Information ";//9
+const u8 *dp_backlight_time2     = "Backlight Time  ";//10
+const u8 *dp_keypad_lock_time2   = "Keypad Lock Time";//11
+const u8 *dp_software_version2   = "Software Version";//12
+const u8 *dp_press_well2         = "Press #         ";//13
+const u8 *dp_latitude02          = "Lat :00.000000  ";//14
+const u8 *dp_longitude02         = "Lng :000.000000 ";//15
+const u8 *dp_backlight2          = "Backlight       ";//16
+const u8 *dp_keypad_lock2        = "Keypad Lock     ";//17
+const u8 *dp_close2              = "Close           ";//18
+const u8 *dp_individual_call2    = "Individual Call ";//19
+const u8 *dp_version2            = "Version:        ";//20
+const u8 *dp_press_ok_then_well2 = "Press OK then # ";//21
+const u8 *dp_status_offline2     = "Status:Offline  ";//22
 
-#endif
+const u8 *dp_SimCardError2       = "SIM card error  ";//
+const u8 *dp_cs_unknow_network2  = "CS NET unknow   ";//
+const u8 *dp_gprs_unknow_network2= "GPRS NET unknow ";//
+const u8 *dp_gprs_refuse_enroll2 = "GPRS Signup Fail";//
+const u8 *dp_eps_unknow_network2 = "EPS NET unknow  ";//
+const u8 *dp_eps_refuse_enroll2  = "EPS Signup Fail ";//
+const u8 *dp_all_unknow_network2 = "All NET unknow  ";//
+const u8 *dp_no_service2         = "No service      ";//
 
 void DISPLAY_Show(DISPLAY_TYPE id)
 {
-  switch(id)
+  switch(AtCmdDrvobj.language_set)
   {
-  case d_ABELL:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell);
+  case m_CHINESE:
+    switch(id)
+    {
+    case d_ABELL:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell);
+        break;
+    case d_PersonalMode:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode);
       break;
-  case d_PersonalMode:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode);
+    case d_AllGroupName:
+      api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//显示当前选中的群组名
+      break;
+    case d_NoSimCard:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card);
+      break;
+    case d_NetworkSearching:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search);
+      break;
+    case d_AllUserName:
+      api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllUserNameForDisplay(PersonalCallingNum));//显示当前选中的群组名
+      break;
+    case d_LoggingIn:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config);
+      break;
+    case d_PowerLowPleaseCharge:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge);
+      break;
+    case d_menu:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu);
+      break;
+    case d_menu_groupselect:
+      api_lcd_pwr_on_hint(13,0,GBK,"1/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select);
+      break;
+    case d_menu_gpsinformation:
+      api_lcd_pwr_on_hint(13,0,GBK,"2/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information);
+      break;
+    case d_menu_backlighttime:
+      api_lcd_pwr_on_hint(13,0,GBK,"3/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time);
+      break;
+    case d_menu_keypadlocktime:
+      api_lcd_pwr_on_hint(13,0,GBK,"4/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time);
+      break;
+    case d_menu_softwareversion:
+      api_lcd_pwr_on_hint(13,0,GBK,"5/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version);
+      break;
+    case d_presswell:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well);
+      break;
+    case d_longitude_and_latitude0:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude0);//清屏
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude0);//清屏
+      break;
+    case d_backlight:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight);
+      break;
+    case d_keypadlock:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock);
+      break;
+    case d_close:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close);
+      break;
+    case d_individualcall:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call);//Individual Call临时群组
+      break;
+    case d_version:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version);
+      break;
+    case d_press_ok_then_well:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well);
+      break;
+    case d_status_offline:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline);
+      break;
+    case d_SimCardError:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError);
+      break;
+    case d_cs_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network);
+      break;
+    case d_gprs_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network);
+      break;
+    case d_gprs_refuse_enroll:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll);
+      break;
+    case d_eps_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network);
+      break;
+    case d_eps_refuse_enroll:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll);
+      break;
+    case d_all_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network);
+      break;
+    case d_no_service:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service);
+      break;
+    default:
+      break;
+    }
     break;
-  case d_AllGroupName:
-    api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-    api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//显示当前选中的群组名
-    break;
-  case d_NoSimCard:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card);
-    break;
-  case d_NetworkSearching:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search);
-    break;
-  case d_AllUserName:
-    api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-    api_lcd_pwr_on_hint(0,2,UNICODE,GetAllUserNameForDisplay(PersonalCallingNum));//显示当前选中的群组名
-    break;
-  case d_LoggingIn:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config);
-    break;
-  case d_PowerLowPleaseCharge:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge);
-    break;
-  case d_menu:
-    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu);
-    break;
-  case d_menu_groupselect:
-    api_lcd_pwr_on_hint(13,0,GBK,"1/5");
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select);
-    break;
-  case d_menu_gpsinformation:
-    api_lcd_pwr_on_hint(13,0,GBK,"2/5");
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information);
-    break;
-  case d_menu_backlighttime:
-    api_lcd_pwr_on_hint(13,0,GBK,"3/5");
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time);
-    break;
-  case d_menu_keypadlocktime:
-    api_lcd_pwr_on_hint(13,0,GBK,"4/5");
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time);
-    break;
-  case d_menu_softwareversion:
-    api_lcd_pwr_on_hint(13,0,GBK,"5/5");
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version);
-    break;
-  case d_presswell:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well);
-    break;
-  case d_longitude_and_latitude0:
-    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude0);//清屏
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude0);//清屏
-    break;
-  case d_backlight:
-    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight);
-    break;
-  case d_keypadlock:
-    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock);
-    break;
-  case d_close:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close);
-    break;
-  case d_individualcall:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call);//Individual Call临时群组
-    break;
-  case d_version:
-    api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version);
-    break;
-  case d_press_ok_then_well:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well);
-    break;
-  case d_status_offline:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline);
-    break;
-  case d_SimCardError:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError);
-    break;
-  case d_cs_unknow_network:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network);
-    break;
-  case d_gprs_unknow_network:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network);
-    break;
-  case d_gprs_refuse_enroll:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll);
-    break;
-  case d_eps_unknow_network:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network);
-    break;
-  case d_eps_refuse_enroll:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll);
-    break;
-  case d_all_unknow_network:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network);
-    break;
-  case d_no_service:
-    api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service);
-    break;
-  default:
+  case m_ENGLISH:
+    switch(id)
+    {
+    case d_ABELL:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell2);
+        break;
+    case d_PersonalMode:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode2);
+      break;
+    case d_AllGroupName:
+      api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//显示当前选中的群组名
+      break;
+    case d_NoSimCard:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card2);
+      break;
+    case d_NetworkSearching:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search2);
+      break;
+    case d_AllUserName:
+      api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllUserNameForDisplay(PersonalCallingNum));//显示当前选中的群组名
+      break;
+    case d_LoggingIn:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config2);
+      break;
+    case d_PowerLowPleaseCharge:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge2);
+      break;
+    case d_menu:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu2);
+      break;
+    case d_menu_groupselect:
+      api_lcd_pwr_on_hint(13,0,GBK,"1/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select2);
+      break;
+    case d_menu_gpsinformation:
+      api_lcd_pwr_on_hint(13,0,GBK,"2/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information2);
+      break;
+    case d_menu_backlighttime:
+      api_lcd_pwr_on_hint(13,0,GBK,"3/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time2);
+      break;
+    case d_menu_keypadlocktime:
+      api_lcd_pwr_on_hint(13,0,GBK,"4/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time2);
+      break;
+    case d_menu_softwareversion:
+      api_lcd_pwr_on_hint(13,0,GBK,"5/5");
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version2);
+      break;
+    case d_presswell:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well2);
+      break;
+    case d_longitude_and_latitude0:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude02);//清屏
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude02);//清屏
+      break;
+    case d_backlight:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight2);
+      break;
+    case d_keypadlock:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock2);
+      break;
+    case d_close:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close2);
+      break;
+    case d_individualcall:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call2);//Individual Call临时群组
+      break;
+    case d_version:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version2);
+      break;
+    case d_press_ok_then_well:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well2);
+      break;
+    case d_status_offline:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline2);
+      break;
+    case d_SimCardError:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError2);
+      break;
+    case d_cs_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network2);
+      break;
+    case d_gprs_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network2);
+      break;
+    case d_gprs_refuse_enroll:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll2);
+      break;
+    case d_eps_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network2);
+      break;
+    case d_eps_refuse_enroll:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll2);
+      break;
+    case d_all_unknow_network:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network2);
+      break;
+    case d_no_service:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service2);
+      break;
+    default:
+      break;
+    }
     break;
   }
 }
@@ -381,11 +492,15 @@ void api_lcd_pwr_on_hint(u8 x,u8 y,ENCODETYPE encode,u8 *CharData)
         }
         else//encode==UNICODE
         {
-#ifdef CHINESE
-          api_disp_char_output2(stCharInfo,CharData);//UNICODE显示，群组信息显示屏显示使用
-#else
-          api_disp_char_output(stCharInfo,CharData);
-#endif
+          switch(AtCmdDrvobj.language_set)
+          {
+          case m_CHINESE:
+            api_disp_char_output2(stCharInfo,CharData);//UNICODE显示，群组信息显示屏显示使用
+            break;
+          case m_ENGLISH:
+            api_disp_char_output(stCharInfo,CharData);
+            break;
+          }
         }
 	api_disp_all_screen_refresh();// 全屏统一刷新
 }

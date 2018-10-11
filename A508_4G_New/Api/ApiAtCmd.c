@@ -71,15 +71,18 @@ AtCmdDrv AtCmdDrvobj;
 void ApiAtCmd_PowerOnInitial(void)
 {
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
-  FILE_Read(0x23F,1,&(AtCmdDrvobj.language_value));//FILE_Read
+  FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
   FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));
   switch(AtCmdDrvobj.language_value)
   {
   case 0:
+    AtCmdDrvobj.language_set=m_CHINESE;
     break;
   case 1:
+    AtCmdDrvobj.language_set=m_ENGLISH;
     break;
   default:
+    AtCmdDrvobj.language_set=m_CHINESE;
     break;
   }
   

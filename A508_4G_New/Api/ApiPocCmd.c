@@ -5,11 +5,9 @@
 const u8 *ucAtPocHead          = "AT+POC=";
 const u8 *ucSetIPAndID         = "010000";
 
-#ifdef CHINESE
 const u8 *ucPocOpenConfig       ="000000010101";
-#else
-const u8 *ucPocOpenConfig       ="00000001010101";
-#endif
+const u8 *ucPocOpenConfig2       ="00000001010101";
+
 
 u8 *ucStartPTT                  = "0B0000";
 u8 *ucEndPTT                    = "0C0000";
@@ -17,11 +15,7 @@ u8 *ucGroupListInfo             = "0d0000";
 u8 *ucUserListInfo              = "0e00000000";
 u8 *ucSetGPS                    = "110000";
 u8 *ucAlarm1                    = "210000";
-#if 0
-u8 *ucAlarm2                    = "0000000020202000";
-#else
 u8 *ucAlarm2                    = "00000000736f7300";
-#endif
 u8 *ucSetURL                    = "120000";
 
 
@@ -69,7 +63,15 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
   switch(id)
   {
   case PocComm_OpenPOC://1
-    DrvGD83_UART_TxCommand((u8*)ucPocOpenConfig, strlen((char const *)ucPocOpenConfig));
+    switch(AtCmdDrvobj.language_set)
+    {
+    case m_CHINESE:
+      DrvGD83_UART_TxCommand((u8*)ucPocOpenConfig, strlen((char const *)ucPocOpenConfig));
+      break;
+    case m_ENGLISH:
+      DrvGD83_UART_TxCommand((u8*)ucPocOpenConfig2, strlen((char const *)ucPocOpenConfig2));
+      break;
+    }
     break;
   case PocComm_SetParam://设置账号密码
     //ip=111.111.111.111;id=11111111111;pwd=111111;UPL=99999999999999999999999999999999999999999999999999;//会加上URL但是好像没影响所以就不管了
@@ -374,46 +376,50 @@ void ApiPocCmd_10msRenew(void)
       {}
       else
       {
-#ifdef CHINESE
-        PocCmdDrvobj.GroupXuhao=COML_AscToHex(pBuf+8,0x04);
-        PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].ID=ucNameId;//保存群组ID，从[0]开始存
-        if(Len >= 24)//如果群组id后面还有群组名
+        switch(AtCmdDrvobj.language_set)
         {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen= (Len-24);//
-          if(PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen > APIPOC_GroupName_Len)
+        case m_CHINESE:
+          PocCmdDrvobj.GroupXuhao=COML_AscToHex(pBuf+8,0x04);
+          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].ID=ucNameId;//保存群组ID，从[0]开始存
+          if(Len >= 24)//如果群组id后面还有群组名
           {
-            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = APIPOC_GroupName_Len;
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen= (Len-24);//
+            if(PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen > APIPOC_GroupName_Len)
+            {
+              PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = APIPOC_GroupName_Len;
+            }
           }
-        }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = 0x00;
-        }
-        for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[i] = pBuf[i+24];//存入获取的群组名
-        }
-#else
-        PocCmdDrvobj.GroupXuhao=COML_AscToHex(pBuf+8,0x04);
-        PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].ID=ucNameId;//保存群组ID，从[0]开始存
-        if(Len >= 24)//如果群组id后面还有群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen= (Len-24)/2;//英文字符只存一半
-          if(PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen > APIPOC_GroupName_Len)
+          else//无群组名
           {
-            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = APIPOC_GroupName_Len;
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = 0x00;
           }
+          for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[i] = pBuf[i+24];//存入获取的群组名
+          }
+          break;
+        case m_ENGLISH:
+          PocCmdDrvobj.GroupXuhao=COML_AscToHex(pBuf+8,0x04);
+          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].ID=ucNameId;//保存群组ID，从[0]开始存
+          if(Len >= 24)//如果群组id后面还有群组名
+          {
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen= (Len-24)/2;//英文字符只存一半
+            if(PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen > APIPOC_GroupName_Len)
+            {
+              PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = APIPOC_GroupName_Len;
+            }
+          }
+          else//无群组名
+          {
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = 0x00;
+          }
+          for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[2*i] = pBuf[4*i+24];//存入获取的群组名
+            PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[2*i+1] = pBuf[4*i+1+24];
+          }
+          break;
         }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen = 0x00;
-        }
-        for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[2*i] = pBuf[4*i+24];//存入获取的群组名
-          PocCmdDrvobj.NameInfo.AllGroupName[PocCmdDrvobj.GroupXuhao-1].Name[2*i+1] = pBuf[4*i+1+24];
-        }
-#endif
       }
       break;
     case 0x81://组成员列表
@@ -424,48 +430,52 @@ void ApiPocCmd_10msRenew(void)
       }
       else
       {
-#ifdef CHINESE
-        ucUserId=COML_AscToHex(pBuf+12,0x08);
-        PocCmdDrvobj.UserXuhao=COML_AscToHex(pBuf+8,0x04);
-        PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
-        if(Len >= 20)//如果群组id后面还有群组名
+        switch(AtCmdDrvobj.language_set)
         {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20);//
-          if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+        case m_CHINESE:
+          ucUserId=COML_AscToHex(pBuf+12,0x08);
+          PocCmdDrvobj.UserXuhao=COML_AscToHex(pBuf+8,0x04);
+          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
+          if(Len >= 20)//如果群组id后面还有群组名
           {
-            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20);//
+            if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+            }
           }
-        }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
-        }
-        for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[i] = pBuf[i+20];//存入获取的群组名
-        }
-#else
-        ucUserId=COML_AscToHex(pBuf+12,0x08);
-        PocCmdDrvobj.UserXuhao=COML_AscToHex(pBuf+8,0x04);
-        PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
-        if(Len >= 20)//如果群组id后面还有群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20)/2;//英文字符只存一半
-          if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+          else//无群组名
           {
-            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
           }
+          for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[i] = pBuf[i+20];//存入获取的群组名
+          }
+          break;
+        case m_ENGLISH:
+          ucUserId=COML_AscToHex(pBuf+12,0x08);
+          PocCmdDrvobj.UserXuhao=COML_AscToHex(pBuf+8,0x04);
+          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
+          if(Len >= 20)//如果群组id后面还有群组名
+          {
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20)/2;//英文字符只存一半
+            if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+            }
+          }
+          else//无群组名
+          {
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
+          }
+          for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i] = pBuf[4*i+20];//存入获取的群组名
+            PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i+1] = pBuf[4*i+1+20];
+          }
+          break;
         }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
-        }
-        for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i] = pBuf[4*i+20];//存入获取的群组名
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i+1] = pBuf[4*i+1+20];
-        }
-#endif
       }
       break;
     case 0x82://登录状态及本机用户名
@@ -480,42 +490,46 @@ void ApiPocCmd_10msRenew(void)
         break;
       case 0x02://登录成功
         PocCmdDrvobj.States.PocStatus=LandSuccess;
-#ifdef CHINESE
-        if(Len >= 12)//保存本机用户名
+        switch(AtCmdDrvobj.language_set)
         {
-          PocCmdDrvobj.NameInfo.LocalUserName.NameLen= (Len-12);//
-          if(PocCmdDrvobj.NameInfo.LocalUserName.NameLen > APIPOC_UserName_Len)
+        case m_CHINESE:
+          if(Len >= 12)//保存本机用户名
           {
-            PocCmdDrvobj.NameInfo.LocalUserName.NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.LocalUserName.NameLen= (Len-12);//
+            if(PocCmdDrvobj.NameInfo.LocalUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.LocalUserName.NameLen = APIPOC_UserName_Len;
+            }
           }
-        }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.LocalUserName.NameLen = 0x00;
-        }
-        for(i = 0x00; i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.LocalUserName.Name[i] = pBuf[i+12];//存入获取的群组名
-        }
-#else
-        if(Len >= 12)//保存本机用户名
-        {
-          PocCmdDrvobj.NameInfo.LocalUserName.NameLen= (Len-12)/2;//英文字符只存一半
-          if(PocCmdDrvobj.NameInfo.LocalUserName.NameLen > APIPOC_UserName_Len)
+          else//无群组名
           {
-            PocCmdDrvobj.NameInfo.LocalUserName.NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.LocalUserName.NameLen = 0x00;
           }
+          for(i = 0x00; i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.LocalUserName.Name[i] = pBuf[i+12];//存入获取的群组名
+          }
+          break;
+        case m_ENGLISH:
+          if(Len >= 12)//保存本机用户名
+          {
+            PocCmdDrvobj.NameInfo.LocalUserName.NameLen= (Len-12)/2;//英文字符只存一半
+            if(PocCmdDrvobj.NameInfo.LocalUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.LocalUserName.NameLen = APIPOC_UserName_Len;
+            }
+          }
+          else//无群组名
+          {
+            PocCmdDrvobj.NameInfo.LocalUserName.NameLen = 0x00;
+          }
+          for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i] = pBuf[4*i+12];//存入获取的群组名
+            PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i+1] = pBuf[4*i+1+12];
+          }
+          break;
         }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.LocalUserName.NameLen = 0x00;
-        }
-        for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i] = pBuf[4*i+12];//存入获取的群组名
-          PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i+1] = pBuf[4*i+1+12];
-        }
-#endif
         break;
       case 0x03://注销中
         PocCmdDrvobj.States.PocStatus=Logout;
@@ -542,44 +556,47 @@ void ApiPocCmd_10msRenew(void)
       }
       else
       {
-#ifdef CHINESE
-        if(Len >= 12)//如果群组id后面还有群组名
+        switch(AtCmdDrvobj.language_set)
         {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen= (Len-12);//
-          if(PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen > APIPOC_UserName_Len)
+        case m_CHINESE:
+          if(Len >= 12)//如果群组id后面还有群组名
           {
-            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen= (Len-12);//
+            if(PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = APIPOC_UserName_Len;
+            }
           }
-        }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = 0x00;
-        }
-        for(i = 0x00; i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.Name[i] = pBuf[i+12];//存入
-        }
-#else
-        if(Len >= 12)//如果群组id后面还有群组名
-        {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen= (Len-12)/2;//英文字符只存一半
-          if(PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen > APIPOC_UserName_Len)
+          else//无群组名
           {
-            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = APIPOC_UserName_Len;
+            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = 0x00;
           }
+          for(i = 0x00; i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.SpeakingUserName.Name[i] = pBuf[i+12];//存入
+          }
+          break;
+        case m_ENGLISH:
+          if(Len >= 12)//如果群组id后面还有群组名
+          {
+            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen= (Len-12)/2;//英文字符只存一半
+            if(PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = APIPOC_UserName_Len;
+            }
+          }
+          else//无群组名
+          {
+            PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = 0x00;
+          }
+          for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen; i++)
+          {
+            PocCmdDrvobj.NameInfo.SpeakingUserName.Name[2*i] = pBuf[4*i+12];//存入
+            PocCmdDrvobj.NameInfo.SpeakingUserName.Name[2*i+1] = pBuf[4*i+1+12];
+          }
+          break;
         }
-        else//无群组名
-        {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen = 0x00;
-        }
-        for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen; i++)
-        {
-          PocCmdDrvobj.NameInfo.SpeakingUserName.Name[2*i] = pBuf[4*i+12];//存入
-          PocCmdDrvobj.NameInfo.SpeakingUserName.Name[2*i+1] = pBuf[4*i+1+12];
-        }
-#endif
       }
-
       break;
     case 0x84://返回提示信息
       break;
@@ -618,44 +635,48 @@ void ApiPocCmd_10msRenew(void)
         PocCmdDrvobj.States.GroupStats=EnterGroup;
         if(PocCmdDrvobj.States.current_working_status==m_group_mode)
         {
-#ifdef CHINESE
-          PocCmdDrvobj.NameInfo.NowWorkingGroupName.ID=COML_AscToHex(pBuf+4,0x08);//保存群组ID，从[0]开始存
-          if(Len >= 12)//如果群组id后面还有群组名
+          switch(AtCmdDrvobj.language_set)
           {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen= (Len-12);
-            if(PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen > APIPOC_GroupName_Len)
+          case m_CHINESE:
+            PocCmdDrvobj.NameInfo.NowWorkingGroupName.ID=COML_AscToHex(pBuf+4,0x08);//保存群组ID，从[0]开始存
+            if(Len >= 12)//如果群组id后面还有群组名
             {
-              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = APIPOC_GroupName_Len;
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen= (Len-12);
+              if(PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen > APIPOC_GroupName_Len)
+              {
+                PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = APIPOC_GroupName_Len;
+              }
             }
-          }
-          else//无群组名
-          {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = 0x00;
-          }
-          for(i = 0x00; i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen; i++)
-          {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[i] = pBuf[i+12];//存入获取的群组名
-          }
-#else
-          PocCmdDrvobj.NameInfo.NowWorkingGroupName.ID=COML_AscToHex(pBuf+4,0x08);//保存群组ID，从[0]开始存
-          if(Len >= 12)//如果群组id后面还有群组名
-          {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen= (Len-12)/2;//英文字符只存一半
-            if(PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen > APIPOC_GroupName_Len)
+            else//无群组名
             {
-              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = APIPOC_GroupName_Len;
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = 0x00;
             }
+            for(i = 0x00; i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen; i++)
+            {
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[i] = pBuf[i+12];//存入获取的群组名
+            }
+            break;
+          case m_ENGLISH:
+            PocCmdDrvobj.NameInfo.NowWorkingGroupName.ID=COML_AscToHex(pBuf+4,0x08);//保存群组ID，从[0]开始存
+            if(Len >= 12)//如果群组id后面还有群组名
+            {
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen= (Len-12)/2;//英文字符只存一半
+              if(PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen > APIPOC_GroupName_Len)
+              {
+                PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = APIPOC_GroupName_Len;
+              }
+            }
+            else//无群组名
+            {
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = 0x00;
+            }
+            for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen; i++)
+            {
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i] = pBuf[4*i+12];//存入获取的群组名
+              PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i+1] = pBuf[4*i+1+12];
+            }
+            break;
           }
-          else//无群组名
-          {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen = 0x00;
-          }
-          for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen; i++)
-          {
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i] = pBuf[4*i+12];//存入获取的群组名
-            PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i+1] = pBuf[4*i+1+12];
-          }
-#endif
         }
       }
       //MenuDisplay(Menu_RefreshAllIco);
@@ -665,42 +686,46 @@ void ApiPocCmd_10msRenew(void)
     case 0x88://通知监听群组信息
       break;
     case 0x8A://通知接收到信息
-#ifdef CHINESE
-      if(Len >= 20)//如果群组id后面还有群组名
+      switch(AtCmdDrvobj.language_set)
       {
-        PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen= (Len-20);//
-        if(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen > APIPOC_UserName_Len)
-          {
-            PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = APIPOC_UserName_Len;
-          }
-      }
-      else//无群组名
-      {
-          PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = 0x00;
-      }
+      case m_CHINESE:
+        if(Len >= 20)//如果群组id后面还有群组名
+        {
+          PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen= (Len-20);//
+          if(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = APIPOC_UserName_Len;
+            }
+        }
+        else//无群组名
+        {
+            PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = 0x00;
+        }
         for(i = 0x00; i<PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen; i++)
         {
           PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[i] = pBuf[i+20];//存入
         }
-#else
-      if(Len >= 20)//如果群组id后面还有群组名
-      {
-        PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen= (Len-20)/2;//英文字符只存一半
-        if(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen > APIPOC_UserName_Len)
-          {
-            PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = APIPOC_UserName_Len;
-          }
-      }
-      else//无群组名
-      {
-          PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = 0x00;
-      }
+        break;
+      case m_ENGLISH:
+        if(Len >= 20)//如果群组id后面还有群组名
+        {
+          PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen= (Len-20)/2;//英文字符只存一半
+          if(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen > APIPOC_UserName_Len)
+            {
+              PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = APIPOC_UserName_Len;
+            }
+        }
+        else//无群组名
+        {
+            PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen = 0x00;
+        }
         for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen; i++)
         {
           PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[2*i] = pBuf[4*i+20];//存入
           PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[2*i+1] = pBuf[4*i+1+20];
         }
-#endif
+        break;
+      }
       PocCmdDrvobj.States.receive_sos_statas = TRUE;
       api_lcd_pwr_on_hint(0,2,GBK,"                ");
       api_lcd_pwr_on_hint(0,2,UNICODE,GetReceiveMessagesUserNameForDisplay());
@@ -1231,23 +1256,34 @@ void ApiPocCmd_ToneStateSet(bool a)
 }
 
 /*****群组用户名相关调用函数****************/
-#ifdef CHINESE
 
 u8 *GetNowWorkingGroupNameForDisplay(void)//当前群组名：显示屏
 {
   u8 i;
   u8 temp_buf[APIPOC_GroupName_Len];
   
-  memset(temp_buf,0,APIPOC_GroupName_Len);
-  memset(PocCmdDrvobj.NowWorkingGroupNameBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+1];
-    PocCmdDrvobj.NowWorkingGroupNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.NowWorkingGroupNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(temp_buf,0,APIPOC_GroupName_Len);
+    memset(PocCmdDrvobj.NowWorkingGroupNameBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[4*i+1];
+      PocCmdDrvobj.NowWorkingGroupNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.NowWorkingGroupNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.NowWorkingGroupNameBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
+    {
+      PocCmdDrvobj.NowWorkingGroupNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name+(2*i), 0x02);
+    }
+    break;
   }
   return PocCmdDrvobj.NowWorkingGroupNameBuf;
 }
@@ -1256,37 +1292,62 @@ u8 *GetAllGroupNameForDisplay(u8 a)//所有群组：显示屏
 {
   u8 i;
   u8 temp_buf[APIPOC_GroupName_Len];
-  
-  memset(temp_buf,0,APIPOC_GroupName_Len);
-  memset(PocCmdDrvobj.AllGroupNameBuf,0,sizeof(PocCmdDrvobj.AllGroupNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+1];
-    PocCmdDrvobj.AllGroupNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.AllGroupNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(temp_buf,0,APIPOC_GroupName_Len);
+    memset(PocCmdDrvobj.AllGroupNameBuf,0,sizeof(PocCmdDrvobj.AllGroupNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.AllGroupName[a].Name[4*i+1];
+      PocCmdDrvobj.AllGroupNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.AllGroupNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.AllGroupNameBuf,0,sizeof(PocCmdDrvobj.AllGroupNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllGroupNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.AllGroupName[a].Name+(2*i), 0x02);
+    }
+    break;
   }
   return PocCmdDrvobj.AllGroupNameBuf;
 }
+
+
 
 u8 *GetSpeakingUserNameForDisplay(void)//说话的用户：显示屏
 {
   u8 i;
   u8 temp_buf[APIPOC_UserName_Len];
-  
-  memset(temp_buf,0,APIPOC_UserName_Len);
-  memset(PocCmdDrvobj.SpeakingUserNameBuf,0,sizeof(PocCmdDrvobj.SpeakingUserNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+1];
-    PocCmdDrvobj.SpeakingUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.SpeakingUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(temp_buf,0,APIPOC_UserName_Len);
+    memset(PocCmdDrvobj.SpeakingUserNameBuf,0,sizeof(PocCmdDrvobj.SpeakingUserNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.SpeakingUserName.Name[4*i+1];
+      PocCmdDrvobj.SpeakingUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.SpeakingUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.SpeakingUserNameBuf,0,sizeof(PocCmdDrvobj.SpeakingUserNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen;i++)
+    {
+      PocCmdDrvobj.SpeakingUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.SpeakingUserName.Name+(2*i), 0x02);
+    }
+    break;
   }
+
   return PocCmdDrvobj.SpeakingUserNameBuf;
 }
 
@@ -1294,17 +1355,28 @@ u8 *GetAllUserNameForDisplay(u8 a)//所有用户：显示屏
 {
   u8 i;
   u8 temp_buf[APIPOC_UserName_Len];
-  
-  memset(temp_buf,0,APIPOC_UserName_Len);
-  memset(PocCmdDrvobj.AllUserNameBuf,0,sizeof(PocCmdDrvobj.AllUserNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+1];
-    PocCmdDrvobj.AllUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.AllUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(temp_buf,0,APIPOC_UserName_Len);
+    memset(PocCmdDrvobj.AllUserNameBuf,0,sizeof(PocCmdDrvobj.AllUserNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[4*i+1];
+      PocCmdDrvobj.AllUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.AllUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.AllUserNameBuf,0,sizeof(PocCmdDrvobj.AllUserNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name+(2*i), 0x02);
+    }
+    break;
   }
   return PocCmdDrvobj.AllUserNameBuf;
 }
@@ -1313,17 +1385,28 @@ u8 *GetLocalUserNameForDisplay(void)//本机用户：显示屏
 {
   u8 i;
   u8 temp_buf[APIPOC_UserName_Len];
-  
-  memset(temp_buf,0,APIPOC_UserName_Len);
-  memset(PocCmdDrvobj.LocalUserNameBuf,0,sizeof(PocCmdDrvobj.LocalUserNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+1];
-    PocCmdDrvobj.LocalUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.LocalUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(temp_buf,0,APIPOC_UserName_Len);
+    memset(PocCmdDrvobj.LocalUserNameBuf,0,sizeof(PocCmdDrvobj.LocalUserNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.LocalUserName.Name[4*i+1];
+      PocCmdDrvobj.LocalUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.LocalUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.LocalUserNameBuf,0,sizeof(PocCmdDrvobj.LocalUserNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+    {
+      PocCmdDrvobj.LocalUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.LocalUserName.Name+(2*i), 0x02);
+    }
+    break;
   }
   return PocCmdDrvobj.LocalUserNameBuf;
 }
@@ -1332,103 +1415,48 @@ u8 *GetReceiveMessagesUserNameForDisplay(void)//发送短信的用户：显示屏
 {
   u8 i,ReceiveMessagesUserNameBufLen;
   u8 temp_buf[APIPOC_UserName_Len];
-  
-  memset(PocCmdDrvobj.ReceiveMessagesUserNameBuf,0,sizeof(PocCmdDrvobj.ReceiveMessagesUserNameBuf));
-  for(i=0;4*i<PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen;i++)
+
+  switch(AtCmdDrvobj.language_set)
   {
-    temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+2];
-    temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+3];
-    temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+0];
-    temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+1];
-    PocCmdDrvobj.ReceiveMessagesUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
-    PocCmdDrvobj.ReceiveMessagesUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  case m_CHINESE:
+    memset(PocCmdDrvobj.ReceiveMessagesUserNameBuf,0,sizeof(PocCmdDrvobj.ReceiveMessagesUserNameBuf));
+    for(i=0;4*i<PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen;i++)
+    {
+      temp_buf[4*i+0]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name[4*i+1];
+      PocCmdDrvobj.ReceiveMessagesUserNameBuf[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.ReceiveMessagesUserNameBuf[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+    }
+    ReceiveMessagesUserNameBufLen=strlen((char const*)PocCmdDrvobj.ReceiveMessagesUserNameBuf);
+    if(PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]==0
+       &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+1]!=0
+         &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+2]!=0
+           &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+3]!=0)//如果用户名后面还有SOS的话将0x00变成0x20即空格
+    {
+      PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]=0x20;
+    }
+    break;
+  case m_ENGLISH:
+    memset(PocCmdDrvobj.ReceiveMessagesUserNameBuf,0,sizeof(PocCmdDrvobj.ReceiveMessagesUserNameBuf));
+    for(i=0;2*i<=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen;i++)
+    {
+      PocCmdDrvobj.ReceiveMessagesUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name+(2*i), 0x02);
+    }
+    ReceiveMessagesUserNameBufLen=strlen((char const*)PocCmdDrvobj.ReceiveMessagesUserNameBuf);
+    if(PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]==0
+       &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+1]!=0
+         &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+2]!=0
+           &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+3]!=0)//如果用户名后面还有SOS的话将0x00变成0x20即空格
+    {
+      PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]=0x20;
+    }
+    break;
   }
-  ReceiveMessagesUserNameBufLen=strlen((char const*)PocCmdDrvobj.ReceiveMessagesUserNameBuf);
-  if(PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]==0
-     &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+1]!=0
-       &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+2]!=0
-         &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+3]!=0)//如果用户名后面还有SOS的话将0x00变成0x20即空格
-  {
-    PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]=0x20;
-  }
+
   return PocCmdDrvobj.ReceiveMessagesUserNameBuf;
 }
-#else
-u8 *GetNowWorkingGroupNameForDisplay(void)//当前群组名：显示屏
-{
-  u8 i;
-  memset(PocCmdDrvobj.NowWorkingGroupNameBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
-  {
-    PocCmdDrvobj.NowWorkingGroupNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name+(2*i), 0x02);
-  }
-  return PocCmdDrvobj.NowWorkingGroupNameBuf;
-}
-
-u8 *GetAllGroupNameForDisplay(u8 a)//所有群组：显示屏
-{
-  u8 i;
-  memset(PocCmdDrvobj.AllGroupNameBuf,0,sizeof(PocCmdDrvobj.AllGroupNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
-  {
-    PocCmdDrvobj.AllGroupNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.AllGroupName[a].Name+(2*i), 0x02);
-  }
-  return PocCmdDrvobj.AllGroupNameBuf;
-}
-
-u8 *GetSpeakingUserNameForDisplay(void)//说话的用户：显示屏
-{
-  u8 i;
-  memset(PocCmdDrvobj.SpeakingUserNameBuf,0,sizeof(PocCmdDrvobj.SpeakingUserNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.SpeakingUserName.NameLen;i++)
-  {
-    PocCmdDrvobj.SpeakingUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.SpeakingUserName.Name+(2*i), 0x02);
-  }
-  return PocCmdDrvobj.SpeakingUserNameBuf;
-}
-
-u8 *GetAllUserNameForDisplay(u8 a)//所有用户：显示屏
-{
-  u8 i;
-  memset(PocCmdDrvobj.AllUserNameBuf,0,sizeof(PocCmdDrvobj.AllUserNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
-  {
-    PocCmdDrvobj.AllUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name+(2*i), 0x02);
-  }
-  return PocCmdDrvobj.AllUserNameBuf;
-}
-
-u8 *GetLocalUserNameForDisplay(void)//本机用户：显示屏
-{
-  u8 i;
-  memset(PocCmdDrvobj.LocalUserNameBuf,0,sizeof(PocCmdDrvobj.LocalUserNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
-  {
-    PocCmdDrvobj.LocalUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.LocalUserName.Name+(2*i), 0x02);
-  }
-  return PocCmdDrvobj.LocalUserNameBuf;
-}
-
-u8 *GetReceiveMessagesUserNameForDisplay(void)//发送短信的用户：显示屏
-{
-  u8 i,ReceiveMessagesUserNameBufLen;
-  memset(PocCmdDrvobj.ReceiveMessagesUserNameBuf,0,sizeof(PocCmdDrvobj.ReceiveMessagesUserNameBuf));
-  for(i=0;2*i<=PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.NameLen;i++)
-  {
-    PocCmdDrvobj.ReceiveMessagesUserNameBuf[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.ReceiveMessagesUserName.Name+(2*i), 0x02);
-  }
-  ReceiveMessagesUserNameBufLen=strlen((char const*)PocCmdDrvobj.ReceiveMessagesUserNameBuf);
-  if(PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]==0
-     &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+1]!=0
-       &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+2]!=0
-         &&PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen+3]!=0)//如果用户名后面还有SOS的话将0x00变成0x20即空格
-  {
-    PocCmdDrvobj.ReceiveMessagesUserNameBuf[ReceiveMessagesUserNameBufLen]=0x20;
-  }
-  return PocCmdDrvobj.ReceiveMessagesUserNameBuf;
-}
-
-#endif
 
 u8 GetNowWorkingGroupNameLenForDisplay(void)
 {
@@ -1443,20 +1471,24 @@ u8 *GetNowWorkingGroupNameForVoice(void)//当前群组：播报
 {
   u8 i;
     memset(PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf,0,APIPOC_GroupName_Len);
-#ifdef CHINESE
-  for(i=0;i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
-  {
-    PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[i];
-  }
-#else
-  for(i=0;2*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
-  {
-    PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i];
-    PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i+1];
-    PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+2]  = 0x30;
-    PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+3]  = 0x30;
-  }
-#endif
+    switch(AtCmdDrvobj.language_set)
+    {
+    case m_CHINESE:
+      for(i=0;i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
+      {
+        PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[i];
+      }
+      break;
+    case m_ENGLISH:
+      for(i=0;2*i<PocCmdDrvobj.NameInfo.NowWorkingGroupName.NameLen;i++)
+      {
+        PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i];
+        PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.NowWorkingGroupName.Name[2*i+1];
+        PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+2]  = 0x30;
+        PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf[4*i+3]  = 0x30;
+      }
+      break;
+    }
   return PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf;
 }
 
@@ -1464,20 +1496,24 @@ u8 *GetAllGroupNameForVoice(u8 a)//所有群组：播报
 {
   u8 i;
   memset(PocCmdDrvobj.AllGroupNameForVoiceBuf,0,APIPOC_GroupName_Len);
-#ifdef CHINESE
-  for(i=0;i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    PocCmdDrvobj.AllGroupNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[i];
+  case m_CHINESE:
+    for(i=0;i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllGroupNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[i];
+    }
+    break;
+  case m_ENGLISH:
+    for(i=0;2*i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[2*i];
+      PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[2*i+1];
+      PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+2]  = 0x30;
+      PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+3]  = 0x30;
+    }
+    break;
   }
-#else
-  for(i=0;2*i<PocCmdDrvobj.NameInfo.AllGroupName[a].NameLen;i++)
-  {
-    PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[2*i];
-    PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.AllGroupName[a].Name[2*i+1];
-    PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+2]  = 0x30;
-    PocCmdDrvobj.AllGroupNameForVoiceBuf[4*i+3]  = 0x30;
-  }
-#endif
   return PocCmdDrvobj.AllGroupNameForVoiceBuf;
 }
 
@@ -1485,20 +1521,24 @@ u8 *GetAllUserNameForVoice(u8 a)//所有用户：播报
 {
   u8 i;
   memset(PocCmdDrvobj.AllUserNameForVoiceBuf,0,APIPOC_UserName_Len);
-#ifdef CHINESE
-  for(i=0;i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    PocCmdDrvobj.AllUserNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[i];
+  case m_CHINESE:
+    for(i=0;i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllUserNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[i];
+    }
+    break;
+  case m_ENGLISH:
+    for(i=0;2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
+    {
+      PocCmdDrvobj.AllUserNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[2*i];
+      PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[2*i+1];
+      PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+2]  = 0x30;
+      PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+3]  = 0x30;
+    }
+    break;
   }
-#else
-  for(i=0;2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[a].NameLen;i++)
-  {
-    PocCmdDrvobj.AllUserNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[2*i];
-    PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.AllGroupUserName[a].Name[2*i+1];
-    PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+2]  = 0x30;
-    PocCmdDrvobj.AllUserNameForVoiceBuf[4*i+3]  = 0x30;
-  }
-#endif
   return PocCmdDrvobj.AllUserNameForVoiceBuf;
 }
 
@@ -1506,20 +1546,24 @@ u8 *GetLocalUserNameForVoice(void)//本机用户：播报
 {
   u8 i;
   memset(PocCmdDrvobj.LocalUserNameForVoiceBuf,0,APIPOC_UserName_Len);
-#ifdef CHINESE
-  for(i=0;i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+  switch(AtCmdDrvobj.language_set)
   {
-    PocCmdDrvobj.LocalUserNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.LocalUserName.Name[i];
+  case m_CHINESE:
+    for(i=0;i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+    {
+      PocCmdDrvobj.LocalUserNameForVoiceBuf[i]    = PocCmdDrvobj.NameInfo.LocalUserName.Name[i];
+    }
+    break;
+  case m_ENGLISH:
+    for(i=0;2*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
+    {
+      PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i];
+      PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i+1];
+      PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+2]  = 0x30;
+      PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+3]  = 0x30;
+    }
+    break;
   }
-#else
-  for(i=0;2*i<PocCmdDrvobj.NameInfo.LocalUserName.NameLen;i++)
-  {
-    PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i]    = PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i];
-    PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+1]  = PocCmdDrvobj.NameInfo.LocalUserName.Name[2*i+1];
-    PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+2]  = 0x30;
-    PocCmdDrvobj.LocalUserNameForVoiceBuf[4*i+3]  = 0x30;
-  }
-#endif
   return PocCmdDrvobj.LocalUserNameForVoiceBuf;
 }
 
