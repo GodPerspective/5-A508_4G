@@ -19,6 +19,7 @@ void Task_login_progress(void)
     api_lcd_pwr_on_hint(14,2,GBK,"-0");
     if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)//开启上报回复
     {
+      //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)ATCOMM_POCID, strlen((char const*)ATCOMM_POCID));
       ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
       ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);
       TaskDrvobj.login_step=1;
@@ -30,8 +31,8 @@ void Task_login_progress(void)
     {
       VOICE_Play(ABELL);
       ApiAtCmd_WritCommand(ATCOMM_DIALMODE,0,0);//设置为手动拨号
-      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_SET,0,0);//设置APN（暂未设置，只是读取）
-      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_READ,0,0);//设置APN（暂未设置，只是读取）
+      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_SET,0,0);//设置APN
+      ApiAtCmd_WritCommand(ATCOMM_CGDCONT_READ,0,0);//读取设置APN
       TaskDrvobj.login_step=2;
     }
     break;

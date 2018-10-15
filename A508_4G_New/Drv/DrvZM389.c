@@ -5,7 +5,7 @@
 #define Drv_Rx_Error		0x02
 
 #define DrvCommHead_Len         15
-#define DrvMC8332_UART_NoMAX    5	//如果出现出具偶尔接收不到，增大此值，可以解决问题
+#define DrvMC8332_UART_NoMAX    7	//如果出现出具偶尔接收不到，增大此值，可以解决问题
 #define DrvMC8332Poc_UART_NoMAX 7	//define UART Tx buffer length value
 #define DrvMC8332_UART_NoLEN    50	//define UART Rx buffer length value
 #define DrvMC8332Caret_UART_NoLEN  40	//define UART Rx buffer length value

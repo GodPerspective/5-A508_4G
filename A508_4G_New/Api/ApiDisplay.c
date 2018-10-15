@@ -204,6 +204,7 @@ const u8 *dp_eps_unknow_network = "EPS未知网络     ";//
 const u8 *dp_eps_refuse_enroll  = "EPS注册被拒绝   ";//
 const u8 *dp_all_unknow_network = "所有网络异常    ";//
 const u8 *dp_no_service         = "无服务          ";//
+const u8 *dp_getting_info       = "获取中...       ";
 
 const u8 *dp_abell2              = "     ABELL      ";//1
 const u8 *dp_personal_mode2      = "Personal Mode   ";//2
@@ -236,6 +237,7 @@ const u8 *dp_eps_unknow_network2 = "EPS NET unknow  ";//
 const u8 *dp_eps_refuse_enroll2  = "EPS Signup Fail ";//
 const u8 *dp_all_unknow_network2 = "All NET unknow  ";//
 const u8 *dp_no_service2         = "No service      ";//
+const u8 *dp_getting_info2       = "getting info... ";
 
 void DISPLAY_Show(DISPLAY_TYPE id)
 {
@@ -252,7 +254,7 @@ void DISPLAY_Show(DISPLAY_TYPE id)
       break;
     case d_AllGroupName:
       api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//显示当前选中的群组名
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(groupCallingcount));//显示当前选中的群组名
       break;
     case d_NoSimCard:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card);
@@ -345,6 +347,9 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     case d_no_service:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service);
       break;
+    case d_getting_info:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_getting_info);
+      break;
     default:
       break;
     }
@@ -360,7 +365,7 @@ void DISPLAY_Show(DISPLAY_TYPE id)
       break;
     case d_AllGroupName:
       api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(GroupCallingNum));//显示当前选中的群组名
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(groupCallingcount));//显示当前选中的群组名
       break;
     case d_NoSimCard:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card2);
@@ -452,6 +457,9 @@ void DISPLAY_Show(DISPLAY_TYPE id)
       break;
     case d_no_service:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service2);
+      break;
+    case d_getting_info:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_getting_info2);
       break;
     default:
       break;

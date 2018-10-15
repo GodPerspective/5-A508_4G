@@ -53,6 +53,7 @@ typedef enum{
   d_eps_refuse_enroll           = 0x1D,
   d_all_unknow_network          = 0x1F,
   d_no_service                  = 0x20,
+  d_getting_info                = 0x21
 }DISPLAY_TYPE;
 
 typedef struct

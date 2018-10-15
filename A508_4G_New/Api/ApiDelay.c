@@ -49,6 +49,8 @@ typedef struct {
     u8 ztts_states_count;
     u8 ReceivedVoicePlayStatesCount;
     u8 ToneStateCount;
+    u8 get_ccid_count;
+    u8 get_cgdcont_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -348,7 +350,6 @@ static void DEL_100msProcess(void)
     {
       DelDrvObj.Msg.Bit.b500Alternate = DEL_IDLE;
     }
-
 /******背光灯定时*********************************/
     FILE_Read(0x236,1,DelDrvObj.BacklightTimeBuf);//背光时间【秒】
     FILE_Read(0x247,1,DelDrvObj.KeylockTimeBuf);//键盘锁时间【秒】
@@ -495,6 +496,35 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.nosimcard_count=0;
     }
+/*****处于登录状态step1，隔5s发一次AT+ZICCID?**********/
+    if(TaskDrvobj.login_step==1)
+    {
+      DelDrvObj.Count.get_ccid_count++;
+      if(DelDrvObj.Count.get_ccid_count>2*5)
+      {
+        DelDrvObj.Count.get_ccid_count=0;
+        ApiAtCmd_WritCommand(ATCOMM_ZICCID,0,0);
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.get_ccid_count=0;
+    }
+/*****处于登录状态step2，隔5s发一次at+cgdcont?**********/
+    if(TaskDrvobj.login_step==2)
+    {
+      DelDrvObj.Count.get_cgdcont_count++;
+      if(DelDrvObj.Count.get_cgdcont_count>2*5)
+      {
+        DelDrvObj.Count.get_cgdcont_count=0;
+        ApiAtCmd_WritCommand(ATCOMM_CGDCONT_READ,0,0);//读取APN
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.get_cgdcont_count=0;
+    }
+    
 /*********卡异常*****************/
     if(AtCmdDrvobj.ZLTENOCELL==1)
     {
@@ -757,6 +787,23 @@ static void DEL_500msProcess(void)			//delay 500ms process server
         ApiPocCmd_ToneStateIntermediateSet(FALSE);
         DelDrvObj.Count.ToneStateCount=0;
       }
+    }
+/*****获取中：换组时更新组列表后播报及显示当前选中的用户名************/
+    if(PocCmdDrvobj.getting_group_all_done_flag==2)
+    {
+      PocCmdDrvobj.getting_group_all_done_flag=0;
+      switch(PocCmdDrvobj.getting_info_flag)
+      {
+      case KEYUP:
+        changing_group_voice_and_display(GroupCallingNum-1);
+        break;
+      case KEYDOWN:
+        changing_group_voice_and_display(GroupCallingNum-1);
+        break;
+      default:
+        break;
+      }
+      PocCmdDrvobj.getting_info_flag=KEYNONE;
     }
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 

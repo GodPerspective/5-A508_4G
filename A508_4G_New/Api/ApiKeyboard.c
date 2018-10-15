@@ -7,7 +7,8 @@ s8 KeyPersonalCallingCount=0;//个呼上下键计数
 s8 PersonalCallingNum=0;
 u8 MenuModeCount=1;
 s8 KeyUpDownCount=0;//组呼上下键计数
-s8 GroupCallingNum=1;
+s8 GroupCallingNum=0;//取决于最大群组数大小
+u8 groupCallingcount=0;//由GroupCallingNum换算，范围0-4；
 u8 VoiceType_FreehandOrHandset_Flag=0;
 u8 KeyDownUpChoose_GroupOrUser_Flag=0;
 bool LockingState_EnterOK_Flag=FALSE;
@@ -77,15 +78,34 @@ void keyboard_process(void)
           }
           else
           {
+            if(PocCmdDrvobj.first_exchange_group_flag==FALSE)//第一次换组
+            {
+              GroupCallingNum--;
+              if(GroupCallingNum<=0)//
+              {
+                GroupCallingNum=GetAllGroupNum();
+              }
+              if(GroupCallingNum%APIPOC_Group_Num==0||GroupCallingNum==GetAllGroupNum())//按up键换组时，处于最大群组数=5临界时，获取一次群组列表，计数+1
+              {
+                  DISPLAY_Show(d_getting_info);
+                  PocCmdDrvobj.getting_info_flag=KEYDOWN;
+                  ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
+              }
+              else//正常状态
+              {
+                changing_group_voice_and_display(GroupCallingNum-1);//换组时播报和显示当前组名
+              }
+            }
+#if 0
             KeyUpDownCount--;
             GroupCallingNum=GetNowWorkingGroupXuhao()+KeyUpDownCount;
             if(GroupCallingNum<0)
             {
-              GroupCallingNum=GetAllGroupNum()-1;
-              KeyUpDownCount=GetAllGroupNum()-1-GetNowWorkingGroupXuhao();//
+              GroupCallingNum=GetAllGroupXuhao()-1;
+              KeyUpDownCount=GetAllGroupXuhao()-1-GetNowWorkingGroupXuhao();//
             }
-            VOICE_Play(AllGroupName);
-            DISPLAY_Show(d_AllGroupName);
+            changing_group_voice_and_display(GroupCallingNum);//换组时播报和显示当前组名
+#endif
             KeyDownUpChoose_GroupOrUser_Flag=1;
           }
         }
@@ -148,15 +168,46 @@ void keyboard_process(void)
           }
           else
           {
-            KeyUpDownCount++;
-            GroupCallingNum=GetNowWorkingGroupXuhao()+KeyUpDownCount;
-            if(GroupCallingNum>GetAllGroupNum()-1)
+            if(PocCmdDrvobj.first_exchange_group_flag==FALSE)//第一次换组
             {
-              GroupCallingNum=0;
-              KeyUpDownCount=-GetNowWorkingGroupXuhao();
+              GroupCallingNum++;
+              if(GroupCallingNum>GetAllGroupNum())//
+              {
+                GroupCallingNum=1;
+              }
+              if(GroupCallingNum%APIPOC_Group_Num==1)//按up键换组时，处于最大群组数=5临界时，获取一次群组列表，计数+1
+              {
+                  DISPLAY_Show(d_getting_info);
+                  PocCmdDrvobj.getting_info_flag=KEYUP;
+                  ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
+              }
+              else//正常状态
+              {
+                changing_group_voice_and_display(GroupCallingNum-1);//换组时播报和显示当前组名
+              }
             }
-            VOICE_Play(AllGroupName);
-            DISPLAY_Show(d_AllGroupName);
+#if 0 //暂时屏蔽有需要再加
+            else//第一次换组后记录当前群组名的序号，以后换组按上下键即可从当前群组位置换上一组、下一组
+            {
+              KeyUpDownCount++;
+              GroupCallingNum=GetNowWorkingGroupXuhao()+KeyUpDownCount;
+              if(GroupCallingNum>GetAllGroupXuhao()-1)
+              {
+                GroupCallingNum=0;
+                KeyUpDownCount=-GetNowWorkingGroupXuhao();
+              }
+              if(GroupCallingNum%APIPOC_Group_Num==0)//按up键换组时，处于最大群组数=5临界时，获取一次群组列表，计数+1
+              {
+                DISPLAY_Show(d_getting_info);
+                PocCmdDrvobj.getting_info_flag=TRUE;
+                ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
+              }
+              else//正常状态
+              {
+                changing_group_voice_and_display(GroupCallingNum);//换组时播报和显示当前组名
+              }
+            }
+#endif
             KeyDownUpChoose_GroupOrUser_Flag=1;
           }
         }
@@ -377,7 +428,7 @@ void keyboard_process(void)
           KeyDownUpChoose_GroupOrUser_Flag=0;
           api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择对应空图标
           KeyUpDownCount=0;
-
+          PocCmdDrvobj.getting_info_flag=KEYNONE;//清除获取群组或用户名标志位
   #if 1//报警时按返回键退出
           set_poc_receive_sos_statas(FALSE);
           //BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
@@ -798,3 +849,9 @@ void keyboard_process(void)
     }
 }
 
+void changing_group_voice_and_display(u8 a)
+{
+  groupCallingcount=a%APIPOC_Group_Num;
+  VOICE_Play(AllGroupName);
+  DISPLAY_Show(d_AllGroupName);
+}

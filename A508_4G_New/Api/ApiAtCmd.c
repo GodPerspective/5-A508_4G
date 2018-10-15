@@ -18,8 +18,8 @@ const u8 *cTxCGDCONT_SET8        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET9       ="AT+CGDCONT=1,\"IP\",\"\"";//
 #endif
 
-
-
+const u8 *cTxPOCID              ="AT^POCID=2";
+const u8 *cTxZICCID             ="AT+ZICCID?";
 const u8 *cTxCGDCONT_READ       ="at+cgdcont?";
 const u8 *cTxPOWERUP            ="at+cfun=1";
 const u8 *cTxCGACT              ="at+cgact=1,1";
@@ -202,6 +202,13 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
   case ATCOMM_SetNetworkWcdmaOnly:
     DrvGD83_UART_TxCommand((u8*)cTxSetNetworkWcdmaOnly, strlen((char const*)cTxSetNetworkWcdmaOnly));
     break;
+  case ATCOMM_ZICCID:
+    DrvGD83_UART_TxCommand((u8*)cTxZICCID, strlen((char const*)cTxZICCID));
+    break;
+  case ATCOMM_POCID:
+    DrvGD83_UART_TxCommand((u8*)cTxPOCID, strlen((char const*)cTxPOCID));
+    
+    break;
   default:
     break;
   }
@@ -305,6 +312,10 @@ void ApiAtCmd_10msRenew(void)
     ucRet = memcmp(pBuf, cRxZMSRI, 5);
     if(ucRet==0x00)
     {
+      if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)
+      {
+        TaskDrvobj.Id = TASK_LOGIN;
+      }
       AtCmdDrvobj.Msg.Bits.bCommunicationTest=1;
     }
 /****信号获取及判断CSQ-测试ok*********************/

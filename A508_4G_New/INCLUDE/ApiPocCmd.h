@@ -6,8 +6,8 @@
 #define DrvMC8332_UseId_Len	        200//define UART Tx buffer length value
 #define APIPOC_GroupName_Len            64+5//unicode只存前2位，00不存，32/2=16,屏幕最多显示16个字符
 #define APIPOC_UserName_Len             64+5
-#define APIPOC_Group_Num                10
-#define APIPOC_User_Num                 10
+#define APIPOC_Group_Num                5
+#define APIPOC_User_Num                 5
 typedef enum{
   OffLine       =0x00,
   Landing       =0x01,
@@ -20,6 +20,12 @@ typedef enum{
   EnterGroup    =0x01,
   InGroup       =0x02
 }GroupStatsType;
+
+typedef enum{
+  KEYNONE    =0x00,
+  KEYUP      =0x01,
+  KEYDOWN    =0x02
+}KEYUPDOWNType;
 
 typedef enum{
   ReceivedNone          = 0x00,
@@ -126,8 +132,13 @@ typedef struct{
   u8 LocalUserNameForVoiceBuf[APIPOC_UserName_Len*2+10];
   u16 offline_user_count;
   u16 all_user_num;//所有成员（包括离线）
+  u16 group_num_max;//群组数
   u16 GroupXuhao;
   u16 UserXuhao;
+  u8 group_list_count;
+  u8 getting_group_all_done_flag;
+  KEYUPDOWNType getting_info_flag;
+  bool first_exchange_group_flag;
   u8 GroupIdBuf[10];
   u8 UserIdBuf[8];
   u8 gps_info_report[45];
@@ -206,6 +217,7 @@ extern u8 *GetLocalUserNameForDisplay(void);//本机用户：显示屏
 extern u8 *GetReceiveMessagesUserNameForDisplay(void);//发送短信的用户：显示屏
 extern u16 GetNowWorkingGroupXuhao(void);
 extern u16 GetAllGroupNum(void);
+extern u16 GetAllGroupXuhao(void);
 extern u16 GetAllUserNum(void);
 extern u8 *GetAllGroupNameForVoice(u8 a);
 extern u8 *GetAllUserNameForVoice(u8 a);//所有用户：播报

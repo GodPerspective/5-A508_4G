@@ -115,7 +115,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucABELL,strlen((char const*)ucABELL));//播报欧标广域对讲机
       break;
     case AllGroupName:
-      VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(GroupCallingNum),strlen((char const*)GetAllGroupNameForVoice(GroupCallingNum)));
+      VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(groupCallingcount),strlen((char const*)GetAllGroupNameForVoice(groupCallingcount)));
       break;
     case GroupSelected:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucGroupSelected,strlen((char const*)ucGroupSelected));//英文播报：Group Selected
@@ -216,7 +216,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucABELL2,strlen((char const*)ucABELL2));//播报欧标广域对讲机
       break;
     case AllGroupName:
-      VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(GroupCallingNum),strlen((char const*)GetAllGroupNameForVoice(GroupCallingNum)));
+      VOICE_SetOutput(ATVOICE_FreePlay,GetAllGroupNameForVoice(groupCallingcount),strlen((char const*)GetAllGroupNameForVoice(groupCallingcount)));
       break;
     case GroupSelected:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucGroupSelected2,strlen((char const*)ucGroupSelected2));//英文播报：Group Selected

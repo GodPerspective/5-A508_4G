@@ -60,7 +60,9 @@ typedef enum{
   ATCOMM_SetNetworkAuto         = 0x0C,
   ATCOMM_SetNetworkWcdmaOnly    = 0x0D,
   ATCOMM_SetNetworkGsmOnly      = 0x0E,
-  ATCOMM_ZGACT0                 = 0x0F
+  ATCOMM_ZGACT0                 = 0x0F,
+  ATCOMM_ZICCID                 = 0x10,
+  ATCOMM_POCID                  = 0x11
 }AtCommType;
 
 
