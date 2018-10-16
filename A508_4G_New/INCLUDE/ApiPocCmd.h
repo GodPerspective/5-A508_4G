@@ -136,7 +136,9 @@ typedef struct{
   u16 GroupXuhao;
   u16 UserXuhao;
   u8 group_list_count;
+  u8 user_list_count;
   u8 getting_group_all_done_flag;
+  u8 getting_user_all_done_flag;
   KEYUPDOWNType getting_info_flag;
   bool first_exchange_group_flag;
   u8 GroupIdBuf[10];
@@ -219,6 +221,7 @@ extern u16 GetNowWorkingGroupXuhao(void);
 extern u16 GetAllGroupNum(void);
 extern u16 GetAllGroupXuhao(void);
 extern u16 GetAllUserNum(void);
+extern u16 GetAllOnlineUserNum(void);
 extern u8 *GetAllGroupNameForVoice(u8 a);
 extern u8 *GetAllUserNameForVoice(u8 a);//所有用户：播报
 extern u8 *GetLocalUserNameForVoice(void);//本机用户：播报

@@ -9,6 +9,7 @@ u8 MenuModeCount=1;
 s8 KeyUpDownCount=0;//组呼上下键计数
 s8 GroupCallingNum=0;//取决于最大群组数大小
 u8 groupCallingcount=0;//由GroupCallingNum换算，范围0-4；
+u8 user_calling_count=0;//由PersonalCallingNum换算，范围0-4；
 u8 VoiceType_FreehandOrHandset_Flag=0;
 u8 KeyDownUpChoose_GroupOrUser_Flag=0;
 bool LockingState_EnterOK_Flag=FALSE;
@@ -66,15 +67,22 @@ void keyboard_process(void)
           api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
           if(KEYCMD_PersonalKeyMode()==TRUE)//单呼模式
           {
-            KeyPersonalCallingCount--;
-            PersonalCallingNum=KeyPersonalCallingCount;
+            PersonalCallingNum--;
             if(PersonalCallingNum<0)
             {
-              PersonalCallingNum=GetAllUserNum()-1;
-              KeyPersonalCallingCount=GetAllUserNum()-1;
+              PersonalCallingNum=GetAllOnlineUserNum()-1;
             }
-            VOICE_Play(AllUserName);//播报按上键之后对应的用户名
-            DISPLAY_Show(d_AllUserName);
+            if((PersonalCallingNum+1)%APIPOC_User_Num==0||PersonalCallingNum+1==GetAllOnlineUserNum())//按up键换组时，处于最大群组数=5临界时，获取一次群组列表，计数+1
+            {
+                DISPLAY_Show(d_getting_info);
+                PocCmdDrvobj.getting_info_flag=KEYUP;
+                ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
+            }
+            else//正常状态
+            {
+              changing_user_voice_and_display(PersonalCallingNum);//播报选中用户名
+            }
+            KeyDownUpChoose_GroupOrUser_Flag=2;
           }
           else
           {
@@ -155,15 +163,21 @@ void keyboard_process(void)
           api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
           if(KEYCMD_PersonalKeyMode()==TRUE)//单呼模式
           {
-            KeyPersonalCallingCount++;
-            PersonalCallingNum=KeyPersonalCallingCount;
-            if(PersonalCallingNum>GetAllUserNum()-1)
+            PersonalCallingNum++;
+            if(PersonalCallingNum>GetAllOnlineUserNum()-1)
             {
               PersonalCallingNum=0;
-              KeyPersonalCallingCount=0;
             }
-            VOICE_Play(AllUserName);//播报按上键之后对应的用户名
-            DISPLAY_Show(d_AllUserName);
+            if(PersonalCallingNum%APIPOC_User_Num==0)//按up键换组时，处于最大群组数=5临界时，获取一次群组列表，计数+1
+            {
+                DISPLAY_Show(d_getting_info);
+                PocCmdDrvobj.getting_info_flag=KEYUP;
+                ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
+            }
+            else//正常状态
+            {
+              changing_user_voice_and_display(PersonalCallingNum);//播报选中用户名
+            }
             KeyDownUpChoose_GroupOrUser_Flag=2;
           }
           else
@@ -854,4 +868,10 @@ void changing_group_voice_and_display(u8 a)
   groupCallingcount=a%APIPOC_Group_Num;
   VOICE_Play(AllGroupName);
   DISPLAY_Show(d_AllGroupName);
+}
+void changing_user_voice_and_display(u8 a)
+{
+  user_calling_count=a%APIPOC_User_Num;
+  VOICE_Play(AllUserName);
+  DISPLAY_Show(d_AllUserName);
 }

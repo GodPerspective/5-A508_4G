@@ -158,7 +158,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucHandfreeMode,strlen((char const*)ucHandfreeMode));//免提模式
       break;
     case AllUserName:
-      VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(PersonalCallingNum),strlen((char const*)GetAllUserNameForVoice(PersonalCallingNum)));
+      VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(user_calling_count),strlen((char const*)GetAllUserNameForVoice(user_calling_count)));
       break;
     case NoOnlineUser:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucNoOnlineUser,strlen((char const*)ucNoOnlineUser));//No Online User
@@ -259,7 +259,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucHandfreeMode2,strlen((char const*)ucHandfreeMode2));//免提模式
       break;
     case AllUserName:
-      VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(PersonalCallingNum),strlen((char const*)GetAllUserNameForVoice(PersonalCallingNum)));
+      VOICE_SetOutput(ATVOICE_FreePlay,GetAllUserNameForVoice(user_calling_count),strlen((char const*)GetAllUserNameForVoice(user_calling_count)));
       break;
     case NoOnlineUser:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucNoOnlineUser2,strlen((char const*)ucNoOnlineUser2));//No Online User

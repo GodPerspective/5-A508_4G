@@ -23,8 +23,9 @@ void main(void)
     {
      case TASK_LOGIN:
       Task_login_progress();
-      if(PocCmdDrvobj.States.GroupStats==EnterGroup)
+      if(poccmd_states_poc_status()==LandSuccess)
       {
+        DISPLAY_Show(d_not_in_groups);
         TaskDrvobj.Id=TASK_NORMAL;
         TaskDrvobj.login_step=0;
       }

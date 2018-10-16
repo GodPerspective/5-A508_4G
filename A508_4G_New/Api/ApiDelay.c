@@ -805,6 +805,25 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       }
       PocCmdDrvobj.getting_info_flag=KEYNONE;
     }
+/*****获取中：换组时更新组列表后播报及显示当前选中的用户名************/
+    if(PocCmdDrvobj.getting_user_all_done_flag==3)
+    {
+      PocCmdDrvobj.getting_user_all_done_flag=0;
+      switch(PocCmdDrvobj.getting_info_flag)
+      {
+      case KEYUP:
+        changing_user_voice_and_display(PersonalCallingNum);
+        break;
+      case KEYDOWN:
+        changing_user_voice_and_display(PersonalCallingNum);
+        break;
+      default:
+        break;
+      }
+      PocCmdDrvobj.getting_info_flag=KEYNONE;
+    }
+    
+    
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 
 /******登录状态下的低电报警**********************************************/

@@ -21,7 +21,7 @@ void Task_login_progress(void)
     {
       //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)ATCOMM_POCID, strlen((char const*)ATCOMM_POCID));
       ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
-      ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);
+      //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
       TaskDrvobj.login_step=1;
     }
     break;
@@ -103,6 +103,7 @@ void Task_normal_progress(void)
   {
     if(ApiPocCmd_GroupStates()==EnterGroup)
     {
+      api_disp_icoid_output( eICO_IDPOWERM, TRUE, TRUE);//显示组呼图标
       api_lcd_pwr_on_hint(0,2,GBK,"                ");
       api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());
       ApiPocCmd_GroupStatesSet(InGroup);
@@ -118,6 +119,7 @@ void Task_normal_progress(void)
   {
     if(ApiPocCmd_GroupStates()==EnterGroup)
     {
+      api_disp_icoid_output( eICO_IDPOWERH, TRUE, TRUE);//显示个呼图标
       DISPLAY_Show(d_individualcall);
       ApiPocCmd_GroupStatesSet(InGroup);
     }
@@ -149,7 +151,14 @@ void Task_normal_progress(void)
     ApiPocCmd_SetKeyPttState(0);
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//默认无发射无接收信号图标
     api_lcd_pwr_on_hint(0,2,GBK,"                ");
-    api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组
+    if(get_current_working_status()==m_group_mode)//组呼模式
+    {
+      api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组
+    }
+    else
+    {
+      DISPLAY_Show(d_individualcall);
+    }
     api_disp_all_screen_refresh();// 全屏统一刷新
     break;
   default:

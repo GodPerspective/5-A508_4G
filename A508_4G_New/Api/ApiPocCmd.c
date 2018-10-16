@@ -206,6 +206,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     }
     COML_StringReverse(4,cBuf);
     DrvGD83_UART_TxCommand(cBuf,4);
+    PocCmdDrvobj.getting_user_all_done_flag=1;
 #endif
     break;
   case PocComm_SetGps:
@@ -312,7 +313,8 @@ void ApiPocCmd_10msRenew(void)
   u8 * pBuf;
   u32 ucNameId;
   u32 ucUserId;
-  u32 temp_GroupXuhao=0;
+  u8 temp_GroupXuhao=0;
+  u8 temp_UserXuhao=0;
   while((Len = DrvMC8332_PocNotify_Queue_front(&pBuf)) != 0x00)
   {
     ucId = COML_AscToHex(pBuf, 0x02);
@@ -360,12 +362,28 @@ void ApiPocCmd_10msRenew(void)
 
       break;
     case 0x0e://获取组成员信息
-      PocCmdDrvobj.all_user_num=COML_AscToHex(pBuf+10,0x02);
-      if(no_online_user()==TRUE)
+      if(PocCmdDrvobj.getting_user_all_done_flag==2)//解决发0e时进入的问题
       {
-        VOICE_Play(NoOnlineUser);//无在线成员
-        //TASK_PersonalKeyModeSet(FALSE);
+        PocCmdDrvobj.all_user_num=COML_AscToHex(pBuf+10,0x02);
+        PocCmdDrvobj.getting_user_all_done_flag=3;
+        if(no_online_user()==TRUE)
+        {
+          VOICE_Play(NoOnlineUser);//无在线成员
+        }
       }
+      else if(PocCmdDrvobj.getting_user_all_done_flag==1)
+      {
+        if(PocCmdDrvobj.all_user_num==0)
+        {
+          PocCmdDrvobj.getting_user_all_done_flag=0;
+          VOICE_Play(NoOnlineUser);//无在线成员
+        }
+      }
+      else
+      {
+        
+      }
+
       break;
     case 0x11://上报经纬度
       break;
@@ -456,6 +474,7 @@ void ApiPocCmd_10msRenew(void)
       break;
     case 0x81://组成员列表
       ucId=COML_AscToHex(pBuf+2, 0x02);
+      PocCmdDrvobj.getting_user_all_done_flag=2;
       if(ucId==0x01)//如果成员不在线则不获取群组名
       {
         PocCmdDrvobj.offline_user_count++;
@@ -464,55 +483,73 @@ void ApiPocCmd_10msRenew(void)
       {
         ucUserId=COML_AscToHex(pBuf+12,0x08);
         PocCmdDrvobj.UserXuhao=COML_AscToHex(pBuf+8,0x04);
-        if(PocCmdDrvobj.UserXuhao+1>APIPOC_User_Num)//当在线用户数大于最大用户数，则不保存
+        switch(PocCmdDrvobj.getting_info_flag)
         {
-          PocCmdDrvobj.UserXuhao=APIPOC_User_Num-1;
+        case KEYUP:
+          PocCmdDrvobj.user_list_count=(u8)(PersonalCallingNum/APIPOC_User_Num);//得到接下来应该获取的组列表(0:1-5 1:6-10 2:11-15)
+          break;
+        case KEYDOWN:
+          if((PersonalCallingNum==GetAllUserNum())&&(GetAllUserNum()%APIPOC_User_Num!=0))//解决当最大群组数不能被整除时，获取群列表计数不对
+          {
+            PocCmdDrvobj.user_list_count=(u8)(PersonalCallingNum/APIPOC_User_Num);//得到接下来应该获取的组列表(0:1-5 1:6-10 2:11-15)
+          }
+          else
+          {
+            PocCmdDrvobj.user_list_count=(u8)(PersonalCallingNum/APIPOC_User_Num)-1;//得到接下来应该获取的组列表(0:1-5 1:6-10 2:11-15)
+          }
+          break;
+        default:
+          break;
         }
-        else//当在线用户数小于最大用户数，则保存
+        if(PocCmdDrvobj.UserXuhao>=PocCmdDrvobj.user_list_count*APIPOC_User_Num
+         &&PocCmdDrvobj.UserXuhao<(PocCmdDrvobj.user_list_count+1)*APIPOC_User_Num)//当组序号在要求范围内，则保存群组名
         {
-          PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
+          temp_UserXuhao=PocCmdDrvobj.UserXuhao-PocCmdDrvobj.user_list_count*APIPOC_User_Num;//temp_UserXuhao 范围0-5
+        
+          PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].ID=ucUserId;//保存群组ID，从[0]开始存
           switch(AtCmdDrvobj.language_set)
           {
           case m_CHINESE:
 
             if(Len >= 20)//如果群组id后面还有群组名
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20);//
-              if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen= (Len-20);//
+              if(PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen > APIPOC_UserName_Len)
               {
-                PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+                PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen = APIPOC_UserName_Len;
               }
             }
             else//无群组名
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen = 0x00;
             }
-            for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
+            for(i = 0x00; i<PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen; i++)
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[i] = pBuf[i+20];//存入获取的群组名
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].Name[i] = pBuf[i+20];//存入获取的群组名
             }
             break;
           case m_ENGLISH:
 
             if(Len >= 20)//如果群组id后面还有群组名
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen= (Len-20)/2;//英文字符只存一半
-              if(PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen > APIPOC_UserName_Len)
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen= (Len-20)/2;//英文字符只存一半
+              if(PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen > APIPOC_UserName_Len)
               {
-                PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = APIPOC_UserName_Len;
+                PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen = APIPOC_UserName_Len;
               }
             }
             else//无群组名
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen = 0x00;
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen = 0x00;
             }
-            for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].NameLen; i++)
+            for(i = 0x00; 2*i<PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].NameLen; i++)
             {
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i] = pBuf[4*i+20];//存入获取的群组名
-              PocCmdDrvobj.NameInfo.AllGroupUserName[PocCmdDrvobj.UserXuhao].Name[2*i+1] = pBuf[4*i+1+20];
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].Name[2*i] = pBuf[4*i+20];//存入获取的群组名
+              PocCmdDrvobj.NameInfo.AllGroupUserName[temp_UserXuhao].Name[2*i+1] = pBuf[4*i+1+20];
             }
             break;
           }
+          
         }
       }
       break;
@@ -1213,7 +1250,13 @@ u16 GetAllGroupXuhao(void)
 //获取用户的最大组索引，用户个数
 u16 GetAllUserNum(void)
 {
-  return PocCmdDrvobj.UserXuhao+1;
+  return PocCmdDrvobj.all_user_num;
+}
+
+//获取用户的最大组索引，用户个数
+u16 GetAllOnlineUserNum(void)
+{
+  return (PocCmdDrvobj.all_user_num-PocCmdDrvobj.offline_user_count);
 }
 
 //判断是否群组成员在线

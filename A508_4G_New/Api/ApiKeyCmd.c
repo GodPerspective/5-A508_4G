@@ -35,6 +35,7 @@ void key_process(void)
 /*********按键Key2*****************************************************************************/
     if(get_key_2_states()==m_key_short_press)//个呼键
     {
+      PersonalCallingNum=0;//清空个呼计数位
       KeyCmdDrvObj.status.PersonalKeyMode=TRUE;
       VOICE_Play(PersonalMode);
       DISPLAY_Show(d_PersonalMode);
@@ -45,8 +46,12 @@ void key_process(void)
     }
     else if(get_key_2_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
     {
-      Set_RedLed(ON);
-      Delay_100ms(10);
+      KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
+      VOICE_Play(GroupMode);
+      //DISPLAY_Show(d_PersonalMode);
+      //ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
+      KeyDownUpChoose_GroupOrUser_Flag=1;
+      api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
       set_key_2_states(m_key_idle);
     }
     else
