@@ -5,7 +5,6 @@
 #define DEL_IDLE		0x00
 #define DEL_RUN			0x01
 
-#if 1//ZM389
 typedef struct {
   union {
     struct {
@@ -32,9 +31,7 @@ typedef struct {
   struct{
     u8 alarm_count;
     u8 nosimcard_count;
-    u8 lte_no_cell_count;
     u8 csq_count;
-    u8 network_search_count;
     u8 poc_status_count;
     u8 poc_first_enter_into_group_flag_count;
     u16 TimeCount_Light;
@@ -55,58 +52,6 @@ typedef struct {
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
 }DEL_DRV;
-#else
-typedef struct {
-  union {
-    struct {
-      u16 b1ms  	: 1;
-      u16 b10ms 	: 1;
-      u16 b100ms	: 1;
-      u16 b500ms	: 1;
-      u16 b1S		: 1;
-      u16 bTimeSet	: 1;
-      u16 bTime0	: 1;
-      u16 bTime1	: 1;
-      u16 b500Alternate : 1;
-      u16		: 7;
-    }Bit;
-    u16 Byte;
-  }Msg;
-  u8   c10msLen;
-  u8   c100msLen;
-  u8   c500msLen;
-  u8   c1SLen;
-  u8   c2SLen;
-  u16  iTimer0;
-  u16  iTimer1;
-  struct{
-    u8 TimeCount_Light;
-    u8 CSQTimeCount;
-    u8 WriteFreqTimeCount;
-    u8 LobatteryTask_StartCount;
-    u8 PrimaryLowPowerCount;
-    u8 SignalPoorCount;
-    u8 TimeCount2;
-    u8 CIMICount;
-    u8 NoCardCount;
-    u8 PPPStatusOpenCount;
-    u8 ToneStateCount;
-    u8 ReceivedVoicePlayStatesCount;
-    u8 beidou_valid_count;
-    u8 poc_status_count;
-    u8 choose_write_freq_or_gps_count;
-    u8 receive_sos_statas_count;
-    u8 ztts_states_intermediate_count;
-    u8 ztts_states_count ;
-    u8 alarm_count;
-    u8 poc_first_enter_into_group_flag_count;
-    u8 poc_gps_value_for_display_flag_count;
-  }Count;
-  bool poc_gps_value_for_display_flag2;
-  u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
-  u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
-}DEL_DRV;
-#endif
 
 u16 TimeCount;//超时时间
 u16 TimeCount3;
@@ -121,58 +66,48 @@ static void DEL_1msProcess(void);
 static void DEL_10msProcess(void);
 static void DEL_TimerRenew(void);
 
-#if 1//ZM389
 void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
 {
-  Tim3_Timer_Init();
-  //C_TEST_OUT_SET();
+
   DelDrvObj.Msg.Byte 	= 0x00;
-  DelDrvObj.c10msLen  = DEL10MSLEN;
-  DelDrvObj.c100msLen = 0x0A;
-  DelDrvObj.c500msLen = 0x05;
-  DelDrvObj.c1SLen    = 0x01;
-  DelDrvObj.c2SLen    = 0x02;
-  
+  DelDrvObj.c10msLen    = DEL10MSLEN;
+  DelDrvObj.c100msLen   = 0x0A;
+  DelDrvObj.c500msLen   = 0x05;
+  DelDrvObj.c1SLen      = 0x01;
+  DelDrvObj.c2SLen      = 0x02;
+  DelDrvObj.iTimer0     = 0;
+  DelDrvObj.iTimer1     = 0;
+
   DelDrvObj.Count.alarm_count=0;
-  DelDrvObj.Count.csq_count=0;
-  DelDrvObj.Count.lte_no_cell_count=0;
   DelDrvObj.Count.nosimcard_count=0;
-}
-#else
-void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
-{
-  Tim3_Timer_Init();
-  C_TEST_OUT_SET();
-  DelDrvObj.Msg.Byte 	= 0x00;
-  DelDrvObj.c10msLen  = DEL10MSLEN;
-  DelDrvObj.c100msLen = 0x0A;
-  DelDrvObj.c500msLen = 0x05;
-  DelDrvObj.c1SLen    = 0x01;
-  DelDrvObj.c2SLen    = 0x02;
+  DelDrvObj.Count.csq_count=0;
+  DelDrvObj.Count.poc_status_count=0;
+  DelDrvObj.Count.poc_first_enter_into_group_flag_count=0;
+  DelDrvObj.Count.TimeCount_Light=0;
+  DelDrvObj.Count.TimeCount2=0;
+  DelDrvObj.Count.receive_sos_statas_count=0;
+  DelDrvObj.Count.login_step_6_count=0;
+  DelDrvObj.Count.sys_mode_count=0;
+  DelDrvObj.Count.network_activated_flag_count=0;
+  DelDrvObj.Count.ZGIPDNS_count=0;
+  DelDrvObj.Count.ZCONSTAT_count=0;
+  DelDrvObj.Count.ztts_states_intermediate_count=0;
+  DelDrvObj.Count.ztts_states_count=0;
+  DelDrvObj.Count.ReceivedVoicePlayStatesCount=0;
+  DelDrvObj.Count.ToneStateCount=0;
+  DelDrvObj.Count.get_ccid_count=0;
+  DelDrvObj.Count.get_cgdcont_count=0;
+  DelDrvObj.BacklightTimeBuf[0]=0;
+  DelDrvObj.KeylockTimeBuf[0]=0;
   
-  DelDrvObj.Count.TimeCount_Light = 0;
-  DelDrvObj.Count.CSQTimeCount = 0;
-  DelDrvObj.Count.WriteFreqTimeCount = 0;
-  DelDrvObj.Count.LobatteryTask_StartCount = 0;
-  DelDrvObj.Count.PrimaryLowPowerCount = 0;
-  DelDrvObj.Count.SignalPoorCount = 0;
-  DelDrvObj.Count.TimeCount2 = 0;
-  DelDrvObj.Count.CIMICount = 0;
-  DelDrvObj.Count.NoCardCount = 0;
-  DelDrvObj.Count.PPPStatusOpenCount = 0;
-  DelDrvObj.Count.ToneStateCount = 0;
-  DelDrvObj.Count.ReceivedVoicePlayStatesCount = 0;
-  DelDrvObj.Count.beidou_valid_count = 0;
-  DelDrvObj.Count.poc_status_count = 0;
-  DelDrvObj.Count.choose_write_freq_or_gps_count = 0;
-  DelDrvObj.Count.receive_sos_statas_count = 0;
-  DelDrvObj.Count.ztts_states_intermediate_count = 0;
-  DelDrvObj.Count.ztts_states_count = 0;
-  DelDrvObj.Count.alarm_count = 0;
-  DelDrvObj.Count.poc_first_enter_into_group_flag_count = 0;
-  DelDrvObj.Count.poc_gps_value_for_display_flag_count=0;
+  TimeCount=0;//超时时间
+  TimeCount3=0;
+  LockingState_Flag=FALSE;
+  BacklightTimeCount=0;//背光灯时间(需要设置进入eeprom)
+  KeylockTimeCount=0;
+  
+  Tim3_Timer_Init();
 }
-#endif
 
 void DEL_Interrupt(void)
 {
@@ -691,15 +626,15 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DISPLAY_Show(d_status_offline);
     }
-/*******收到离线指令过1分钟未登陆重启*******/
+/*******收到离线指令过2分钟未登陆重启*******/
     if(poccmd_states_poc_status()==OffLine)
     {
       DelDrvObj.Count.poc_status_count++;
       
-      if(DelDrvObj.Count.poc_status_count>2*60)
+      if(DelDrvObj.Count.poc_status_count>2*2*60)
       {
         DelDrvObj.Count.poc_status_count=0;
-        //main_init();//重启
+        main_all_init();//重启
       }
     }
     else

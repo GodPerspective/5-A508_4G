@@ -8,7 +8,13 @@ typedef struct{
 
 static KeyCmdDrv KeyCmdDrvObj;
 static void Key3_PlayVoice(void);
-//将APIKeyCMD修改为按键处理程序
+
+
+void ApiKeyCmd_PowerOnInitial(void)
+{
+  KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
+}
+
 void key_process(void)
 {
 /*********按键PTT*****************************************************************************/

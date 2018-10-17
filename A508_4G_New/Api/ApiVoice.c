@@ -1,8 +1,5 @@
 #include "AllHead.h"
 
-
-
-
 const u8 *ucPersonalMode                = "2a4e7c54216a0f5f";//个呼模式-
 const u8 *ucABELL                       = "276b0768f95bb28b3a67";//欧标对讲
 const u8 *ucGroupSelected               = "f25d09902d4e";//已选中-
@@ -67,35 +64,35 @@ const u8 *ucSet_network_gsm_only2        = "470053004d0020006f006e006c007900";//
 
 
 typedef struct{
-	union{
-		struct{
-			u16 bFreePlay		: 1;
-			u16 bCardError		: 1;
-			u16 bSingalError	: 1;
-			u16 bCheckNet		: 1;
-			u16 bLanding		: 1;
-			u16 bLandSuccess	: 1;
-			u16 bLowAlarm		: 1;
-			u16 bLowPowOff		: 1;
-			u16 bBattery		: 1;
-			u16			: 7;
-		}Bits;
-		u16 Byte;
-	}Msg;
-	struct{
-                u8 *buf;
-		u8 Len;
-	}FreePlayData;
-	u8 Timer;
+  union{
+    struct{
+      u16 bFreePlay     : 1;
+      u16 bCardError    : 1;
+      u16 bSingalError	: 1;
+      u16 bCheckNet     : 1;
+      u16 bLanding      : 1;
+      u16 bLandSuccess	: 1;
+      u16 bLowAlarm     : 1;
+      u16 bLowPowOff    : 1;
+      u16 bBattery      : 1;
+      u16               : 7;
+    }Bits;
+    u16 Byte;
+  }Msg;
+  struct{
+    u8 *buf;
+    u8 Len;
+  }FreePlayData;
+  u8 Timer;
 }VOICE_DRV;
 
 static VOICE_DRV VoiceDrvObj;
 
 void VOICE_PowerOnInitial(void)
 {
-	VoiceDrvObj.Msg.Byte = 0x00;
-	VoiceDrvObj.Timer = 0x00;
-	VoiceDrvObj.FreePlayData.Len = 0x00;
+  VoiceDrvObj.Msg.Byte = 0x00;
+  VoiceDrvObj.Timer = 0x00;
+  VoiceDrvObj.FreePlayData.Len = 0x00;
 }
 
 void VOICE_Play(VOICEPLAY_TYPE id)

@@ -1752,6 +1752,9 @@
       <name>$PROJ_DIR$\..\INCLUDE\GT20L16P1Y_D.h</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\INCLUDE\main.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\INCLUDE\sysclock.h</name>
     </file>
     <file>

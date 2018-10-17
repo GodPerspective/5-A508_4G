@@ -1,49 +1,15 @@
 #include "AllHead.h"
 #include <string.h>
 
-/*-----------------------------------------------------------------------------
- Macro Define (macro definitions used in this file internally)
------------------------------------------------------------------------------*/
-const u8 CHAR_HIGH[2][8]  = { 0x02, 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02,
-							  0x02, 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02 };
 
-const u8 CHAR_WIDTH[2][8] = { 0x08, 0x10, 0x08, 0x08, 0x08, 0x08, 0x10, 0x10,
-							  0x08, 0x10, 0x06, 0x08, 0x08, 0x08, 0x10, 0x10 };
-
-
-#define DISPRELAOD_TIMER_PERIOD ( 10*OS_TICKS_PER_10MS )  /* 定时周期，每100ms回调一次函数 */
-#define LCD_ALIAS_LEN_MAX 10
-u16 CharCode;
-typedef struct
-{
-	union
-	{
-		struct
-		{
-			u32	bRefresh	: 1;
-			u32	bAllRef		: 1;
-		}Bit;
-		u32	Byte;
-	}Msg;
-}DIS_DRV;
-
-//static DIS_DRV DisDrvObj;
-
-static void DISP_DataBuf(DISP_CHAR DisInfo, u8 *CharData);
-static void DISP_MulTypePro(DISP_CHAR CharInfo, u8 *CharData);
-static void DISP_MulTypePro2(DISP_CHAR CharInfo, u8 *CharData);//UNICODE显示
-/* ------------------------------------------------------------------------------- */
-/* 因编写以上代码时,以下函数尚未定义，故临时定义（便于编译通过），后续请重新编写   */
-/* ------------------------------------------------------------------------------- */
+const u8 CHAR_HIGH[2][8]  = { 0x02, 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02,0x02, 0x02, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02 };
+const u8 CHAR_WIDTH[2][8] = { 0x08, 0x10, 0x08, 0x08, 0x08, 0x08, 0x10, 0x10,0x08, 0x10, 0x06, 0x08, 0x08, 0x08, 0x10, 0x10 };
 const u8 BitTab[8] = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-
-u8 DisDataBit[64]  = {0};
-u8 DisDataBuf[512] = {0};
 const u8 Ico_DataBuf[32][32]=
 {
 {0x00,0xF8,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0xF8,0xE0,0x00,
- 0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//0-电池电量0
+0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//0-电池电量0
 
 {0x00,0xF8,0x08,0xE8,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0xF8,0xE0,0x00,
 0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//1-电池电量1
@@ -60,36 +26,14 @@ const u8 Ico_DataBuf[32][32]=
 {0x00,0xF8,0x08,0xE8,0x08,0xE8,0x08,0xE8,0x08,0xE8,0x08,0xE8,0x08,0xF8,0xE0,0x00,
 0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//5-电池电量5
 
-/*
-{0x00,0x00,0xE0,0x3C,0x22,0xA2,0xA2,0xA2,0xA2,0xA2,0x22,0x3C,0xE0,0x00,0x00,0x00,
-0x00,0x00,0x0F,0x08,0x08,0x08,0x08,0x0B,0x08,0x08,0x08,0x08,0x0F,0x00,0x00,0x00},//6
-
-{0x00,0x00,0xFC,0x0C,0x14,0x24,0x44,0x84,0x84,0x44,0x24,0x14,0x0C,0xFC,0x00,0x00,
-0x00,0x00,0x07,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x04,0x07,0x00,0x00},//7
- 
-{0x00,0x02,0x0E,0x12,0x22,0xFE,0x22,0x12,0x8E,0x02,0x00,0xF0,0x00,0x00,0xFE,0x00,
-0x00,0x00,0x00,0x00,0x00,0x0F,0x00,0x00,0x0F,0x00,0x00,0x0F,0x00,0x00,0x0F,0x00 },//8
- 
-{0x00,0x02,0x0E,0x12,0x22,0xFE,0x22,0x12,0x0E,0x02,0x00,0x00,0x00,0x00,0x00,0x00,
-0x00,0x00,0x00,0x00,0x00,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00 },//9
- 
-{0x00,0x00,0xB8,0x30,0x28,0x04,0x02,0x02,0x02,0x02,0x02,0x04,0x84,0x88,0xB0,0x00,
-0x00,0x00,0x01,0x02,0x04,0x04,0x08,0x08,0x08,0x08,0x08,0x04,0x02,0x01,0x03,0x00 },//10
- 
-{0x00,0x00,0xB8,0x30,0x28,0x04,0x42,0x42,0xF2,0x42,0x42,0x04,0x84,0x88,0xB0,0x00,
-0x00,0x00,0x01,0x02,0x04,0x04,0x08,0x08,0x09,0x08,0x08,0x04,0x02,0x01,0x03,0x00 },//11
- 
-{0x00,0xF8,0x08,0xF8,0x04,0x02,0xFE,0x00,0x10,0xE0,0x08,0xF0,0x04,0xF8,0x00,0x00,
-0x00,0x03,0x02,0x03,0x04,0x08,0x0F,0x00,0x01,0x00,0x02,0x01,0x04,0x03,0x00,0x00 },//12*/
-
 #if 1//国外版选显示为“s”
 {0X00,0X00,0X00,0X00,0X38,0X7C,0XEC,0XCC,0XCC,0X9C,0X00,0X00,0X00,0X00,0X00,0X00,
-0X00,0X00,0X00,0X00,0X07,0X06,0X06,0X06,0X07,0X03,0X00,0X00,0X00,0X00,0X00,0X00,//选//6
-},
+0X00,0X00,0X00,0X00,0X07,0X06,0X06,0X06,0X07,0X03,0X00,0X00,0X00,0X00,0X00,0X00},//选//6
+
 #else
 {0X00,0X00,0X10,0X11,0XF2,0X00,0X28,0X26,0XE4,0X3F,0XE4,0X24,0X20,0X00,0X00,0X00,
-0X00,0X00,0X08,0X04,0X03,0X04,0X0A,0X09,0X08,0X08,0X09,0X0A,0X0B,0X00,0X00,0X00,//选//6
-},
+0X00,0X00,0X08,0X04,0X03,0X04,0X0A,0X09,0X08,0X08,0X09,0X0A,0X0B,0X00,0X00,0X00},//选//6
+
 #endif
 
 {0X04,0X0C,0X14,0XFC,0X14,0X0C,0X04,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
@@ -110,7 +54,6 @@ const u8 Ico_DataBuf[32][32]=
 {0X04,0X0C,0X14,0XFC,0X14,0X0C,0X04,0X00,0X00,0XC0,0X00,0XF0,0X00,0XFC,0X00,0X00,
 0X00,0X00,0X00,0X0F,0X00,0X0C,0X00,0X0F,0X00,0X0F,0X00,0X0F,0X00,0X0F,0X00,0X00},//5格信号//12
 
- 
 {0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00},//无发射无接收状态（空图标）//13
  
@@ -120,12 +63,11 @@ const u8 Ico_DataBuf[32][32]=
 {0X82,0X44,0X39,0X82,0X7C,0X00,0X10,0XB8,0X10,0X00,0X7C,0X82,0X39,0X44,0X82,0X00,
 0X00,0X00,0X01,0X00,0X00,0X00,0X0C,0X0F,0X0C,0X00,0X00,0X00,0X01,0X00,0X00,0X00},//接收新//15
 
- {0X00,0X00,0X00,0X00,0X48,0X48,0XB8,0X00,0XE0,0X10,0X08,0X48,0X48,0XD0,0X00,0X00,
+{0X00,0X00,0X00,0X00,0X48,0X48,0XB8,0X00,0XE0,0X10,0X08,0X48,0X48,0XD0,0X00,0X00,
 0X00,0X00,0X00,0X00,0X02,0X02,0X01,0X00,0X00,0X01,0X02,0X02,0X02,0X03,0X00,0X00},//3G//16
 
 {0X00,0X00,0X00,0X10,0X08,0X88,0X70,0X00,0XE0,0X10,0X08,0X48,0X48,0XD0,0X00,0X00,
 0X00,0X00,0X00,0X02,0X03,0X02,0X02,0X00,0X00,0X01,0X02,0X02,0X02,0X03,0X00,0X00},//2G//17
-
  
 {0XC0,0XE0,0XEC,0XFE,0XFE,0XEC,0XC0,0X80,0XC0,0XEC,0XFE,0XFE,0XEC,0XE0,0XC0,0X00,
 0X01,0X03,0X03,0X03,0X03,0X03,0X01,0X01,0X01,0X03,0X03,0X03,0X03,0X03,0X01,0X00},//组呼//18
@@ -145,10 +87,8 @@ const u8 Ico_DataBuf[32][32]=
 {0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00},//空图标//23
  
- 
 {0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,
-0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,//空白图标（与选ico对应）//24
-},
+0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00},//空白图标（与选ico对应）//24
 
 {0X00,0XC0,0XA0,0X90,0X8C,0XFC,0X80,0X00,0XF0,0X08,0X04,0X44,0X44,0XC8,0X00,0X00,
 0X00,0X00,0X00,0X00,0X00,0X03,0X00,0X00,0X00,0X01,0X02,0X02,0X02,0X03,0X00,0X00},//25-4G
@@ -169,9 +109,8 @@ const u8 Ico_DataBuf[32][32]=
 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00},//30-x
  
 {0x00,0xF8,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0xF8,0xE0,0x00,
- 0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//31
+0x00,0x03,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x02,0x03,0x00,0x00},//31
 };
-
 
 const u8 *dp_abell              = "   欧标对讲机   ";//1
 const u8 *dp_personal_mode      = "   个呼模式     ";//2
@@ -240,6 +179,21 @@ const u8 *dp_all_unknow_network2 = "All NET unknow  ";//
 const u8 *dp_no_service2         = "No service      ";//
 const u8 *dp_getting_info2       = "getting info... ";
 const u8 *dp_not_in_groups2      = "Not in groups   ";
+
+u8 DisDataBit[64]  = {0};
+u8 DisDataBuf[512] = {0};
+
+u16 CharCode;
+
+static void DISP_DataBuf(DISP_CHAR DisInfo, u8 *CharData);
+static void DISP_MulTypePro(DISP_CHAR CharInfo, u8 *CharData);
+static void DISP_MulTypePro2(DISP_CHAR CharInfo, u8 *CharData);//UNICODE显示
+
+
+void ApiDisplay_PowerOnInitial(void)
+{
+  CharCode=0;
+}
 void DISPLAY_Show(DISPLAY_TYPE id)
 {
   switch(AtCmdDrvobj.language_set)
@@ -474,24 +428,19 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     break;
   }
 }
-/*******************************************************************************
-* Description	: char-data display process
-* Input			: CharInfo	: char data location information and dispaly char type
-				: CharData	: display char data
-* Output		: void
-* Return		: void
-* Others		: void
-********************************************************************************/
+
 void api_disp_char_output(DISP_CHAR CharInfo, u8 *CharData)
 {	
 	DISP_MulTypePro(CharInfo, CharData);
 	return;
 }
+
 void api_disp_char_output2(DISP_CHAR CharInfo, u8 *CharData)//UNICODE显示，群组信息显示屏显示使用
 {	
 	DISP_MulTypePro2(CharInfo, CharData);
 	return;
 }
+
 void api_lcd_pwr_on_hint(u8 x,u8 y,ENCODETYPE encode,u8 *CharData)
 {
 	DISP_CHAR stCharInfo;
@@ -586,8 +535,8 @@ void api_disp_all_screen_refresh(void)
 ********************************************************************************/
 static void DISP_MulTypePro(DISP_CHAR CharInfo, u8 *CharData)
 {
-  u8 CharCodeH;
-  u8 CharCodeL;
+  //u8 CharCodeH;
+  //u8 CharCodeL;
   u16 CharCode;
   DISP_CHAR DisInfo;
   u8  iLen = 0;//34
@@ -610,8 +559,8 @@ static void DISP_MulTypePro(DISP_CHAR CharInfo, u8 *CharData)
         CharCode |= (*CharData);
         DisInfo.DispType = DISP_IDCN1516;
         DisInfo.DispLenth++;//当显示中文，长度为16时的显示问题
-        CharCodeH=(CharCode&0xff00)>>8;
-        CharCodeL=CharCode&0x00ff;
+        //CharCodeH=(CharCode&0xff00)>>8;
+        //CharCodeL=CharCode&0x00ff;
       }
       //GB2312_16_GetData(0xa3,0x65+0x80,CharBuf);//CharData[0]
       //GB2312_16_GetData(0xa3,0x42+0x80,CharBuf);
@@ -717,17 +666,10 @@ static void DISP_DataBuf(DISP_CHAR DisInfo, u8 *CharData)
 ********************************************************************************/
 void api_disp_icoid_output(u8 IcoIdIndex, bool IcoDefault,bool on_off)
 {
-	u16 IcoDataLen;
-	ICO_INF	IcoInf;
 	DISP_ICO IcoInfo;
 	u8 IcoDataBuf[LCD_ICO_BUF_LEN];//LCD_ICO_BUF_LEN=32
         /* 两个字节存一个像素 */
         
-        IcoDataLen = ((u16)(IcoInf.xLen) * (u16)(IcoInf.yLen)) / 0x08;
-        if(IcoDataLen > LCD_ICO_BUF_LEN)
-        {
-          IcoDataLen = LCD_ICO_BUF_LEN;
-        }
         if (on_off == TRUE)
         {
           //api_read_eeprom_data(IcoInf.iAdr, IcoDataLen, &IcoDataBuf[0]);
@@ -839,14 +781,8 @@ void api_diap_ico_pos_get(DISP_ICO *pIcoInfo, u16 IcoID)
 	
 	case eICO_IDMESSAGEOff://空图标
         case eICO_IDLOCKED://选或S
-		pIcoInfo->DispAddX = 0x08;
-		break;
-		
-	
-	
-		pIcoInfo->DispAddX = 0x0c;
-		break;
-		
+          pIcoInfo->DispAddX = 0x08;
+          break;
 	case eICO_IDBATT://空电池图标
 	case eICO_IDBATT1:
 	case eICO_IDBATT2:

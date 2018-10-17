@@ -1,8 +1,12 @@
 #include "AllHead.h"
 u8 LED_Conut=0;
+
+void ApiLED_PowerOnInitial(void)
+{
+  LED_Conut=0;
+}
 void LED_IntOutputRenew(void)
 {
-
   if(TaskDrvobj.Id==TASK_LOGIN)
   {
     LED_Conut++;

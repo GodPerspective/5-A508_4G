@@ -4,6 +4,7 @@
 #include "stm8s.h"
 #include <string.h>
 #include "CommonLib.h"
+#include "main.h"
 #include "Task.h"
 #include "sysclock.h"
 

@@ -1,7 +1,5 @@
 #include "ALLHead.h"
 
-
-
 const u8 *ucAtPocHead          = "AT+POC=";
 const u8 *ucSetIPAndID         = "010000";
 
@@ -24,6 +22,10 @@ static bool no_online_user(void);
 
 void ApiPocCmd_PowerOnInitial(void)
 {
+  PocCmdDrvobj.NetState.Msg.Byte=0;
+  PocCmdDrvobj.NetState.LoginInfo.Msg.Byte=0;
+  memset(PocCmdDrvobj.NetState.LoginInfo.Buf,0,sizeof(PocCmdDrvobj.NetState.LoginInfo.Buf));
+
   PocCmdDrvobj.States.current_working_status = m_group_mode;
   PocCmdDrvobj.States.PocStatus = OffLine;
   PocCmdDrvobj.States.GroupStats = LeaveGroup;
@@ -34,17 +36,47 @@ void ApiPocCmd_PowerOnInitial(void)
   PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay = ReceivedNone;
   PocCmdDrvobj.States.ToneState = FALSE;
   PocCmdDrvobj.States.ToneState_Intermediate = FALSE;
+  PocCmdDrvobj.States.receive_sos_statas= FALSE;
   PocCmdDrvobj.States.first_enter_into_group_flag=FALSE;
   PocCmdDrvobj.States.gps_value_for_display_flag=FALSE;
+  
+  //群组未做初始化
+  
+  memset(PocCmdDrvobj.ReadBuffer,0,sizeof(PocCmdDrvobj.ReadBuffer));
+  memset(PocCmdDrvobj.ReadBuffer2,0,sizeof(PocCmdDrvobj.ReadBuffer2));
+  memset(PocCmdDrvobj.NowWorkingGroupNameBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameBuf));
+  memset(PocCmdDrvobj.AllGroupNameBuf,0,sizeof(PocCmdDrvobj.AllGroupNameBuf));
+  memset(PocCmdDrvobj.AllUserNameBuf,0,sizeof(PocCmdDrvobj.AllUserNameBuf));
+  memset(PocCmdDrvobj.SpeakingUserNameBuf,0,sizeof(PocCmdDrvobj.SpeakingUserNameBuf));
+  memset(PocCmdDrvobj.LocalUserNameBuf,0,sizeof(PocCmdDrvobj.LocalUserNameBuf));
+  memset(PocCmdDrvobj.ReceiveMessagesUserNameBuf,0,sizeof(PocCmdDrvobj.ReceiveMessagesUserNameBuf));
+  
+  memset(PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf,0,sizeof(PocCmdDrvobj.NowWorkingGroupNameForVoiceBuf));
+  memset(PocCmdDrvobj.AllGroupNameForVoiceBuf,0,sizeof(PocCmdDrvobj.AllGroupNameForVoiceBuf));
+  memset(PocCmdDrvobj.AllUserNameForVoiceBuf,0,sizeof(PocCmdDrvobj.AllUserNameForVoiceBuf));
+  memset(PocCmdDrvobj.LocalUserNameForVoiceBuf,0,sizeof(PocCmdDrvobj.LocalUserNameForVoiceBuf));
   
   PocCmdDrvobj.offline_user_count=0;
   PocCmdDrvobj.all_user_num=0;
   PocCmdDrvobj.group_num_max=0;
   PocCmdDrvobj.GroupXuhao=0;
   PocCmdDrvobj.UserXuhao=0;
+  PocCmdDrvobj.group_list_count=0;
+  PocCmdDrvobj.user_list_count=0;
+  PocCmdDrvobj.getting_group_all_done_flag=0;
+  PocCmdDrvobj.getting_user_all_done_flag=0;
+  PocCmdDrvobj.getting_info_flag=KEYNONE;
+  PocCmdDrvobj.first_exchange_group_flag=FALSE;
   
-  PocCmdDrvobj.NetState.Msg.Byte = 0x00;
-  memset(PocCmdDrvobj.ReadBuffer,0,sizeof(PocCmdDrvobj.ReadBuffer));
+  memset(PocCmdDrvobj.GroupIdBuf,0,sizeof(PocCmdDrvobj.GroupIdBuf));
+  memset(PocCmdDrvobj.UserIdBuf,0,sizeof(PocCmdDrvobj.UserIdBuf));
+  memset(PocCmdDrvobj.gps_info_report,0,sizeof(PocCmdDrvobj.gps_info_report));
+  
+  PocCmdDrvobj.Position.latitude_float=0;
+  PocCmdDrvobj.Position.latitude_integer=0;
+  PocCmdDrvobj.Position.longitude_float=0;
+  PocCmdDrvobj.Position.longitude_integer=0;
+  
   FILE_Read(0,200,PocCmdDrvobj.ReadBuffer);//80位
 }
 
@@ -281,8 +313,8 @@ bool ApiPocCmd_user_info_set(u8 *pBuf, u8 len)//cTxBuf为存放ip账号密码的信息
 	if(uRet >= 2)
 	{
 		Dec2Hex(pBuf, len, PocCmdDrvobj.NetState.LoginInfo.Buf);//将收到的数转化为字符串//LoginInfo.Buf为存放
-		PocCmdDrvobj.NetState.LoginInfo.Msg.Len = len << 0x01;//为什么要len*2？
-		PocCmdDrvobj.NetState.LoginInfo.Msg.bSet = ON;
+		PocCmdDrvobj.NetState.LoginInfo.Msg.Bits.Len = len << 0x01;//为什么要len*2？
+		PocCmdDrvobj.NetState.LoginInfo.Msg.Bits.bSet = ON;
 		//adr = CFG_GetCurAdr(ADR_IDLocalUserInfo);
 		//FILE_Write(adr.Adr,adr.Len,(u8*)(&PocCmdDrvobj.NetState.LoginInfo));
                 //FILE_Write(0,PocCmdDrvobj.NetState.LoginInfo.Msg.Len,(u8*)(&PocCmdDrvobj.NetState.LoginInfo));
@@ -291,7 +323,7 @@ bool ApiPocCmd_user_info_set(u8 *pBuf, u8 len)//cTxBuf为存放ip账号密码的信息
 		{
 			PocCmdDrvobj.NetState.LoginInfo.Buf[i] = pBuf[i];
 		}
-		PocCmdDrvobj.NetState.LoginInfo.Msg.Len = len;
+		PocCmdDrvobj.NetState.LoginInfo.Msg.Bits.Len = len;
 		
 		//SYS_BufReset();
 #if 0//WCDMA 卓智达
@@ -369,6 +401,7 @@ void ApiPocCmd_10msRenew(void)
         if(no_online_user()==TRUE)
         {
           VOICE_Play(NoOnlineUser);//无在线成员
+          return_group_and_clear_flag();//清空所有标志位返回默认群组状态
         }
       }
       else if(PocCmdDrvobj.getting_user_all_done_flag==1)
@@ -377,6 +410,7 @@ void ApiPocCmd_10msRenew(void)
         {
           PocCmdDrvobj.getting_user_all_done_flag=0;
           VOICE_Play(NoOnlineUser);//无在线成员
+          return_group_and_clear_flag();//清空所有标志位返回默认群组状态
         }
       }
       else

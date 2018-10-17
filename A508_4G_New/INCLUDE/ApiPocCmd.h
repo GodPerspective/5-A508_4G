@@ -8,6 +8,7 @@
 #define APIPOC_UserName_Len             64+5
 #define APIPOC_Group_Num                5
 #define APIPOC_User_Num                 5
+
 typedef enum{
   OffLine       =0x00,
   Landing       =0x01,
@@ -61,9 +62,12 @@ typedef struct{
       u16 Byte;
     }Msg;
     struct{
-      struct{
-        u8 bSet	: 1;
-        u8 Len	: 7;
+      union{
+        struct{
+          u8 bSet	: 1;
+          u8 Len	: 7;
+        }Bits;
+        u8 Byte;
       }Msg;
       u8 Buf[DrvMC8332_UseId_Len];
     }LoginInfo;
@@ -81,7 +85,6 @@ typedef struct{
     bool ToneState;
     bool ToneState_Intermediate;
     bool receive_sos_statas;
-    bool alarm_states;
     bool first_enter_into_group_flag;
     bool gps_value_for_display_flag;
   }States;

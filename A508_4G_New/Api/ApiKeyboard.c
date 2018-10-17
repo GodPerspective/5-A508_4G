@@ -10,11 +10,29 @@ s8 KeyUpDownCount=0;//组呼上下键计数
 s8 GroupCallingNum=0;//取决于最大群组数大小
 u8 groupCallingcount=0;//由GroupCallingNum换算，范围0-4；
 u8 user_calling_count=0;//由PersonalCallingNum换算，范围0-4；
-u8 VoiceType_FreehandOrHandset_Flag=0;
 u8 KeyDownUpChoose_GroupOrUser_Flag=0;
 bool LockingState_EnterOK_Flag=FALSE;
 u8 TheMenuLayer_Flag=0;//所处菜单层级；默认状态：1 一级菜单：1 二级菜单：2
 u8 network_count;
+
+void ApiKeyboard_PowerOnInitial(void)
+{
+  MenuMode_Flag=0;
+  BacklightTimeSetCount=1;
+  KeylockTimeSetCount=0x11;
+  KeyPersonalCallingCount=0;//个呼上下键计数
+  PersonalCallingNum=0;
+  MenuModeCount=1;
+  KeyUpDownCount=0;//组呼上下键计数
+  GroupCallingNum=0;//取决于最大群组数大小
+  groupCallingcount=0;//由GroupCallingNum换算，范围0-4；
+  user_calling_count=0;//由PersonalCallingNum换算，范围0-4；
+  KeyDownUpChoose_GroupOrUser_Flag=0;
+  LockingState_EnterOK_Flag=FALSE;
+  TheMenuLayer_Flag=0;//所处菜单层级；默认状态：1 一级菜单：1 二级菜单：2
+  network_count=0;
+}
+
 void keyboard_process(void)
 {
 /*********键盘down*****************************************************************************/
@@ -431,25 +449,7 @@ void keyboard_process(void)
           {
             ApiPocCmd_WritCommand(PocComm_EnterGroup,0,0);
           }
-          else
-          {
-            
-          }
-          KEYCMD_PersonalKeyModeSet(FALSE);
-          MenuMode_Flag=0;
-          api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-          api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组昵称
-          KeyDownUpChoose_GroupOrUser_Flag=0;
-          api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择对应空图标
-          KeyUpDownCount=0;
-          PocCmdDrvobj.getting_info_flag=KEYNONE;//清除获取群组或用户名标志位
-  #if 1//报警时按返回键退出
-          set_poc_receive_sos_statas(FALSE);
-          //BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
-          ApiPocCmd_ToneStateSet(FALSE);
-          AUDIO_IOAFPOW(OFF);  
-  #endif
-          
+          return_group_and_clear_flag();//清空所有标志位返回默认群组状态
         }
       }
       set_keyboard_cancel_states(m_key_idle);
@@ -874,4 +874,21 @@ void changing_user_voice_and_display(u8 a)
   user_calling_count=a%APIPOC_User_Num;
   VOICE_Play(AllUserName);
   DISPLAY_Show(d_AllUserName);
+}
+
+void return_group_and_clear_flag(void)
+{
+  KEYCMD_PersonalKeyModeSet(FALSE);
+  MenuMode_Flag=0;
+  api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
+  api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组昵称
+  KeyDownUpChoose_GroupOrUser_Flag=0;
+  api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择对应空图标
+  KeyUpDownCount=0;
+  PocCmdDrvobj.getting_info_flag=KEYNONE;//清除获取群组或用户名标志位
+  #if 1//报警时按返回键退出
+  set_poc_receive_sos_statas(FALSE);
+  ApiPocCmd_ToneStateSet(FALSE);
+  AUDIO_IOAFPOW(OFF);  
+  #endif
 }

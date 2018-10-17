@@ -70,6 +70,24 @@ AtCmdDrv AtCmdDrvobj;
 
 void ApiAtCmd_PowerOnInitial(void)
 {
+  AtCmdDrvobj.Msg.Byte = 0;
+  AtCmdDrvobj.ZLTENOCELL=0;
+  AtCmdDrvobj.ZGIPDNS=0;
+  AtCmdDrvobj.ZCONSTAT=0;
+  AtCmdDrvobj.csq_param.act=0;
+  AtCmdDrvobj.csq_param.rssi=0;
+  AtCmdDrvobj.mode_param.sys_mode=0;
+  AtCmdDrvobj.mode_param.sys_submode=0;
+  AtCmdDrvobj.network_reg.creg=0;
+  AtCmdDrvobj.network_reg.cgreg=0;
+  AtCmdDrvobj.network_reg.cereg=0;
+  memset(AtCmdDrvobj.ccid,0,sizeof(AtCmdDrvobj.ccid));
+  AtCmdDrvobj.apn_set=0;
+  AtCmdDrvobj.language_value=0;
+  AtCmdDrvobj.language_set=m_CHINESE;
+  AtCmdDrvobj.Key3_PlayValue=0;
+  AtCmdDrvobj.Key3Option=Key3_OptionZero;
+  
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
   FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));
@@ -108,7 +126,6 @@ void ApiAtCmd_PowerOnInitial(void)
     break;
   }
 #endif
-  AtCmdDrvobj.Msg.Byte = 0;
 }
 
 #if 1//ZM389

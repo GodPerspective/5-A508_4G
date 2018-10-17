@@ -4,11 +4,13 @@ u8 BatteryLevel=0;
 u8 Count=0;
 u8 Count2=0;
 u8 Count3=0;
-bool LowVoltageDetection_Flag;
+bool LowVoltageDetection_Flag=FALSE;
 bool LobatteryTask_StartFlag=FALSE;
 bool PrimaryLowPower_Flag=FALSE;
+
 static u16 OneChannelGetADValue(ADC2_Channel_TypeDef ADC2_Channel,\
   ADC2_SchmittTrigg_TypeDef ADC2_SchmittTriggerChannel);
+
 void ADC_Init(void)
 {
   ADC2_Init(ADC2_CONVERSIONMODE_CONTINUOUS , ADC2_CHANNEL_2, ADC2_PRESSEL_FCPU_D18,\
@@ -36,6 +38,18 @@ static u16 OneChannelGetADValue(ADC2_Channel_TypeDef ADC2_Channel,\
   ADConversion_Value = ADC2_GetConversionValue();
   return ADConversion_Value;
 }
+
+void ApiBattery_PowerOnInitial(void)
+{
+  BatteryLevel=0;
+  Count=0;
+  Count2=0;
+  Count3=0;
+  LowVoltageDetection_Flag=FALSE;
+  LobatteryTask_StartFlag=FALSE;
+  PrimaryLowPower_Flag=FALSE;
+}
+
 void LowVoltageDetection(void)
 {
   u16 ADValue=0;
@@ -162,7 +176,7 @@ void LowVoltageDetection(void)
         BatteryLevel=5;
       }//电池电量5级
       else{}
-      if(LowVoltageDetection_Flag==1)//识别从低电量到高电量的状态
+      if(LowVoltageDetection_Flag==TRUE)//识别从低电量到高电量的状态
       {
         KEYCMD_PersonalKeyModeSet(FALSE);
         MenuMode_Flag=0;

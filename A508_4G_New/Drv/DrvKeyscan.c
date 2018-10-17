@@ -39,8 +39,6 @@ void Key_Init(void)
   GPIO_Init(GPIO_Key_PTT,GPIO_PIN_Key_PTT,GPIO_MODE_IN_PU_NO_IT);
 }
 
-
-
 void key_scan()//按键扫描程序放在定时中断里
 {
 /*******PTT***********/
