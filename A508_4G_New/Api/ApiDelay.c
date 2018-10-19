@@ -48,6 +48,11 @@ typedef struct {
     u8 ToneStateCount;
     u8 get_ccid_count;
     u8 get_cgdcont_count;
+    u8 choose_write_freq_or_gps_count;
+    u8 beidou_valid_count;
+    u8 LobatteryTask_StartCount;
+    u8 PrimaryLowPowerCount;
+    u16 all_power_off_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -97,6 +102,12 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.ToneStateCount=0;
   DelDrvObj.Count.get_ccid_count=0;
   DelDrvObj.Count.get_cgdcont_count=0;
+  DelDrvObj.Count.choose_write_freq_or_gps_count=0;
+  DelDrvObj.Count.beidou_valid_count=0;
+  DelDrvObj.Count.LobatteryTask_StartCount=0;
+  DelDrvObj.Count.PrimaryLowPowerCount=0;
+  DelDrvObj.Count.all_power_off_count=0;
+  
   DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
@@ -271,11 +282,7 @@ static void DEL_100msProcess(void)
   {
     DelDrvObj.Msg.Bit.b100ms = DEL_IDLE;
     LED_IntOutputRenew();//LED output renew process
-#ifdef BEIDOU
     ApiBeidou_Get_location_Information();
-#else
-    //ApiAtCmd_Get_location_Information();
-#endif
     if(DelDrvObj.Msg.Bit.b500Alternate == DEL_IDLE)
     {
       DelDrvObj.Msg.Bit.b500Alternate = DEL_RUN;
@@ -473,6 +480,11 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.csq_count=0;
       ApiAtCmd_WritCommand(ATCOMM_CSQ,0, 0);
+      if(MenuMode_Flag==0)
+      {
+        NetworkModeIcons();
+        HDRCSQSignalIcons();
+      }
       if(TaskDrvobj.Id==TASK_LOGIN&&TaskDrvobj.login_step<=6)//播报搜索网络
       {
         VOICE_Play(NetworkSearching);
@@ -626,8 +638,8 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DISPLAY_Show(d_status_offline);
     }
-/*******收到离线指令过2分钟未登陆重启*******/
-    if(poccmd_states_poc_status()==OffLine)
+/*******处于未登录成功状态过2分钟未登陆重启*******/
+    if(poccmd_states_poc_status()!=LandSuccess)
     {
       DelDrvObj.Count.poc_status_count++;
       
@@ -641,7 +653,6 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.poc_status_count=0;
     }
-
     
 /**登录成功后更新群组信息，若获取不完整则重新获取直到完整**/
     if(poc_first_enter_into_group_flag()==TRUE)
@@ -757,8 +768,75 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       }
       PocCmdDrvobj.getting_info_flag=KEYNONE;
     }
-    
-    
+/****登录成功一分钟后禁用写频功能，开启外部定位上报模式*********/
+    if(TaskDrvobj.Id==TASK_NORMAL)
+    {
+      DelDrvObj.Count.choose_write_freq_or_gps_count++;
+      if(DelDrvObj.Count.choose_write_freq_or_gps_count>2*60)
+      {
+        GPIO_WriteLow(GPIOB,GPIO_PIN_3);//NFC
+        GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//北斗
+        DelDrvObj.Count.choose_write_freq_or_gps_count = 2*60+1;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.choose_write_freq_or_gps_count = 0;
+    }    
+/****定位成功后5s上报一次定位*****/
+    if(beidou_valid()==TRUE)
+    {
+      DelDrvObj.Count.beidou_valid_count++;
+      if(DelDrvObj.Count.beidou_valid_count>2*5)
+      {
+        ApiPocCmd_WritCommand(PocComm_SetGps,0,0);
+        DelDrvObj.Count.beidou_valid_count=0;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.beidou_valid_count=0;
+    }
+/******登录状态下的低电报警**********************************************/
+    if(LobatteryTask_StartFlag==TRUE)
+    {
+      DelDrvObj.Count.LobatteryTask_StartCount++;
+      if(DelDrvObj.Count.LobatteryTask_StartCount==1)
+      {
+        VOICE_Play(PowerLowPleaseCharge);
+        DISPLAY_Show(d_PowerLowPleaseCharge);
+      }
+      if(DelDrvObj.Count.LobatteryTask_StartCount>2*5)
+      {
+        DelDrvObj.Count.LobatteryTask_StartCount=0;
+        LobatteryTask_StartFlag=FALSE;
+      }
+    }
+/*********登录成功后的初级报警30一次********************************/
+  if(TaskDrvobj.battery_states==BATTERY_LOW_LEVEL_1)
+    {
+      DelDrvObj.Count.PrimaryLowPowerCount++;
+      if(DelDrvObj.Count.PrimaryLowPowerCount>=2*30)
+      {
+        DelDrvObj.Count.PrimaryLowPowerCount=0;
+        VOICE_Play(LowBattery);
+        TaskDrvobj.battery_states=BATTERY_HEALTH;
+      }
+    }
+/*******低电标志超过120s,则断电进入电池保护模式******************/
+    if(TaskDrvobj.Id==TASK_LOW_BATTERY)
+    {
+      DelDrvObj.Count.all_power_off_count++;
+      if(DelDrvObj.Count.all_power_off_count>=2*3)//低电模式有延时10s,6=60s
+      {
+        DelDrvObj.Count.all_power_off_count=2*3+1;
+        TaskDrvobj.Id=TASK_POWEROFF;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.all_power_off_count=0;
+    }
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 
 /******登录状态下的低电报警**********************************************/
@@ -776,7 +854,6 @@ static void DEL_500msProcess(void)			//delay 500ms process server
 
 /****登陆成功一分钟后禁用写频功能、开启外部定位上报模式*********/
 
-/****定位成功后5s上报一次定位*****/
 
 /***********************************************************/
   }

@@ -14,6 +14,7 @@ extern u8 user_calling_count;//由PersonalCallingNum换算，范围0-4；
 extern u8 KeyDownUpChoose_GroupOrUser_Flag;
 extern bool LockingState_EnterOK_Flag;
 extern u8 TheMenuLayer_Flag;//所处菜单层级；默认状态：1 一级菜单：1 二级菜单：2
+extern u8 network_count;
 
 extern void ApiKeyboard_PowerOnInitial(void);
 extern void keyboard_process(void);

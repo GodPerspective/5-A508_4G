@@ -36,11 +36,7 @@ void LED_IntOutputRenew(void)
         LED_Conut++;
         if(LED_Conut>=49)
         {
-#if 1
-          if(0)
-#else
           if(beidou_valid()==TRUE)
-#endif
           {
             Set_RedLed(ON);
           }

@@ -1,7 +1,7 @@
 #include "DrvMcuPin.h"
 
 /******************************************************************************
-;--------1-LED hardware macro define
+;--------1-LED &POWER hardware macro define
 ******************************************************************************/
 void LED_Init(void)
 {
@@ -29,14 +29,26 @@ void Set_RedLed(IO_ONOFF state)
   switch(state)
   {
   case ON:
-      GPIO_WriteHigh(GPIO_LED_Red, GPIO_PIN_LED_Red);
+      GPIO_WriteHigh(GPIO_Poweroff, GPIO_PIN_LED_Red);
     break;
   case OFF:
-      GPIO_WriteLow(GPIO_LED_Red, GPIO_PIN_LED_Red);
+      GPIO_WriteLow(GPIO_Poweroff, GPIO_PIN_LED_Red);
       break;
   }
 }
 
+void set_power_off(IO_ONOFF state)
+{
+  switch(state)
+  {
+  case ON:
+      GPIO_WriteHigh(GPIO_Poweroff, GPIO_PIN_Poweroff);
+    break;
+  case OFF:
+      GPIO_WriteLow(GPIO_Poweroff, GPIO_PIN_Poweroff);
+      break;
+  }
+}
 /******************************************************************************
 ;--------2-TIM3:DELAY hardware macro define
 ******************************************************************************/

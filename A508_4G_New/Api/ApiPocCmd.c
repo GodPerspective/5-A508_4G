@@ -243,7 +243,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     break;
   case PocComm_SetGps:
     DrvGD83_UART_TxCommand(ucSetGPS,strlen((char const *)ucSetGPS));
-#if 0 //经纬度小数位合并换算及参数传递
+#if 1 //经纬度小数位合并换算及参数传递
     PocCmdDrvobj.Position.longitude_integer=beidou_longitude_degree();
     PocCmdDrvobj.Position.longitude_float = ((beidou_longitude_minute()*10000+beidou_longitude_minute())*10/6);//小数点后的数
     PocCmdDrvobj.Position.latitude_integer = beidou_latitude_degree();//度
@@ -730,8 +730,6 @@ void ApiPocCmd_10msRenew(void)
       else
       {
         PocCmdDrvobj.States.current_working_status=m_group_mode;
-        //TASK_PersonalKeyModeSet(FALSE);//解决单呼被结束，机器不退出单呼模式的问题
-        
       }
       
       ucId = COML_AscToHex(pBuf+4, 0x02);

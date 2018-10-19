@@ -4,9 +4,7 @@ u8 BatteryLevel=0;
 u8 Count=0;
 u8 Count2=0;
 u8 Count3=0;
-bool LowVoltageDetection_Flag=FALSE;
 bool LobatteryTask_StartFlag=FALSE;
-bool PrimaryLowPower_Flag=FALSE;
 
 static u16 OneChannelGetADValue(ADC2_Channel_TypeDef ADC2_Channel,\
   ADC2_SchmittTrigg_TypeDef ADC2_SchmittTriggerChannel);
@@ -45,9 +43,7 @@ void ApiBattery_PowerOnInitial(void)
   Count=0;
   Count2=0;
   Count3=0;
-  LowVoltageDetection_Flag=FALSE;
   LobatteryTask_StartFlag=FALSE;
-  PrimaryLowPower_Flag=FALSE;
 }
 
 void LowVoltageDetection(void)
@@ -119,19 +115,20 @@ void LowVoltageDetection(void)
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT, TRUE, TRUE);
         TaskDrvobj.Id=TASK_LOW_BATTERY;
-        LowVoltageDetection_Flag=TRUE;
+        TaskDrvobj.battery_states=BATTERY_LOW_LEVEL_2;
         Count=0;
       }
     }
-    else if(ADValue<355&&ADValue>345)
+    else if(ADValue<=350&&ADValue>345)
     {
       Count2++;
       if(Count2>=100)
       {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT, TRUE, TRUE);
+        BatteryLevel=0;
         TaskDrvobj.Id=TASK_NORMAL;
-        PrimaryLowPower_Flag=TRUE;
+        TaskDrvobj.battery_states=BATTERY_LOW_LEVEL_1;
         Count2=0;
         
       }
@@ -172,11 +169,13 @@ void LowVoltageDetection(void)
       else if(ADValue<=500&&ADValue>410)
       {
         if(MenuMode_Flag==0)
-        api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);
+          api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);
         BatteryLevel=5;
       }//电池电量5级
-      else{}
-      if(LowVoltageDetection_Flag==TRUE)//识别从低电量到高电量的状态
+      else
+      {
+      }
+      if(TaskDrvobj.battery_states==BATTERY_LOW_LEVEL_2)//识别从低电量到高电量的状态
       {
         KEYCMD_PersonalKeyModeSet(FALSE);
         MenuMode_Flag=0;
@@ -184,7 +183,7 @@ void LowVoltageDetection(void)
         KeyDownUpChoose_GroupOrUser_Flag=0;
         api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择对应空图标
         KeyUpDownCount=0;
-        LowVoltageDetection_Flag=FALSE;
+        TaskDrvobj.battery_states=BATTERY_HEALTH;
       }
     }
   }

@@ -126,9 +126,9 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
     api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组昵称
     break;
   case GpsInfoMenu:
+     api_lcd_pwr_on_hint(0,0,GBK,"                ");//清屏
      api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
-    DISPLAY_Show(d_longitude_and_latitude0);
-    /*if(delay_gps_value_for_display_flag2()==FALSE)
+    if(poc_gps_value_for_display_flag()==FALSE)
     {
       DISPLAY_Show(d_longitude_and_latitude0);
     }
@@ -150,7 +150,7 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
       Buf1[16]='\0';
       Buf1[17]='\0';
       Buf1[18]='\0';
-      api_lcd_pwr_on_hint(0,0,Buf1);
+      api_lcd_pwr_on_hint(0,0,GBK,Buf1);
       //换算并显示纬度
       Buf2[0]=0xbe;
       Buf2[1]=0xad;
@@ -167,9 +167,8 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
       Buf1[17]='\0';
       Buf1[18]='\0';
       Buf1[19]='\0';
-      api_lcd_pwr_on_hint(0,2,Buf2);
+      api_lcd_pwr_on_hint(0,2,GBK,Buf2);
     }
-    */
     break;
   case NativeInfoMenu:
     MCU_VERSIONForMenu();

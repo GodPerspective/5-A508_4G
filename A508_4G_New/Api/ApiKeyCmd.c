@@ -3,6 +3,7 @@
 typedef struct{
   struct{
    bool PersonalKeyMode;
+   working_status_type key_2_short_states;
   }status;
 }KeyCmdDrv;
 
@@ -13,6 +14,7 @@ static void Key3_PlayVoice(void);
 void ApiKeyCmd_PowerOnInitial(void)
 {
   KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
+  KeyCmdDrvObj.status.key_2_short_states=m_group_mode;
 }
 
 void key_process(void)
@@ -41,23 +43,35 @@ void key_process(void)
 /*********按键Key2*****************************************************************************/
     if(get_key_2_states()==m_key_short_press)//个呼键
     {
-      PersonalCallingNum=0;//清空个呼计数位
-      KeyCmdDrvObj.status.PersonalKeyMode=TRUE;
-      VOICE_Play(PersonalMode);
-      DISPLAY_Show(d_PersonalMode);
-      ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
-      KeyDownUpChoose_GroupOrUser_Flag=2;
-      api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
+      switch(KeyCmdDrvObj.status.key_2_short_states)
+      {
+      case m_group_mode://单呼模式
+        PersonalCallingNum=0;//清空个呼计数位
+        KeyCmdDrvObj.status.PersonalKeyMode=TRUE;
+        VOICE_Play(PersonalMode);
+        DISPLAY_Show(d_PersonalMode);
+        ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
+        KeyDownUpChoose_GroupOrUser_Flag=2;
+        KeyCmdDrvObj.status.key_2_short_states=m_personal_mode;
+        api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
+        break;
+      case m_personal_mode://组呼模式
+        KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
+        VOICE_Play(GroupMode);
+        if(get_current_working_status()==m_personal_mode)//单呼状态按返回键
+        {
+          ApiPocCmd_WritCommand(PocComm_EnterGroup,0,0);
+        }//
+        return_group_and_clear_flag();//清空所有标志位返回默认群组状态
+        api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择图标
+        KeyDownUpChoose_GroupOrUser_Flag=1;
+        break;
+      }
       set_key_2_states(m_key_idle);
     }
     else if(get_key_2_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
     {
-      KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
-      VOICE_Play(GroupMode);
-      //DISPLAY_Show(d_PersonalMode);
-      //ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
-      KeyDownUpChoose_GroupOrUser_Flag=1;
-      api_disp_icoid_output( eICO_IDLOCKED, TRUE, TRUE);//S选择图标
+      key_2_3_4_long_press_function_setting(2);
       set_key_2_states(m_key_idle);
     }
     else
@@ -97,8 +111,7 @@ void key_process(void)
     }
     else if(get_key_3_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
     {
-      Set_RedLed(ON);
-      Delay_100ms(10);
+      key_2_3_4_long_press_function_setting(3);
       set_key_3_states(m_key_idle);
     }
     else
@@ -115,11 +128,7 @@ void key_process(void)
     }
     else if(get_key_4_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle
     {
-      //报警时长按退出
-      set_poc_receive_sos_statas(FALSE);
-      BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
-      ApiPocCmd_ToneStateSet(FALSE);
-      AUDIO_IOAFPOW(OFF);  
+      key_2_3_4_long_press_function_setting(4);
       set_key_4_states(m_key_idle);
     }
     else
@@ -192,6 +201,61 @@ void Key3_PlayVoice(void)
   }
 }
 
+void key_2_3_4_long_press_function_setting(u8 a)
+{
+  u8 temp_value;
+  switch(a)
+  {
+  case 2:
+    temp_value=AtCmdDrvobj.key2_long_value;
+    break;
+  case 3:
+    temp_value=AtCmdDrvobj.key3_long_value;
+    break;
+  case 4:
+    temp_value=AtCmdDrvobj.key4_long_value;
+    break;
+  default:
+    break;
+  }
+  
+  switch(temp_value)
+  {
+  case 0://无功能
+    break;
+  case 1://网络切换
+    switch(network_count)
+    {
+    case 0:
+      VOICE_Play(set_network_wcdma_only);
+      ApiAtCmd_WritCommand(ATCOMM_ZGACT0,0,0);
+      Delay_100ms(5);
+      ApiAtCmd_WritCommand(ATCOMM_SetNetworkWcdmaOnly,0,0);
+      network_count=1;
+      break;
+    case 1:
+      VOICE_Play(set_network_auto);
+      ApiAtCmd_WritCommand(ATCOMM_ZGACT0,0,0);
+      Delay_100ms(5);
+      ApiAtCmd_WritCommand(ATCOMM_SetNetworkAuto,0,0);
+      network_count=0;
+      break;
+    default:
+      network_count=0;
+      break;
+    }
+    break;
+  case 2://报警时长按退出
+    set_poc_receive_sos_statas(FALSE);
+    BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
+    ApiPocCmd_ToneStateSet(FALSE);
+    AUDIO_IOAFPOW(OFF);  
+    break;
+  default:
+    break;
+  }
+}
+
 bool KEYCMD_PersonalKeyMode(void)
 {
   return KeyCmdDrvObj.status.PersonalKeyMode;
@@ -199,4 +263,12 @@ bool KEYCMD_PersonalKeyMode(void)
 void KEYCMD_PersonalKeyModeSet(bool a)
 {
   KeyCmdDrvObj.status.PersonalKeyMode=a;
+}
+working_status_type KEYCMD_key_2_short_states(void)
+{
+  return KeyCmdDrvObj.status.key_2_short_states;
+}
+void KEYCMD_key_2_short_states_set(working_status_type a)
+{
+  KeyCmdDrvObj.status.key_2_short_states=a;
 }

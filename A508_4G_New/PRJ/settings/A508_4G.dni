@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1909137344
+Checksum=-264501140
 [CodeCoverage]
 Enabled=_ 0
 [CallStack]
@@ -56,8 +56,6 @@ Enabled=0
 ShowSource=1
 [Simulator]
 Freq=16000000
-[struct_types]
-Fmt0=ICO_INF-yLen	4	0
 [array_types]
 Fmt0=u8[10]	3	0
 Fmt1=u8[34]	4	0
@@ -93,17 +91,17 @@ Fmt26={W}1:ulAllKeyID	4	0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
-[Log file]
-LoggingEnabled=_ 0
-LogFile=_ ""
-Category=_ 0
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.859.1" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c}.342.1" 0 0 0 0 "" 0 ""
 Count=2
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 A0=_ "C:\Users\lei\Desktop\IAR\GT20L16P1Y.c" ""
 Count=1

@@ -86,11 +86,18 @@ void ApiAtCmd_PowerOnInitial(void)
   AtCmdDrvobj.language_value=0;
   AtCmdDrvobj.language_set=m_CHINESE;
   AtCmdDrvobj.Key3_PlayValue=0;
+  AtCmdDrvobj.key2_long_value=0;
+  AtCmdDrvobj.key3_long_value=0;
+  AtCmdDrvobj.key4_long_value=0;
   AtCmdDrvobj.Key3Option=Key3_OptionZero;
   
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
   FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));
+  //FILE_Read(590,20,AtCmdDrvobj.testbuf);
+  FILE_Read(599,1,&(AtCmdDrvobj.key2_long_value));//²à¼ü1³¤¼ü
+  FILE_Read(597,1,&(AtCmdDrvobj.key3_long_value));//²à¼ü2³¤¼ü
+  FILE_Read(601,1,&(AtCmdDrvobj.key4_long_value));//²à¼ü2³¤¼ü
   switch(AtCmdDrvobj.language_value)
   {
   case 0:

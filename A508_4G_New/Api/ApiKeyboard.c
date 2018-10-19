@@ -886,6 +886,7 @@ void return_group_and_clear_flag(void)
   api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//S选择对应空图标
   KeyUpDownCount=0;
   PocCmdDrvobj.getting_info_flag=KEYNONE;//清除获取群组或用户名标志位
+  KEYCMD_key_2_short_states_set(m_group_mode);
   #if 1//报警时按返回键退出
   set_poc_receive_sos_statas(FALSE);
   ApiPocCmd_ToneStateSet(FALSE);

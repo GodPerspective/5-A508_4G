@@ -17,11 +17,12 @@ void main(void)
   main_all_init();
   while(1)
   {
-    LowVoltageDetection();
-    DEL_Renew();
+
     switch(TaskDrvobj.Id)
     {
      case TASK_LOGIN:
+      LowVoltageDetection();
+      DEL_Renew();
       Task_login_progress();
       if(poccmd_states_poc_status()==LandSuccess)
       {
@@ -31,13 +32,17 @@ void main(void)
       }
       break;
     case TASK_NORMAL:
+      LowVoltageDetection();
+      DEL_Renew();
       Task_normal_progress();
       break;
     case TASK_LOW_BATTERY:
+      LowVoltageDetection();
+      DEL_Renew();
       Task_low_battery_progress();
       break;
-    case TASK_WRITE_FREQ:
-      Task_write_freq_progress();
+    case TASK_POWEROFF:
+      Task_PowerOff();
       break;
     default:
       break;
@@ -71,6 +76,9 @@ void main_all_init(void)
   //定时初始化
   DEL_PowerOnInitial();
   
+  //GPS初始化
+  ApiBeidou_PowerOnInitial();
+  
   //喇叭控制脚
   Noise_Mute_Init();
   VOICE_PowerOnInitial();
@@ -100,15 +108,23 @@ void main_all_init(void)
   ApiBattery_PowerOnInitial();
   
   enableInterrupts();
-  
   AUDIO_IOAFPOW(ON);
+  GPIO_Init(GPIOB,GPIO_PIN_3,GPIO_MODE_OUT_PP_LOW_FAST);//NFC
+  GPIO_Init(GPIOB,GPIO_PIN_4,GPIO_MODE_OUT_PP_LOW_FAST);//北斗
+#if 0//北斗定位
+  GPIO_WriteLow(GPIOB,GPIO_PIN_3);//NFC
+  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//北斗
+#else//写频（开机默认写频，一分钟后转为北斗定位）
+  GPIO_WriteHigh(GPIOB,GPIO_PIN_3);//NFC
+  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//北斗
+#endif
   BEEP_Time(100);
   MCU_LCD_BACKLIGTH(ON);
   api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//显示电池满电图标
   
   DISPLAY_Show(d_ABELL);
   //IIC-AW87319功放
-  iic_init();
+  //iic_init();
   ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);
 }
 

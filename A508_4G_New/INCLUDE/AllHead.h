@@ -16,7 +16,7 @@
 #include "ApiAtCmd.h"
 #include "ApiPocCmd.h"
 #include "ApiDelay.h"
-
+#include "ApiGpsCmd.h"
 //¹¦·Å
 #include "DrvI2cAw87319.h"
 

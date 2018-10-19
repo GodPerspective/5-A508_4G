@@ -5,15 +5,21 @@ typedef enum {
   TASK_LOGIN            = 0x00,
   TASK_NORMAL           = 0x01,
   TASK_LOW_BATTERY      = 0x02,
-  TASK_WRITE_FREQ       = 0x03
+  TASK_POWEROFF         = 0x03
 }TASK_CODE;
 
-
+typedef enum{
+  BATTERY_HEALTH        = 0x00,
+  BATTERY_LOW_LEVEL_1   = 0x01,
+  BATTERY_LOW_LEVEL_2   = 0x02,
+  BATTERY_POWER_OFF     = 0x03
+}BATTERY_TYPE;
 
 typedef struct{
   TASK_CODE Id;
   u8 login_set_account;
   u8 login_step;
+  BATTERY_TYPE battery_states;
 }TaskDrv;
 
 extern TaskDrv TaskDrvobj;
@@ -24,7 +30,7 @@ extern void Task_Init(void);
 extern void Task_login_progress(void);
 extern void Task_normal_progress(void);
 extern void Task_low_battery_progress(void);
-extern void Task_write_freq_progress(void);
+extern void Task_PowerOff(void);
 
 typedef enum{
   Key3_OptionZero       =       0x00,

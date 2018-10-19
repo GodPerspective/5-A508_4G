@@ -1955,6 +1955,9 @@
       <name>$PROJ_DIR$\..\Api\ApiDisplay.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\Api\ApiGpsCmd.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\Api\ApiKeyboard.c</name>
     </file>
     <file>
@@ -2040,6 +2043,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\ApiDisplay.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\INCLUDE\ApiGpsCmd.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\ApiKeyboard.h</name>

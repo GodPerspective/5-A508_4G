@@ -40,6 +40,10 @@ typedef struct{
   u8 language_value;
   LANGUAGE_TYPE language_set;
   u8 Key3_PlayValue;
+  u8 key2_long_value;
+  u8 key3_long_value;
+  u8 key4_long_value;
+  //u8 testbuf[20];
   Key3_OptionType Key3Option;
 }AtCmdDrv;
 

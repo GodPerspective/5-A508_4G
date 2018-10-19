@@ -8,6 +8,7 @@ void Task_Init(void)
 {
   TaskDrvobj.Id = TASK_LOGIN;
   TaskDrvobj.login_set_account=FALSE;
+  TaskDrvobj.battery_states=BATTERY_HEALTH;
 }
 
 void Task_login_progress(void)
@@ -21,7 +22,7 @@ void Task_login_progress(void)
     {
       //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)ATCOMM_POCID, strlen((char const*)ATCOMM_POCID));
       ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
-      //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
+      ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
       TaskDrvobj.login_step=1;
     }
     break;
@@ -77,11 +78,11 @@ void Task_login_progress(void)
     break;
   case 7:
     api_lcd_pwr_on_hint(14,2,GBK,"-7");
-    VOICE_Play(LoggingIn);
-    DISPLAY_Show(d_LoggingIn);
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
     ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
     ApiPocCmd_WritCommand(PocComm_SetURL,0,0);//设置URL
+    VOICE_Play(LoggingIn);
+    DISPLAY_Show(d_LoggingIn);
     TaskDrvobj.login_step=8;
     break;
   default:
@@ -239,18 +240,31 @@ else
     }
 #endif
   }
-
 }
 #endif
 }
 
 void Task_low_battery_progress(void)
 {
-  UART3_ToMcuMain();//读取写频数据
+  VOICE_Play(PowerLowPleaseCharge);
+  DISPLAY_Show(d_PowerLowPleaseCharge);
+  DEL_SetTimer(0,1000);
+  while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+  BEEP_Time(10);
 }
 
-void Task_write_freq_progress(void)
+void Task_PowerOff(void)
 {
-  UART3_ToMcuMain();//读取写频数据
-  
+  api_lcd_pwr_on_hint(0,0,GBK,"                ");
+  api_lcd_pwr_on_hint(0,2,GBK,"                ");
+  set_power_off(OFF);//关闭模块电源
+  Set_GreenLed(OFF);//关灯
+  Set_RedLed(OFF);
+  AUDIO_IOAFPOW(OFF);//关闭喇叭
+  MCU_LCD_BACKLIGTH(OFF);//关闭背光灯
+  asm("HALT");
+  while(1)
+  {
+    
+  }
 }
