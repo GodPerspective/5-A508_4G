@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V2.20.1.176 for STM8                     19/Oct/2018  17:32:45
+# IAR ELF Linker V2.20.1.176 for STM8                     23/Oct/2018  13:48:53
 # Copyright 2010-2015 IAR Systems AB.
 #
 #    Output file  =  
@@ -57,8 +57,9 @@
 #        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\stm8s_uart3.o
 #        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\stm8s_wwdg.o
 #        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\sysclock.o
-#        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\Task.o --redirect
-#        _Printf=_PrintfSmall --redirect _Scanf=_ScanfSmall -o
+#        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\Task.o
+#        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Obj\UTF8toUNICODE.o
+#        --redirect _Printf=_PrintfSmall --redirect _Scanf=_ScanfSmall -o
 #        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\Exe\A508_4G.out --map
 #        E:\1-source\5-A508_4G\A508_4G_New\PRJ\Debug\List\A508_4G.map --config
 #        "C:\Program Files\IAR Systems\Embedded Workbench

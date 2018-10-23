@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-264501140
+Checksum=-157703563
 [CodeCoverage]
 Enabled=_ 0
 [CallStack]
@@ -91,10 +91,6 @@ Fmt26={W}1:ulAllKeyID	4	0
 LogEnabled=0
 GraphEnabled=0
 ShowTimeLog=1
-[Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.859.1" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c}.342.1" 0 0 0 0 "" 0 ""
-Count=2
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -102,6 +98,10 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.859.1" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c}.342.1" 0 0 0 0 "" 0 ""
+Count=2
 [Aliases]
 A0=_ "C:\Users\lei\Desktop\IAR\GT20L16P1Y.c" ""
 Count=1

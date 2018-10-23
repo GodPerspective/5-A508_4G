@@ -1766,6 +1766,9 @@
     <file>
       <name>$PROJ_DIR$\..\INCLUDE\Task.h</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\..\Suport\UTF8toUNICODE.h</name>
+    </file>
   </group>
   <group>
     <name>Lib</name>
@@ -1870,6 +1873,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\Suport\sysclock.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Suport\UTF8toUNICODE.c</name>
     </file>
   </group>
   <group>
