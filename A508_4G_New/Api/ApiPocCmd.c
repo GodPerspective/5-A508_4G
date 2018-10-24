@@ -7,15 +7,16 @@ const u8 *ucPocOpenConfig       ="000000010101";
 const u8 *ucPocOpenConfig2       ="00000001010101";
 
 
-u8 *ucStartPTT                  = "0B0000";
-u8 *ucEndPTT                    = "0C0000";
-u8 *ucGroupListInfo             = "0d0000";
-u8 *ucUserListInfo              = "0e00000000";
-u8 *ucSetGPS                    = "110000";
-u8 *ucAlarm1                    = "210000";
-u8 *ucAlarm2                    = "00000000736f7300";
-u8 *ucSetURL                    = "120000";
-
+const u8 *ucStartPTT                  = "0B0000";
+const u8 *ucEndPTT                    = "0C0000";
+const u8 *ucGroupListInfo             = "0d0000";
+const u8 *ucUserListInfo              = "0e00000000";
+const u8 *ucSetGPS                    = "110000";
+const u8 *ucAlarm1                    = "210000";
+const u8 *ucAlarm2                    = "00000000736f7300";
+const u8 *ucSetURL                    = "120000";
+const u8 *ucPunch_the_clock_gps       = "31000001";//定位打卡
+const u8 *ucPunch_the_clock_nfc       = "31000000";//NFC打卡
 
 PocCmdDrv PocCmdDrvobj;
 static bool no_online_user(void);
@@ -202,21 +203,21 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     DrvGD83_UART_TxCommand(PocCmdDrvobj.UserIdBuf, 8);
     break;
   case PocComm_StartPTT://3
-    DrvGD83_UART_TxCommand(ucStartPTT,strlen((char const *)ucStartPTT));
+    DrvGD83_UART_TxCommand((u8*)ucStartPTT,strlen((char const *)ucStartPTT));
     ApiPocCmd_ToneStateSet(TRUE);
     break;
   case PocComm_EndPTT://4
-    DrvGD83_UART_TxCommand(ucEndPTT,strlen((char const *)ucEndPTT));
+    DrvGD83_UART_TxCommand((u8*)ucEndPTT,strlen((char const *)ucEndPTT));
     ApiPocCmd_ToneStateSet(TRUE);
     break;
   case PocComm_GroupListInfo://5
-     DrvGD83_UART_TxCommand(ucGroupListInfo, strlen((char const *)ucGroupListInfo));
+     DrvGD83_UART_TxCommand((u8*)ucGroupListInfo, strlen((char const *)ucGroupListInfo));
      PocCmdDrvobj.getting_group_all_done_flag=0;
     break;
   case PocComm_UserListInfo://6
 #if 1//Test OK
     PocCmdDrvobj.offline_user_count=0;//发射0E指令前清零
-    DrvGD83_UART_TxCommand(ucUserListInfo, strlen((char const *)ucUserListInfo));
+    DrvGD83_UART_TxCommand((u8*)ucUserListInfo, strlen((char const *)ucUserListInfo));
     i=GetNowWorkingGroupXuhao()+1;//
     COML_HexToAsc(i,cBuf);
     switch(strlen((char const *)cBuf))
@@ -242,7 +243,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
 #endif
     break;
   case PocComm_SetGps:
-    DrvGD83_UART_TxCommand(ucSetGPS,strlen((char const *)ucSetGPS));
+    DrvGD83_UART_TxCommand((u8*)ucSetGPS,strlen((char const *)ucSetGPS));
 #if 1 //经纬度小数位合并换算及参数传递
     PocCmdDrvobj.Position.longitude_integer=beidou_longitude_degree();
     PocCmdDrvobj.Position.longitude_float = ((beidou_longitude_minute()*10000+beidou_longitude_minute())*10/6);//小数点后的数
@@ -267,7 +268,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     DrvGD83_UART_TxCommand(buf, len);
     break;
   case PocComm_Alarm:
-    DrvGD83_UART_TxCommand(ucAlarm1,strlen((char const *)ucAlarm1));
+    DrvGD83_UART_TxCommand((u8*)ucAlarm1,strlen((char const *)ucAlarm1));
     memset(PocCmdDrvobj.GroupIdBuf,0,sizeof(PocCmdDrvobj.GroupIdBuf));
     COML_HexToAsc(PocCmdDrvobj.NameInfo.AllGroupName[groupCallingcount].ID,PocCmdDrvobj.GroupIdBuf);
     GroupIdBuf_len=strlen((char const *)PocCmdDrvobj.GroupIdBuf);
@@ -278,7 +279,29 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     }
     COML_StringReverse(8,PocCmdDrvobj.GroupIdBuf);
     DrvGD83_UART_TxCommand(PocCmdDrvobj.GroupIdBuf, 8);
-    DrvGD83_UART_TxCommand(ucAlarm2,strlen((char const *)ucAlarm2));
+    DrvGD83_UART_TxCommand((u8*)ucAlarm2,strlen((char const *)ucAlarm2));
+    break;
+  case PocComm_Punch_the_clock_gps:
+    DrvGD83_UART_TxCommand((u8*)ucPunch_the_clock_gps,strlen((char const *)ucPunch_the_clock_gps));
+#if 1 //经纬度小数位合并换算及参数传递
+    PocCmdDrvobj.Position.longitude_integer=beidou_longitude_degree();
+    PocCmdDrvobj.Position.longitude_float = ((beidou_longitude_minute()*10000+beidou_longitude_minute())*10/6);//小数点后的数
+    PocCmdDrvobj.Position.latitude_integer = beidou_latitude_degree();//度
+    PocCmdDrvobj.Position.latitude_float = (beidou_latitude_minute()*10000+beidou_latitude_second())*10/6;//小数位合并换算
+#endif
+    
+    Digital_TO_CHAR(&gps_info_buf[0],PocCmdDrvobj.Position.longitude_integer,3);
+    gps_info_buf[3] = 0x2E;
+    Digital_TO_CHAR(&gps_info_buf[4],(u32)(PocCmdDrvobj.Position.longitude_float/10),5);//转换格式二合一
+    gps_info_buf[9] = 0x3b;
+    Digital_TO_CHAR(&gps_info_buf[10],PocCmdDrvobj.Position.latitude_integer,2);
+    gps_info_buf[12] = 0x2E;
+    Digital_TO_CHAR(&gps_info_buf[13],(u32)(PocCmdDrvobj.Position.latitude_float/10),5);//经度Longitude换算+转换格式二合一
+    
+    CHAR_TO_DIV_CHAR(gps_info_buf, PocCmdDrvobj.gps_info_report, 18);//20
+    DrvGD83_UART_TxCommand(PocCmdDrvobj.gps_info_report,strlen((char const *)PocCmdDrvobj.gps_info_report));
+    break;
+  case PocComm_Punch_the_clock_nfc:
     break;
   default:
     break;
@@ -868,6 +891,27 @@ void ApiPocCmd_10msRenew(void)
       break;
     case 0x8C://通知接收其他终端发来的消息
       break;
+    case 0x9D://打卡回复(附加消息为打卡成功原因或失败原因)
+      AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
+      if(Len >= 4)//如果群组id后面还有群组名
+      {
+        PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen= (Len-4);//
+        if(PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen > APIPOC_PunchTheClock_Messages_Len)
+        {
+          PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen = APIPOC_PunchTheClock_Messages_Len;
+        }
+      }
+      else//无群组名
+      {
+        PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen = 0x00;
+      }
+      for(i = 0x00; i<PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen; i++)
+      {
+        PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.Name[i] = pBuf[i+4];//存入获取的群组名
+      }
+      ReceiveMessagesPunchTheClock_UTF8_to_UNICODE();
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)punch_the_clock_buf_for_Voice(),strlen((char const*)punch_the_clock_buf_for_Voice()));
+      api_lcd_pwr_on_hint(0,2,UNICODE,punch_the_clock_buf_for_display());
     default:
       break;
     }
@@ -1327,6 +1371,72 @@ void get_screen_display_group_name(void)
   {
     DISPLAY_Show(d_individualcall);
   }
+}
+
+//将收到的打卡附加消息由UTF-8转换为UNICODE
+void ReceiveMessagesPunchTheClock_UTF8_to_UNICODE(void)
+{
+  u8 i;
+  //int num;
+  char temp_buf1[APIPOC_PunchTheClock_Messages_Len/2];
+  char temp_buf2[APIPOC_PunchTheClock_Messages_Len/2];
+  u8 temp_buf3[5];
+  memset(temp_buf1,0,sizeof(temp_buf1));
+  memset(temp_buf2,0,sizeof(temp_buf2));
+  
+  for(i=0;2*i<PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen;i++)
+  {
+    temp_buf1[i]=COML_AscToHex(PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.Name+2*i,2);
+  }
+  Utf8ToUnicode(temp_buf1, temp_buf2);
+  for(i=0;i<strlen(temp_buf2);i++)
+  {
+    memset(temp_buf3,0,sizeof(temp_buf3));
+    COML_HexToAsc(temp_buf2[i],temp_buf3);
+    COML_StringReverse(2,temp_buf3);
+    if(temp_buf3[0]==0x00)
+    {
+      temp_buf3[0]='0';
+    }
+    if(temp_buf3[1]==0x00)
+    {
+      temp_buf3[0]='0';
+    }
+    PocCmdDrvobj.unicode_punch_the_clock_buf[2*i+0]=temp_buf3[0];
+    PocCmdDrvobj.unicode_punch_the_clock_buf[2*i+1]=temp_buf3[1];
+  }
+}
+
+u8 *punch_the_clock_buf_for_display(void)//打卡消息由UTF8转化为UNICODE后再转为显示屏显示所用
+{
+  u8 i,unicode_punch_the_clock_buf_for_display_len;
+  u8 temp_buf[APIPOC_PunchTheClock_Messages_Len];
+  
+  memset(PocCmdDrvobj.unicode_punch_the_clock_buf_for_display,0,sizeof(PocCmdDrvobj.unicode_punch_the_clock_buf_for_display));//初始化数组
+  for(i=0;4*i<strlen((char const *)PocCmdDrvobj.unicode_punch_the_clock_buf);i++)
+  {
+      temp_buf[4*i+0]=PocCmdDrvobj.unicode_punch_the_clock_buf[4*i+2];
+      temp_buf[4*i+1]=PocCmdDrvobj.unicode_punch_the_clock_buf[4*i+3];
+      temp_buf[4*i+2]=PocCmdDrvobj.unicode_punch_the_clock_buf[4*i+0];
+      temp_buf[4*i+3]=PocCmdDrvobj.unicode_punch_the_clock_buf[4*i+1];
+      PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[2*i+0]=COML_AscToHex(temp_buf+(4*i), 0x02);
+      PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[2*i+1]=COML_AscToHex(temp_buf+(4*i)+2, 0x02);
+  }
+    unicode_punch_the_clock_buf_for_display_len=strlen((char const*)PocCmdDrvobj.unicode_punch_the_clock_buf_for_display);
+    if(PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[unicode_punch_the_clock_buf_for_display_len]==0
+       &&PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[unicode_punch_the_clock_buf_for_display_len+1]!=0
+         &&PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[unicode_punch_the_clock_buf_for_display_len+2]!=0
+           &&PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[unicode_punch_the_clock_buf_for_display_len+3]!=0)//如果用户名后面还有SOS的话将0x00变成0x20即空格
+    {
+      PocCmdDrvobj.unicode_punch_the_clock_buf_for_display[unicode_punch_the_clock_buf_for_display_len]=0x20;
+    }
+
+  return PocCmdDrvobj.unicode_punch_the_clock_buf_for_display;
+}
+
+u8 *punch_the_clock_buf_for_Voice(void)
+{
+  return PocCmdDrvobj.unicode_punch_the_clock_buf;
 }
 
 PocStatesType poccmd_states_poc_status(void)

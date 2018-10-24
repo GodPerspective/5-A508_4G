@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=-157703563
+Checksum=526929755
 [CodeCoverage]
 Enabled=_ 0
 [CallStack]
@@ -57,8 +57,13 @@ ShowSource=1
 [Simulator]
 Freq=16000000
 [array_types]
-Fmt0=u8[10]	3	0
-Fmt1=u8[34]	4	0
+Fmt0=char[3]	4	0
+Fmt1=char[45]	4	0
+Fmt2=char[4]	4	0
+Fmt3=char[8]	4	0
+Fmt4=u8[10]	3	0
+Fmt5=u8[34]	4	0
+Fmt6=u8[45]	4	0
 [watch_formats]
 Fmt0={W}1:AddrH	4	0
 Fmt1={W}1:AddrL	4	0
@@ -71,22 +76,23 @@ Fmt7={W}1:CharData[8]	4	0
 Fmt8={W}1:GroupCallingNum	3	0
 Fmt9={W}1:KeyUpDownCount	3	0
 Fmt10={W}1:Len	3	0
-Fmt11={W}1:buf	5	0
-Fmt12={W}1:cBuf	4	0
-Fmt13={W}1:cBuf[0]	4	0
-Fmt14={W}1:cBuf[1]	4	0
-Fmt15={W}1:cBuf[2]	4	0
-Fmt16={W}1:cID	4	0
-Fmt17={W}1:ccid_temp_count	3	0
-Fmt18={W}1:comma_count	3	0
-Fmt19={W}1:iCode	4	0
-Fmt20={W}1:pBuf	4	0
-Fmt21={W}1:pBuf[0]	5	0
-Fmt22={W}1:pBuf[1]	5	0
-Fmt23={W}1:pBuf[3]	5	0
-Fmt24={W}1:pBuf[4]	5	0
-Fmt25={W}1:ucId	3	0
-Fmt26={W}1:ulAllKeyID	4	0
+Fmt11={W}1:PocCmdDrvobj.NameInfo.ReceiveMessagesPunchTheClock.NameLen	3	0
+Fmt12={W}1:buf	5	0
+Fmt13={W}1:cBuf	4	0
+Fmt14={W}1:cBuf[0]	4	0
+Fmt15={W}1:cBuf[1]	4	0
+Fmt16={W}1:cBuf[2]	4	0
+Fmt17={W}1:cID	4	0
+Fmt18={W}1:ccid_temp_count	3	0
+Fmt19={W}1:comma_count	3	0
+Fmt20={W}1:iCode	4	0
+Fmt21={W}1:pBuf	4	0
+Fmt22={W}1:pBuf[0]	5	0
+Fmt23={W}1:pBuf[1]	5	0
+Fmt24={W}1:pBuf[3]	5	0
+Fmt25={W}1:pBuf[4]	5	0
+Fmt26={W}1:ucId	3	0
+Fmt27={W}1:ulAllKeyID	4	0
 [DataSample]
 LogEnabled=0
 GraphEnabled=0
@@ -99,7 +105,7 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.859.1" 0 0 0 0 "" 0 ""
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\Api\ApiDisplay.c}.875.1" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\Drv\DrvGT20L16S1Y.c}.342.1" 0 0 0 0 "" 0 ""
 Count=2
 [Aliases]

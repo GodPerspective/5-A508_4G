@@ -1,31 +1,33 @@
 #include "ALLHead.h"
 //#include <assert.h>
 //#include <stddef.h>
+char utf8Str1[3] = {0xe6, 0x89, 0x93}; 
+char utf8Str2[3] = {0xe5, 0x8D, 0xA1}; 
+char utf8Str3[3] = {0xe5, 0xA4, 0xB1}; 
+char utf8Str4[3] = {0xe8, 0xB4, 0xA5}; 
+char unicodeStr[2];
+  
+int Utf8ToUnicode(char* pInput, char* pOutput);
 
-
-/*void main(void)
+void UTF8toUNICODE_test(void)
 {
   //utf8转unicode
-  char utf8Str[4] = {0xe6, 0x88, 0x91, 0x00}; 
-  char* unicodeStr = new char[8];
-  memset(unicodeStr,0,8);
-  int num = Utf8ToUnicode(utf8Str, unicodeStr);
+  int num;
+  memset(unicodeStr,0,2);
+  num = Utf8ToUnicode(utf8Str1, unicodeStr);
+  num = Utf8ToUnicode(utf8Str2, unicodeStr);
+  num = Utf8ToUnicode(utf8Str3, unicodeStr);
+  num = Utf8ToUnicode(utf8Str4, unicodeStr);
   if (num == -1)
   {
-    printf("Error!\n");
+    num=num;
   }
   else
   {
     unsigned char* p = (unsigned char*)unicodeStr;
-    for (int i = 0; i < num; i++)
-    {
-      printf("%0x", *p);
-      p++;
-    }//输出1162
-    printf("\n");
+     num=num;
   }
-  delete unicodeStr;
-}*/
+}
 
 
 
@@ -61,9 +63,9 @@ int Utf8ToUnicode(char* pInput, char* pOutput)
                   *pOutput = (high << 6) + (low & 0x3F);
                   pOutput++;
                   *pOutput = (high >> 2) & 0x07;
-		}
-		else if (((*pInput) & 0xF0) == 0xE0) //处理三字节UTF8字符
-		{
+    }
+    else if (((*pInput) & 0xF0) == 0xE0) //处理三字节UTF8字符
+    {
                   char high = *pInput;
                   pInput++;
                   char middle = *pInput;
@@ -84,7 +86,7 @@ int Utf8ToUnicode(char* pInput, char* pOutput)
                 pInput ++;//处理下一个utf8字符
 		pOutput ++;
 		outputSize += 2;
-	}
+  }
 	//unicode字符串后面，有两个\0
 	*pOutput = 0;
 	 pOutput++;

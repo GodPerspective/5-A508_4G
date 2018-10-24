@@ -260,6 +260,7 @@
           <state>$PROJ_DIR$\..\INCLUDE</state>
           <state>$PROJ_DIR$\..\User</state>
           <state>$PROJ_DIR$\..\Lib\inc</state>
+          <state>$PROJ_DIR$\..\Suport</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>

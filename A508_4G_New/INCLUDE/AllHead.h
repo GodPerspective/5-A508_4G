@@ -29,6 +29,9 @@
 #include "GT20L16P1Y.h"
 #include "GT20L16P1Y_D.h"//×Ö¿â²¹¶¡
 
+//´ò¿¨½âÂë-UTF8×ªUNICODE
+#include "UTF8toUNICODE.h"
+
 //Ð´Æµ
 #include "DrvUart3.h"
 #include "DrvEeprom.h"
@@ -78,6 +81,9 @@
 //×Ö¿âIC
 #include "GT20L16P1Y.h"
 #include "GT20L16P1Y_D.h"//×Ö¿â²¹¶¡
+
+
+
 //BEEP
 #include "Tone.h"
 #include "Beep.h"

@@ -32,7 +32,9 @@ typedef enum{
   No_service            = 0x1B,
   set_network_auto      = 0x1C,
   set_network_wcdma_only= 0x1D,
-  set_network_gsm_only  = 0x1F
+  set_network_gsm_only  = 0x1F,
+  punch_the_clock       = 0x20,//正在打卡
+  punch_the_clock_fail  = 0x21//打卡失败
 }VOICEPLAY_TYPE;
 typedef enum
 {	

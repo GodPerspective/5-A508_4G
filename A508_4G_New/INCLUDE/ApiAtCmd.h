@@ -45,6 +45,7 @@ typedef struct{
   u8 key4_long_value;
   //u8 testbuf[20];
   Key3_OptionType Key3Option;
+  bool punch_the_clock_gps_key_press_flag;
 }AtCmdDrv;
 
 typedef enum{

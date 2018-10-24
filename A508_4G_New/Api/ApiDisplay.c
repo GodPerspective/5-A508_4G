@@ -145,6 +145,8 @@ const u8 *dp_all_unknow_network = "所有网络异常    ";//
 const u8 *dp_no_service         = "无服务          ";//
 const u8 *dp_getting_info       = "获取中...       ";
 const u8 *dp_not_in_groups      = "不在群组        ";
+const u8 *dp_punch_the_clock    = "正在打卡...     ";
+const u8 *dp_punch_the_clock_fail="打卡失败        ";
 
 const u8 *dp_abell2              = "     ABELL      ";//1
 const u8 *dp_personal_mode2      = "Personal Mode   ";//2
@@ -179,6 +181,8 @@ const u8 *dp_all_unknow_network2 = "All NET unknow  ";//
 const u8 *dp_no_service2         = "No service      ";//
 const u8 *dp_getting_info2       = "getting info... ";
 const u8 *dp_not_in_groups2      = "Not in groups   ";
+const u8 *dp_punch_the_clock2     = "正在打卡...     ";
+//const u8 *dp_punch_the_clock_fail2="打卡失败        ";
 
 u8 DisDataBit[64]  = {0};
 u8 DisDataBuf[512] = {0};
@@ -308,6 +312,12 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     case d_not_in_groups:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_not_in_groups);
       break;
+    case d_punch_the_clock:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock);
+      break;
+    case d_punch_the_clock_fail:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail);
+      break;
     default:
       break;
     }
@@ -422,6 +432,12 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     case d_not_in_groups:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_not_in_groups2);
       break;
+    case d_punch_the_clock:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock2);
+      break;
+//    case d_punch_the_clock_fail:
+//      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail2);
+//      break;
     default:
       break;
     }

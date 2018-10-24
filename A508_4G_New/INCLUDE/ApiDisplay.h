@@ -55,7 +55,9 @@ typedef enum{
   d_all_unknow_network          = 0x1F,
   d_no_service                  = 0x20,
   d_getting_info                = 0x21,
-  d_not_in_groups               = 0x22
+  d_not_in_groups               = 0x22,
+  d_punch_the_clock             = 0x23,//正在打卡
+  d_punch_the_clock_fail        = 0x24//打卡失败
 }DISPLAY_TYPE;
 
 typedef struct

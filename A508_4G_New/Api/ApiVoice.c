@@ -30,6 +30,8 @@ const u8 *ucNo_service                  = "e0650d67a152";//无服务
 const u8 *ucSet_network_auto            = "517fdc7ebe8b6e7f3a4eea81a852216a0f5f";//网络设置为自动模式
 const u8 *ucSet_network_wcdma_only      = "517fdc7ebe8b6e7f3a4ec54e5096094ec45b";//网络设置为仅限3G
 const u8 *ucSet_network_gsm_only        = "517fdc7ebe8b6e7f3a4ec54e50968c4ec45b";//网络设置为仅限2G
+const u8 *ucpunch_the_clock             = "636b285753626153";//正在打卡
+const u8 *ucpunch_the_clock_fail        = "536261533159258d";//打卡失败
 
 const u8 *ucPersonalMode2                = "50006500720073006f006e0061006c0020004d006f0064006500";//personal mode
 const u8 *ucABELL2                       = "4100620065006C006C00";//ABELL
@@ -61,7 +63,8 @@ const u8 *ucNo_service2                  = "4e006f002000730065007200760069006300
 const u8 *ucSet_network_auto2            = "6e006500740077006f0072006b0020006d006f006400650020006100750074006f006d006100740069006300";//network mode automatic
 const u8 *ucSet_network_wcdma_only2      = "5700430044004d00410020006f006e006c007900";//WCDMA only
 const u8 *ucSet_network_gsm_only2        = "470053004d0020006f006e006c007900";//GSM only
-
+const u8 *ucpunch_the_clock2             = "636b285753626153";//正在打卡
+const u8 *ucpunch_the_clock_fail2        = "536261533159258d";//打卡失败
 
 typedef struct{
   union{
@@ -196,6 +199,12 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     case set_network_gsm_only:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucSet_network_gsm_only,strlen((char const*)ucSet_network_gsm_only));
       break;
+    case punch_the_clock://正在打卡
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock,strlen((char const*)ucpunch_the_clock));
+      break;
+    case punch_the_clock_fail://打卡失败
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock_fail,strlen((char const*)ucpunch_the_clock_fail));
+      break;
     default:
       break;
     }
@@ -296,6 +305,12 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       break;
     case set_network_gsm_only:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucSet_network_gsm_only2,strlen((char const*)ucSet_network_gsm_only2));
+      break;
+    case punch_the_clock:
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock2,strlen((char const*)ucpunch_the_clock2));
+      break;
+    case punch_the_clock_fail://打卡失败
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock_fail2,strlen((char const*)ucpunch_the_clock_fail2));
       break;
     default:
       break;

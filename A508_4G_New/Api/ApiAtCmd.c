@@ -17,20 +17,19 @@ const u8 *cTxCGDCONT_SET7        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET8        ="AT+CGDCONT=1,\"IP\",\"\"";//
 const u8 *cTxCGDCONT_SET9       ="AT+CGDCONT=1,\"IP\",\"\"";//
 #endif
-
-const u8 *cTxPOCID              ="AT^POCID=2";
-const u8 *cTxZICCID             ="AT+ZICCID?";
-const u8 *cTxCGDCONT_READ       ="at+cgdcont?";
-const u8 *cTxPOWERUP            ="at+cfun=1";
-const u8 *cTxCGACT              ="at+cgact=1,1";
-const u8 *cTxZGACT1             ="at+zgact=1,1";
-const u8 *cTxZGACT0             ="at+zgact=0,1";
-const u8 *cTxPlayZtts           ="AT+ZTTS=";
-const u8 *cTxRESET              ="at+cfun=1,1";
-const u8 *cTxPOWEROFF           ="at+cfun=0,0";
-const u8 *cTxSetNetworkAuto     ="AT^sysconfig=2,0,1,2";
-const u8 *cTxSetNetworkGsmOnly  ="AT^sysconfig=13,0,1,2";
-const u8 *cTxSetNetworkWcdmaOnly="AT^sysconfig=14,0,1,2";
+const u8 *cTxPOCID                      ="AT^POCID=2";
+const u8 *cTxZICCID                     ="AT+ZICCID?";
+const u8 *cTxCGDCONT_READ               ="at+cgdcont?";
+const u8 *cTxPOWERUP                    ="at+cfun=1";
+const u8 *cTxCGACT                      ="at+cgact=1,1";
+const u8 *cTxZGACT1                     ="at+zgact=1,1";
+const u8 *cTxZGACT0                     ="at+zgact=0,1";
+const u8 *cTxPlayZtts                   ="AT+ZTTS=";
+const u8 *cTxRESET                      ="at+cfun=1,1";
+const u8 *cTxPOWEROFF                   ="at+cfun=0,0";
+const u8 *cTxSetNetworkAuto             ="AT^sysconfig=2,0,1,2";
+const u8 *cTxSetNetworkGsmOnly          ="AT^sysconfig=13,0,1,2";
+const u8 *cTxSetNetworkWcdmaOnly        ="AT^sysconfig=14,0,1,2";
 
 const u8 *cRxZICCID             ="ZICCID: ";
 const u8 *cRxCSQ                ="CSQ: ";
@@ -90,6 +89,7 @@ void ApiAtCmd_PowerOnInitial(void)
   AtCmdDrvobj.key3_long_value=0;
   AtCmdDrvobj.key4_long_value=0;
   AtCmdDrvobj.Key3Option=Key3_OptionZero;
+  AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
   
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
@@ -231,7 +231,6 @@ bool ApiAtCmd_WritCommand(AtCommType id, u8 *buf, u16 len)
     break;
   case ATCOMM_POCID:
     DrvGD83_UART_TxCommand((u8*)cTxPOCID, strlen((char const*)cTxPOCID));
-    
     break;
   default:
     break;

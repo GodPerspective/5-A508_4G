@@ -6,6 +6,7 @@
 #define DrvMC8332_UseId_Len	        200//define UART Tx buffer length value
 #define APIPOC_GroupName_Len            64+5//unicode只存前2位，00不存，32/2=16,屏幕最多显示16个字符
 #define APIPOC_UserName_Len             64+5
+#define APIPOC_PunchTheClock_Messages_Len 90
 #define APIPOC_Group_Num                5
 #define APIPOC_User_Num                 5
 
@@ -118,10 +119,16 @@ typedef struct{
       u8 Name[APIPOC_UserName_Len];
       u8 NameLen;
     }ReceiveMessagesUserName;
+    struct{
+      u8 Name[APIPOC_PunchTheClock_Messages_Len];
+      u8 NameLen;
+    }ReceiveMessagesPunchTheClock;
 /**************************/
   }NameInfo;
   u8 ReadBuffer[200];//存EEPROM读取的数据使用
   u8 ReadBuffer2[100];//存EEPROM读取的数据使用
+  u8 unicode_punch_the_clock_buf[APIPOC_PunchTheClock_Messages_Len-30];
+  u8 unicode_punch_the_clock_buf_for_display[APIPOC_PunchTheClock_Messages_Len-30];
   u8 NowWorkingGroupNameBuf[APIPOC_GroupName_Len];
   u8 AllGroupNameBuf[APIPOC_GroupName_Len];
   u8 AllUserNameBuf[APIPOC_UserName_Len];
@@ -171,7 +178,9 @@ typedef enum{
   PocComm_UserListInfo          = 0x0E,
   PocComm_SetGps                = 0x0F,
   PocComm_Key			= 0x10,
-  PocComm_Alarm                 = 0x11
+  PocComm_Alarm                 = 0x11,
+  PocComm_Punch_the_clock_gps   = 0x12,
+  PocComm_Punch_the_clock_nfc   = 0x13
 }PocCommType;
 
 
@@ -230,6 +239,9 @@ extern u8 *GetAllUserNameForVoice(u8 a);//所有用户：播报
 extern u8 *GetLocalUserNameForVoice(void);//本机用户：播报
 extern u8 *GetNowWorkingGroupNameForVoice(void);//当前群组：播报
 extern void get_screen_display_group_name(void);
+extern void ReceiveMessagesPunchTheClock_UTF8_to_UNICODE(void);
+extern u8 *punch_the_clock_buf_for_Voice(void);
+extern u8 *punch_the_clock_buf_for_display(void);
 /*************/
 extern void ApiPocCmd_PowerOnInitial(void);
 extern void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len);

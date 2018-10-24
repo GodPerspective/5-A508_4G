@@ -53,6 +53,7 @@ typedef struct {
     u8 LobatteryTask_StartCount;
     u8 PrimaryLowPowerCount;
     u16 all_power_off_count;
+    u8 punch_the_clock_gps_key_press_flag_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -107,7 +108,7 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.LobatteryTask_StartCount=0;
   DelDrvObj.Count.PrimaryLowPowerCount=0;
   DelDrvObj.Count.all_power_off_count=0;
-  
+  DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
   DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
@@ -124,7 +125,6 @@ void DEL_Interrupt(void)
 {
   DelDrvObj.c10msLen--;
   DelDrvObj.Msg.Bit.b1ms = DEL_RUN;
-  //enableInterrupts();
   if (DelDrvObj.c10msLen == 0x00) //10ms interrupt process
   {
     DEL_TimerRenew();//delay timer renew process
@@ -409,20 +409,6 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.sys_mode_count=0;
     }
-   /* if(AtCmdDrvobj.Msg.Bits.bZGIPDNS==0)
-    {
-      DelDrvObj.Count.network_search_count++;
-      if(DelDrvObj.Count.network_search_count>5*2)
-      {
-        DelDrvObj.Count.network_search_count=0;
-        (NetworkSearching);
-        DISPLAY_Show(d_NetworkSearching);
-      }
-    }
-    else
-    {
-      DelDrvObj.Count.network_search_count=0;
-    }*/
 /*********开机检测SIM卡*************/
     if(AtCmdDrvobj.Msg.Bits.bNoSimCard==1)
     {
@@ -837,6 +823,23 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.all_power_off_count=0;
     }
+ /********打卡功能：按下打卡键超5秒钟提示打卡失败*******************/
+    if(AtCmdDrvobj.punch_the_clock_gps_key_press_flag==TRUE)
+    {
+      DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count++;
+      if(DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count>2*5)
+      {
+        VOICE_Play(punch_the_clock_fail);
+        DISPLAY_Show(d_punch_the_clock_fail);
+        AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
+        DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
+      }
+    }
+    else
+    {
+      DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
+    }
+    
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 
 /******登录状态下的低电报警**********************************************/
