@@ -121,7 +121,7 @@ void main_all_init(void)
   BEEP_Time(100);
   MCU_LCD_BACKLIGTH(ON);
   api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//显示电池满电图标
-  
+  api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//免提模式
   DISPLAY_Show(d_ABELL);
   //IIC-AW87319功放
   //iic_init();

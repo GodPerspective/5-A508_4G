@@ -85,6 +85,7 @@ void MenuDisplay(MenuDisplayType id)
       api_disp_icoid_output( eICO_IDBANDWIDTHN, TRUE, TRUE);//无锁屏空图标
     else
       api_disp_icoid_output( eICO_IDBANDWIDTHW, TRUE, TRUE);//锁屏图标
+    
     api_disp_icoid_output( BatteryLevel, TRUE, TRUE);//电池电量图标
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//默认无发射无接收信号图标
 //if(ShowTime_Flag==FALSE)
@@ -98,7 +99,7 @@ void MenuDisplay(MenuDisplayType id)
         api_disp_icoid_output( eICO_IDPOWERM, TRUE, TRUE);//显示组呼图标
       else
         api_disp_icoid_output( eICO_IDPOWERH, TRUE, TRUE);//显示个呼图标
-#if 0
+#if 1
       if(KeyDownUpChoose_GroupOrUser_Flag==0)
         api_disp_icoid_output( eICO_IDMESSAGEOff, TRUE, TRUE);//空图标-与选对应
       else

@@ -255,6 +255,7 @@ void keyboard_process(void)
       {}
       else
       {
+#if 0
         switch(network_count)
         {
         case 0:
@@ -275,6 +276,7 @@ void keyboard_process(void)
           network_count=0;
           break;
         }
+#endif
       }
       set_keyboard_menu_states(m_key_idle);
     }
@@ -879,7 +881,6 @@ void changing_user_voice_and_display(u8 a)
 void return_group_and_clear_flag(void)
 {
   KEYCMD_PersonalKeyModeSet(FALSE);
-  MenuMode_Flag=0;
   api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
   api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组昵称
   KeyDownUpChoose_GroupOrUser_Flag=0;
@@ -892,4 +893,20 @@ void return_group_and_clear_flag(void)
   ApiPocCmd_ToneStateSet(FALSE);
   AUDIO_IOAFPOW(OFF);  
   #endif
+  
+  if(MenuMode_Flag!=0)
+  {
+    MenuDisplay(Menu_RefreshAllIco);
+    MenuModeCount=1;
+    TheMenuLayer_Flag=0;
+    MenuMode_Flag=0;
+    ApiMenu_SwitchGroup_Flag=0;
+    ApiMenu_SwitchCallUser_Flag=0;
+    ApiMenu_SwitchOnlineUser_Flag=0;
+    ApiMenu_GpsInfo_Flag=0;
+    ApiMenu_BacklightTimeSet_Flag=0;
+    ApiMenu_KeylockTimeSet_Flag=0;
+    ApiMenu_NativeInfo_Flag=0;
+    ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+  }
 }

@@ -104,6 +104,7 @@ void key_process(void)
           ApiMenu_KeylockTimeSet_Flag=0;
           ApiMenu_NativeInfo_Flag=0;
           ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+          
         }
         Key3_PlayVoice();
       }

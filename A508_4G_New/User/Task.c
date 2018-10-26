@@ -17,17 +17,18 @@ void Task_login_progress(void)
   switch(TaskDrvobj.login_step)
   {
   case 0:
-    api_lcd_pwr_on_hint(14,2,GBK,"-0");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-0");
     if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)//开启上报回复
     {
       //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)ATCOMM_POCID, strlen((char const*)ATCOMM_POCID));
       ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
-      ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
+      //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
       TaskDrvobj.login_step=1;
     }
     break;
   case 1:
-    api_lcd_pwr_on_hint(14,2,GBK,"-1");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-1");
+    api_lcd_pwr_on_hint(0,2,GBK,"初始化...       ");
     if(AtCmdDrvobj.Msg.Bits.bSimCardIn==1)//已插卡
     {
       VOICE_Play(ABELL);
@@ -38,7 +39,7 @@ void Task_login_progress(void)
     }
     break;
   case 2:
-    api_lcd_pwr_on_hint(14,2,GBK,"-2");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-2");
     if(AtCmdDrvobj.Msg.Bits.bCGDCONT==1)
     {
       ApiAtCmd_WritCommand(ATCOMM_SetNetworkAuto,0,0);//默认自动模式开机
@@ -48,7 +49,7 @@ void Task_login_progress(void)
     }
     break;
   case 3:
-    api_lcd_pwr_on_hint(14,2,GBK,"-3");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-3");
     if(AtCmdDrvobj.network_reg.creg==1||AtCmdDrvobj.network_reg.cereg==1||AtCmdDrvobj.network_reg.cereg==5
      ||AtCmdDrvobj.network_reg.cgreg==1||AtCmdDrvobj.network_reg.cgreg==5)
     {
@@ -57,7 +58,7 @@ void Task_login_progress(void)
     }
     break;
   case 4:
-    api_lcd_pwr_on_hint(14,2,GBK,"-4");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-4");
     if(AtCmdDrvobj.ZGIPDNS==2)//收到ZGIPDNS后开始发送指令
     {
       AtCmdDrvobj.ZGIPDNS=0;
@@ -66,7 +67,7 @@ void Task_login_progress(void)
     }
     break;
   case 5:
-    api_lcd_pwr_on_hint(14,2,GBK,"-5");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-5");
     if(AtCmdDrvobj.ZCONSTAT==2)//收到ZCONSTAT:1,1后表示网络链路成功，可以上网了
     {
       AtCmdDrvobj.ZCONSTAT=0;
@@ -74,10 +75,10 @@ void Task_login_progress(void)
     }
     break;
   case 6:
-    api_lcd_pwr_on_hint(14,2,GBK,"-6");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-6");
     break;
   case 7:
-    api_lcd_pwr_on_hint(14,2,GBK,"-7");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-7");
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
     ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
     ApiPocCmd_WritCommand(PocComm_SetURL,0,0);//设置URL
@@ -86,7 +87,7 @@ void Task_login_progress(void)
     TaskDrvobj.login_step=8;
     break;
   default:
-    api_lcd_pwr_on_hint(14,2,GBK,"-8");
+    //api_lcd_pwr_on_hint(14,2,GBK,"-8");
     break;
   }
 }
@@ -141,7 +142,21 @@ void Task_normal_progress(void)
     ApiPocCmd_SetKeyPttState(2);
     api_disp_icoid_output( eICO_IDTX, TRUE, TRUE);//发射信号图标
     api_lcd_pwr_on_hint(0,2,GBK,"                ");
-    //api_lcd_pwr_on_hint4(GetSpeakingUserNameForDisplay());//显示本机正在讲话
+    if(MenuMode_Flag!=0)
+    {
+      MenuDisplay(Menu_RefreshAllIco);
+      MenuModeCount=1;
+      TheMenuLayer_Flag=0;
+      MenuMode_Flag=0;
+      ApiMenu_SwitchGroup_Flag=0;
+      ApiMenu_SwitchCallUser_Flag=0;
+      ApiMenu_SwitchOnlineUser_Flag=0;
+      ApiMenu_GpsInfo_Flag=0;
+      ApiMenu_BacklightTimeSet_Flag=0;
+      ApiMenu_KeylockTimeSet_Flag=0;
+      ApiMenu_NativeInfo_Flag=0;
+      ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+    }
     api_disp_all_screen_refresh();// 全屏统一刷新
     break;
   case 2://2：按住PTT状态
@@ -174,9 +189,24 @@ void Task_normal_progress(void)
     api_lcd_pwr_on_hint(0,2,GBK,"                ");
     api_lcd_pwr_on_hint(0,2,UNICODE,GetSpeakingUserNameForDisplay());
     api_disp_icoid_output( eICO_IDVOX, TRUE, TRUE);//接收信号图标
-    api_disp_all_screen_refresh();// 全屏统一刷新
     ApiPocCmd_ReceivedVoicePlayStatesForDisplaySet(ReceivedBeingVoice);
 
+    if(MenuMode_Flag!=0)
+    {
+      MenuDisplay(Menu_RefreshAllIco);
+      MenuModeCount=1;
+      TheMenuLayer_Flag=0;
+      MenuMode_Flag=0;
+      ApiMenu_SwitchGroup_Flag=0;
+      ApiMenu_SwitchCallUser_Flag=0;
+      ApiMenu_SwitchOnlineUser_Flag=0;
+      ApiMenu_GpsInfo_Flag=0;
+      ApiMenu_BacklightTimeSet_Flag=0;
+      ApiMenu_KeylockTimeSet_Flag=0;
+      ApiMenu_NativeInfo_Flag=0;
+      ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+    }
+    api_disp_all_screen_refresh();// 全屏统一刷新
 #if 0 //解决换组或换呼状态下，被呼叫后按PTT或OK键会切换群组，而不是回复刚刚说话人的语音
     if(MenuMode_Flag!=0)
     {
