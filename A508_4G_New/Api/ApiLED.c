@@ -30,6 +30,7 @@ void LED_IntOutputRenew(void)
       if(ApiPocCmd_ReceivedVoicePlayStatesForLED()==TRUE)
       {
         Set_GreenLed(ON);
+        Set_RedLed(OFF);
       }
       else
       {
