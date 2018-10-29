@@ -54,6 +54,7 @@ typedef struct {
     u8 PrimaryLowPowerCount;
     u16 all_power_off_count;
     u8 punch_the_clock_gps_key_press_flag_count;
+    u8 getting_info_flag_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -109,6 +110,7 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.PrimaryLowPowerCount=0;
   DelDrvObj.Count.all_power_off_count=0;
   DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
+  DelDrvObj.Count.getting_info_flag_count=0;
   //DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
@@ -736,35 +738,34 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     if(PocCmdDrvobj.getting_group_all_done_flag==2)
     {
       PocCmdDrvobj.getting_group_all_done_flag=0;
-      switch(PocCmdDrvobj.getting_info_flag)
-      {
-      case KEYUP:
-        changing_group_voice_and_display(GroupCallingNum-1);
-        break;
-      case KEYDOWN:
-        changing_group_voice_and_display(GroupCallingNum-1);
-        break;
-      default:
-        break;
-      }
+      changing_group_voice_and_display(GroupCallingNum-1);
       PocCmdDrvobj.getting_info_flag=KEYNONE;
+      AtCmdDrvobj.getting_info_flag=FALSE;
     }
 /*****获取中：换组时更新组列表后播报及显示当前选中的用户名************/
     if(PocCmdDrvobj.getting_user_all_done_flag==3)
     {
       PocCmdDrvobj.getting_user_all_done_flag=0;
-      switch(PocCmdDrvobj.getting_info_flag)
-      {
-      case KEYUP:
-        changing_user_voice_and_display(PersonalCallingNum);
-        break;
-      case KEYDOWN:
-        changing_user_voice_and_display(PersonalCallingNum);
-        break;
-      default:
-        break;
-      }
+      changing_user_voice_and_display(PersonalCallingNum);
       PocCmdDrvobj.getting_info_flag=KEYNONE;
+      AtCmdDrvobj.getting_info_flag=FALSE;
+    }
+/*******解决处于获取中状态超过2秒则重新获取一次组列表或用户列表*********/
+    if(AtCmdDrvobj.getting_info_flag==TRUE)
+    {
+      DelDrvObj.Count.getting_info_flag_count++;
+      if(DelDrvObj.Count.getting_info_flag_count>=2*2)
+      {
+        DelDrvObj.Count.getting_info_flag_count=0;
+        if(KEYCMD_PersonalKeyMode()==TRUE)
+        {
+          ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
+        }
+        else
+        {
+          ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
+        }
+      }
     }
 /****登录成功一分钟后禁用写频功能，开启外部定位上报模式*********/
     if(TaskDrvobj.Id==TASK_NORMAL)

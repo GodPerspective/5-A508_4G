@@ -167,7 +167,6 @@ void Task_normal_progress(void)
   case 3://3：松开PTT瞬间
     ApiPocCmd_SetKeyPttState(0);
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//默认无发射无接收信号图标
-    api_lcd_pwr_on_hint(0,2,GBK,"                ");
     if(get_current_working_status()==m_group_mode)//组呼模式
     {
       api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组

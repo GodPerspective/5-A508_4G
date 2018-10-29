@@ -123,8 +123,21 @@ void key_process(void)
 /*********按键Key4*****************************************************************************/
     if(get_key_4_states()==m_key_short_press)//处理短按按键清除当前标志位m_key_idle
     {
-      ApiPocCmd_WritCommand(PocComm_Alarm,0,0);
-      set_poc_receive_sos_statas(TRUE);
+      switch(AtCmdDrvobj.key_top_option)
+      {
+      case REMOTE_AND_LOCAL_ALARM:
+        ApiPocCmd_WritCommand(PocComm_Alarm,0,0);
+        set_poc_receive_sos_statas(TRUE);
+        break;
+      case REMOTE_ALARM_ONLY:
+        ApiPocCmd_WritCommand(PocComm_Alarm,0,0);
+        break;
+      case LOCAL_ALARM_ONLY:
+        set_poc_receive_sos_statas(TRUE);
+        break;
+      default:
+        break;
+      }
       set_key_4_states(m_key_idle);
     }
     else if(get_key_4_states()==m_key_long_press)//处理长按按键清除当前标志位m_key_idle

@@ -6,6 +6,13 @@ typedef enum{
   m_CHINESE       = 0x00,
   m_ENGLISH       = 0x01
 }LANGUAGE_TYPE;
+
+typedef enum{
+  REMOTE_AND_LOCAL_ALARM        = 0x00,
+  REMOTE_ALARM_ONLY             = 0x01,
+  LOCAL_ALARM_ONLY              = 0x02,
+}KEY_TOP_TYPE;
+
 typedef struct{
   union{
     struct{
@@ -40,12 +47,15 @@ typedef struct{
   u8 language_value;
   LANGUAGE_TYPE language_set;
   u8 Key3_PlayValue;
+  u8 key_top_value;
   u8 key2_long_value;
   u8 key3_long_value;
   u8 key4_long_value;
   //u8 testbuf[20];
   Key3_OptionType Key3Option;
+  KEY_TOP_TYPE key_top_option;
   bool punch_the_clock_gps_key_press_flag;
+  bool getting_info_flag;
 }AtCmdDrv;
 
 typedef enum{

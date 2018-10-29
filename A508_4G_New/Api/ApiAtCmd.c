@@ -85,15 +85,19 @@ void ApiAtCmd_PowerOnInitial(void)
   AtCmdDrvobj.language_value=0;
   AtCmdDrvobj.language_set=m_CHINESE;
   AtCmdDrvobj.Key3_PlayValue=0;
+  AtCmdDrvobj.key_top_value=0;
   AtCmdDrvobj.key2_long_value=0;
   AtCmdDrvobj.key3_long_value=0;
   AtCmdDrvobj.key4_long_value=0;
   AtCmdDrvobj.Key3Option=Key3_OptionZero;
+  AtCmdDrvobj.key_top_option=REMOTE_AND_LOCAL_ALARM;
   AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
+  AtCmdDrvobj.getting_info_flag=FALSE;
   
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
   FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));
+  FILE_Read(602,1,&AtCmdDrvobj.key_top_value);//顶部键的报警类型
   //FILE_Read(590,20,AtCmdDrvobj.testbuf);
   FILE_Read(599,1,&(AtCmdDrvobj.key2_long_value));//侧键1长键
   FILE_Read(597,1,&(AtCmdDrvobj.key3_long_value));//侧键2长键
@@ -133,6 +137,21 @@ void ApiAtCmd_PowerOnInitial(void)
     break;
   }
 #endif
+  
+  switch(AtCmdDrvobj.key_top_value)
+  {
+  case 0x00:
+    AtCmdDrvobj.key_top_option=REMOTE_AND_LOCAL_ALARM;
+    break;
+  case 0x01:
+    AtCmdDrvobj.key_top_option=REMOTE_ALARM_ONLY;
+    break;
+  case 0x02:
+    AtCmdDrvobj.key_top_option=LOCAL_ALARM_ONLY;
+    break;
+  default:
+    break;
+  }
 }
 
 #if 1//ZM389
@@ -336,9 +355,17 @@ void ApiAtCmd_10msRenew(void)
     {
       if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)
       {
-        TaskDrvobj.Id = TASK_LOGIN;
+        set_power_off(OFF);//
+        DEL_SetTimer(0,200);
+        while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
+        set_power_off(ON);//
+        main_all_init();//
       }
-      AtCmdDrvobj.Msg.Bits.bCommunicationTest=1;
+      else
+      {
+        AtCmdDrvobj.Msg.Bits.bCommunicationTest=1;
+      }
+      
     }
 /****信号获取及判断CSQ-测试ok*********************/
     ucRet = memcmp(pBuf, cRxCSQ, 5);
