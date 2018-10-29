@@ -148,6 +148,7 @@ const u8 *dp_not_in_groups      = "不在群组        ";
 const u8 *dp_punch_the_clock    = "正在打卡...     ";
 const u8 *dp_punch_the_clock_fail="打卡失败        ";
 
+#if 0
 const u8 *dp_abell2              = "     ABELL      ";//1
 const u8 *dp_personal_mode2      = "Personal Mode   ";//2
 const u8 *dp_no_sim_card2        = "No SIM Card     ";//3
@@ -183,6 +184,8 @@ const u8 *dp_getting_info2       = "getting info... ";
 const u8 *dp_not_in_groups2      = "Not in groups   ";
 const u8 *dp_punch_the_clock2     = "正在打卡...     ";
 //const u8 *dp_punch_the_clock_fail2="打卡失败        ";
+
+#endif
 
 u8 DisDataBit[64]  = {0};
 u8 DisDataBuf[512] = {0};
@@ -326,114 +329,114 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     switch(id)
     {
     case d_ABELL:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell);
         break;
     case d_PersonalMode:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_personal_mode);
       break;
     case d_AllGroupName:
       api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
       api_lcd_pwr_on_hint(0,2,UNICODE,GetAllGroupNameForDisplay(groupCallingcount));//显示当前选中的群组名
       break;
     case d_NoSimCard:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_sim_card);
       break;
     case d_NetworkSearching:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_network_search);
       break;
     case d_AllUserName:
       api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
       api_lcd_pwr_on_hint(0,2,UNICODE,GetAllUserNameForDisplay(PersonalCallingNum));//显示当前选中的群组名
       break;
     case d_LoggingIn:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_account_config);
       break;
     case d_PowerLowPleaseCharge:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_please_charge);
       break;
     case d_menu:
-      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu2);
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_menu);
       break;
     case d_menu_groupselect:
       api_lcd_pwr_on_hint(13,0,GBK,"1/5");
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_group_select);
       break;
     case d_menu_gpsinformation:
       api_lcd_pwr_on_hint(13,0,GBK,"2/5");
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_information);
       break;
     case d_menu_backlighttime:
       api_lcd_pwr_on_hint(13,0,GBK,"3/5");
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_backlight_time);
       break;
     case d_menu_keypadlocktime:
       api_lcd_pwr_on_hint(13,0,GBK,"4/5");
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_keypad_lock_time);
       break;
     case d_menu_softwareversion:
       api_lcd_pwr_on_hint(13,0,GBK,"5/5");
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_software_version);
       break;
     case d_presswell:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_well);
       break;
     case d_longitude_and_latitude0:
-      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude02);//清屏
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude02);//清屏
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_latitude0);//清屏
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_longitude0);//清屏
       break;
     case d_backlight:
-      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight2);
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_backlight);
       break;
     case d_keypadlock:
-      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock2);
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_keypad_lock);
       break;
     case d_close:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_close);
       break;
     case d_individualcall:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call2);//Individual Call临时群组
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_individual_call);//Individual Call临时群组
       break;
     case d_version:
-      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version2);
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)dp_version);
       break;
     case d_press_ok_then_well:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_press_ok_then_well);
       break;
     case d_status_offline:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_status_offline);
       break;
     case d_SimCardError:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_SimCardError);
       break;
     case d_cs_unknow_network:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_cs_unknow_network);
       break;
     case d_gprs_unknow_network:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_unknow_network);
       break;
     case d_gprs_refuse_enroll:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gprs_refuse_enroll);
       break;
     case d_eps_unknow_network:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_unknow_network);
       break;
     case d_eps_refuse_enroll:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_eps_refuse_enroll);
       break;
     case d_all_unknow_network:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_all_unknow_network);
       break;
     case d_no_service:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_no_service);
       break;
     case d_getting_info:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_getting_info2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_getting_info);
       break;
     case d_not_in_groups:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_not_in_groups2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_not_in_groups);
       break;
     case d_punch_the_clock:
-      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock2);
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock);
       break;
 //    case d_punch_the_clock_fail:
 //      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail2);

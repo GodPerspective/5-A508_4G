@@ -11,6 +11,17 @@ u8 ApiMenu_KeylockTimeSet_Flag=0;
 u8 ApiMenu_BeiDouOrWritingFrequency_Flag=0;
 #endif
 
+void ApiMenu_init(void)
+{
+  ApiMenu_SwitchGroup_Flag=0;
+  ApiMenu_SwitchCallUser_Flag=0;
+  ApiMenu_SwitchOnlineUser_Flag=0;
+  ApiMenu_GpsInfo_Flag=0;
+  ApiMenu_NativeInfo_Flag=0;
+  ApiMenu_BacklightTimeSet_Flag=0;
+  ApiMenu_KeylockTimeSet_Flag=0;
+  ApiMenu_BeiDouOrWritingFrequency_Flag=0;
+}
 
 void MenuDisplay(MenuDisplayType id)
 {
@@ -176,6 +187,10 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
     break;
   case BacklightTimeSet:
     BacklightTimeSetCount=read_backlight_time_value();
+    if(BacklightTimeSetCount==0)
+    {
+      BacklightTimeSetCount=7;
+    }
     Level3MenuDisplay(BacklightTimeSetCount);
     break;
   case KeylockTimeSet:

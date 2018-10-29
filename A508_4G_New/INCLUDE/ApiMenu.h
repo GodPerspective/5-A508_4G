@@ -52,6 +52,7 @@ extern u8 ApiMenu_BacklightTimeSet_Flag;
 extern u8 ApiMenu_KeylockTimeSet_Flag;
 extern u8 ApiMenu_BeiDouOrWritingFrequency_Flag;
 
+extern void ApiMenu_init(void);
 extern void MenuDisplay(MenuDisplayType id);
 extern void SubmenuMenuDisplay(SubmenuMenuDisplayType id);
 extern void Level3MenuDisplay(Level3MenuDisplayType id);

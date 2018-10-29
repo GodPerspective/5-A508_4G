@@ -109,7 +109,7 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.PrimaryLowPowerCount=0;
   DelDrvObj.Count.all_power_off_count=0;
   DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
-  DelDrvObj.BacklightTimeBuf[0]=0;
+  //DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
   TimeCount=0;//超时时间
@@ -401,8 +401,8 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       if(DelDrvObj.Count.sys_mode_count>=2*5)
       {
         DelDrvObj.Count.sys_mode_count=0;
-        VOICE_Play(No_service);
-        DISPLAY_Show(d_no_service);
+        //VOICE_Play(No_service);
+        //DISPLAY_Show(d_no_service);
       }
     }
     else
@@ -452,7 +452,13 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     {
       DelDrvObj.Count.get_cgdcont_count=0;
     }
-    
+/**********显示初始化*************/
+    if(TaskDrvobj.Id==TASK_LOGIN
+       &&AtCmdDrvobj.Msg.Bits.bNoSimCard==0
+       &&TaskDrvobj.login_step<=2)
+    {
+      api_lcd_pwr_on_hint(0,2,GBK,"初始化...      ");
+    }
 /*********卡异常*****************/
     if(AtCmdDrvobj.ZLTENOCELL==1)
     {
@@ -471,7 +477,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
         NetworkModeIcons();
         HDRCSQSignalIcons();
       }
-      if(TaskDrvobj.Id==TASK_LOGIN&&TaskDrvobj.login_step<=6)//播报搜索网络
+      if(TaskDrvobj.Id==TASK_LOGIN&&TaskDrvobj.login_step>2&&TaskDrvobj.login_step<=6)//播报搜索网络
       {
         VOICE_Play(NetworkSearching);
         DISPLAY_Show(d_NetworkSearching);
@@ -483,16 +489,16 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     case 4://CS未知网络
       if(AtCmdDrvobj.network_reg.cgreg==4&&AtCmdDrvobj.network_reg.cereg==4)
       {
-        DISPLAY_Show(d_all_unknow_network);
-        VOICE_Play(all_unknow_network);
+        //DISPLAY_Show(d_all_unknow_network);
+        //VOICE_Play(all_unknow_network);
         AtCmdDrvobj.network_reg.creg=0;
         AtCmdDrvobj.network_reg.cgreg=0;
         AtCmdDrvobj.network_reg.cereg=0;
       }
       else
       {
-        DISPLAY_Show(d_cs_unknow_network);
-        VOICE_Play(cs_unknow_network);
+        //DISPLAY_Show(d_cs_unknow_network);
+        //VOICE_Play(cs_unknow_network);
         AtCmdDrvobj.network_reg.creg=0;
       }
       break;
@@ -631,8 +637,14 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       
       if(DelDrvObj.Count.poc_status_count>2*2*60)
       {
+        set_power_off(OFF);//关闭模块电源
+      }
+      if(DelDrvObj.Count.poc_status_count>2*2*60+2*2)
+      {
         DelDrvObj.Count.poc_status_count=0;
+        set_power_off(ON);//关闭模块电源
         main_all_init();//重启
+        
       }
     }
     else

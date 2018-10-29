@@ -17,7 +17,6 @@ void main(void)
   main_all_init();
   while(1)
   {
-
     switch(TaskDrvobj.Id)
     {
      case TASK_LOGIN:
@@ -86,6 +85,10 @@ void main_all_init(void)
   drv_gt20_pwr_on_init();
   drv_htg_pwr_on_init();
   ApiDisplay_PowerOnInitial();
+  
+  //菜单初始化
+  ApiMenu_init();
+  
   //写频初始化
   Uart3_Init(); //串口写频使用
   
@@ -118,11 +121,11 @@ void main_all_init(void)
   GPIO_WriteHigh(GPIOB,GPIO_PIN_3);//NFC
   GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//北斗
 #endif
+  DISPLAY_Show(d_ABELL);
   BEEP_Time(100);
   MCU_LCD_BACKLIGTH(ON);
   api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//显示电池满电图标
   api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//免提模式
-  DISPLAY_Show(d_ABELL);
   //IIC-AW87319功放
   //iic_init();
   ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);

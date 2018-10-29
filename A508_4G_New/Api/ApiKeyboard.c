@@ -865,6 +865,7 @@ void keyboard_process(void)
     }
 }
 
+
 void changing_group_voice_and_display(u8 a)
 {
   groupCallingcount=a%APIPOC_Group_Num;
@@ -880,6 +881,7 @@ void changing_user_voice_and_display(u8 a)
 
 void return_group_and_clear_flag(void)
 {
+  ApiPocCmd_SetKeyPttState(0);//防止PTT卡死
   KEYCMD_PersonalKeyModeSet(FALSE);
   api_lcd_pwr_on_hint(0,2,GBK,"                ");//清屏
   api_lcd_pwr_on_hint(0,2,UNICODE,GetNowWorkingGroupNameForDisplay());//显示当前群组昵称
@@ -892,6 +894,7 @@ void return_group_and_clear_flag(void)
   set_poc_receive_sos_statas(FALSE);
   ApiPocCmd_ToneStateSet(FALSE);
   AUDIO_IOAFPOW(OFF);  
+  BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
   #endif
   
   if(MenuMode_Flag!=0)

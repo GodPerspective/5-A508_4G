@@ -9,6 +9,7 @@ void Task_Init(void)
   TaskDrvobj.Id = TASK_LOGIN;
   TaskDrvobj.login_set_account=FALSE;
   TaskDrvobj.battery_states=BATTERY_HEALTH;
+  TaskDrvobj.login_step=0;
 }
 
 void Task_login_progress(void)
@@ -28,7 +29,7 @@ void Task_login_progress(void)
     break;
   case 1:
     //api_lcd_pwr_on_hint(14,2,GBK,"-1");
-    api_lcd_pwr_on_hint(0,2,GBK,"初始化...       ");
+    
     if(AtCmdDrvobj.Msg.Bits.bSimCardIn==1)//已插卡
     {
       VOICE_Play(ABELL);
@@ -141,7 +142,7 @@ void Task_normal_progress(void)
   case 1://1:按下ptt瞬间
     ApiPocCmd_SetKeyPttState(2);
     api_disp_icoid_output( eICO_IDTX, TRUE, TRUE);//发射信号图标
-    api_lcd_pwr_on_hint(0,2,GBK,"                ");
+    //api_lcd_pwr_on_hint(0,2,GBK,"                ");
     if(MenuMode_Flag!=0)
     {
       MenuDisplay(Menu_RefreshAllIco);
@@ -160,8 +161,8 @@ void Task_normal_progress(void)
     api_disp_all_screen_refresh();// 全屏统一刷新
     break;
   case 2://2：按住PTT状态
-    api_lcd_pwr_on_hint(0,2,UNICODE,GetSpeakingUserNameForDisplay());//显示本机正在讲话
-    api_disp_all_screen_refresh();// 全屏统一刷新
+    //api_lcd_pwr_on_hint(0,2,UNICODE,GetSpeakingUserNameForDisplay());//显示本机正在讲话
+    //api_disp_all_screen_refresh();// 全屏统一刷新
     break;
   case 3://3：松开PTT瞬间
     ApiPocCmd_SetKeyPttState(0);
