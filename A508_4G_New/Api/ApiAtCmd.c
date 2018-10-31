@@ -355,6 +355,7 @@ void ApiAtCmd_10msRenew(void)
     {
       if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)
       {
+        api_lcd_pwr_on_hint(0,2,GBK,(u8 *)"1-“Ï≥£ ’µΩZMSRI ");
         set_power_off(OFF);//
         DEL_SetTimer(0,400);
         while(1){if(DEL_GetTimer(0) == TRUE) {break;}}

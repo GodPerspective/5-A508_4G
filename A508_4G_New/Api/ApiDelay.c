@@ -639,6 +639,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       
       if(DelDrvObj.Count.poc_status_count>2*2*60)
       {
+        api_lcd_pwr_on_hint(0,2,GBK,(u8 *)"2-未登录2min重启");
         set_power_off(OFF);//关闭模块电源
       }
       if(DelDrvObj.Count.poc_status_count>2*2*60+2*4)
