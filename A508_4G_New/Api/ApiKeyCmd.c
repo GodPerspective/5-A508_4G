@@ -50,6 +50,8 @@ void key_process(void)
         KeyCmdDrvObj.status.PersonalKeyMode=TRUE;
         VOICE_Play(PersonalMode);
         DISPLAY_Show(d_PersonalMode);
+        DEL_SetTimer(0,100);
+        while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
         ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
         KeyDownUpChoose_GroupOrUser_Flag=2;
         KeyCmdDrvObj.status.key_2_short_states=m_personal_mode;
@@ -58,6 +60,7 @@ void key_process(void)
       case m_personal_mode://组呼模式
         KeyCmdDrvObj.status.PersonalKeyMode=FALSE;
         VOICE_Play(GroupMode);
+
         if(get_current_working_status()==m_personal_mode)//单呼状态按返回键
         {
           ApiPocCmd_WritCommand(PocComm_EnterGroup,0,0);

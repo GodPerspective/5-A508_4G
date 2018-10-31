@@ -135,7 +135,7 @@ const u8 *dp_version            = "软件版本        ";//20
 const u8 *dp_press_ok_then_well = "先按OK键再按#键 ";//21
 const u8 *dp_status_offline     = "状态：离线      ";//22
 
-const u8 *dp_SimCardError       = "卡异常          ";//
+const u8 *dp_SimCardError       = "无4G信号        ";//
 const u8 *dp_cs_unknow_network  = "CS未知网络      ";//
 const u8 *dp_gprs_unknow_network= "GPRS未知网络    ";//
 const u8 *dp_gprs_refuse_enroll = "GPRS注册被拒绝  ";//
@@ -172,7 +172,7 @@ const u8 *dp_version2            = "Version:        ";//20
 const u8 *dp_press_ok_then_well2 = "Press OK then # ";//21
 const u8 *dp_status_offline2     = "Status:Offline  ";//22
 
-const u8 *dp_SimCardError2       = "SIM card error  ";//
+const u8 *dp_SimCardError2       = "LTE NO CELL     ";//
 const u8 *dp_cs_unknow_network2  = "CS NET unknow   ";//
 const u8 *dp_gprs_unknow_network2= "GPRS NET unknow ";//
 const u8 *dp_gprs_refuse_enroll2 = "GPRS Signup Fail";//
@@ -209,6 +209,7 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     switch(id)
     {
     case d_ABELL:
+      api_lcd_pwr_on_hint(0,0,GBK,(u8 *)"                ");
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_abell);
         break;
     case d_PersonalMode:

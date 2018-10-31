@@ -356,7 +356,7 @@ void ApiAtCmd_10msRenew(void)
       if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)
       {
         set_power_off(OFF);//
-        DEL_SetTimer(0,200);
+        DEL_SetTimer(0,400);
         while(1){if(DEL_GetTimer(0) == TRUE) {break;}}
         set_power_off(ON);//
         main_all_init();//

@@ -128,7 +128,7 @@ void main_all_init(void)
   api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//免提模式
   //IIC-AW87319功放
   //iic_init();
-  ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);
+  //ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);
 }
 
 #ifdef USE_FULL_ASSERT        

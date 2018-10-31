@@ -19,10 +19,10 @@ const u8 *ucHandfreeMode                = "4d51d063216a0f5f";//免提模式-
 const u8 *ucNoOnlineUser                = "e0652857bf7e10625854";//无在线成员
 const u8 *ucLoggingIn                   = "636b28577b764696";//正在登陆- 
 
-const u8 *ucSimCardError                = "6153025f385e";//卡异常
+const u8 *ucSimCardError                = "e06534004700517fdc7ee14ff753";//ZLTENOCELL
 const u8 *ucCs_unknow_network           = "430053002a67e577517fdc7e";//CS未知网络
 const u8 *ucGprs_unknow_network         = "67007000720073002a67e577517fdc7e";//GPRS未知网络
-const u8 *ucGprs_refuse_enroll          = "6700700072007300e86c8c51ab88d262dd7e";//GPRS注册被拒绝 
+const u8 *ucGprs_refuse_enroll          = "6700700072B0A1 A996007300e86c8c51ab88d262dd7e";//GPRS注册被拒绝 
 const u8 *ucEps_unknow_network          = "4500500053002a67e577517fdc7e";//EPS未知网络 
 const u8 *ucEps_refuse_enroll           = "450050005300e86c8c51ab88d262dd7e";//EPS注册被拒绝 
 const u8 *ucAll_unknow_network          = "6300730040620967517fdc7e025f385e";//所有网络异常
@@ -52,7 +52,7 @@ const u8 *ucHandfreeMode2                = "480061006e00640020006600720065006500
 const u8 *ucNoOnlineUser2                = "4e006f0020006f006e006c0069006e00650020007500730065007200";
 const u8 *ucLoggingIn2                   = "4100630063006f0075006e007400200043006f006e00660069006700750072006100740069006f006e00";//Account Config
 
-const u8 *ucSimCardError2                = "530049004d002000630061007200640020006500720072006f007200";//SIM card error
+const u8 *ucSimCardError2                = "4c005400450020004e004f002000430045004c004c00";//LTE NO CELL
 const u8 *ucCs_unknow_network2           = "4300530020006e006500740077006f0072006b00200075006e006b006e006f007700";//CS network unknow
 const u8 *ucGprs_unknow_network2         = "470050005200530020006e006500740077006f0072006b00200075006e006b006e006f007700";//GPRS network unknow
 const u8 *ucGprs_refuse_enroll2          = "470050005200530020006e006500740077006f0072006b00200075006e006b006e006f007700";//GPRS Signup Fail
@@ -106,7 +106,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     switch(id)
     {
     case SimCardError:
-      VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucSimCardError,strlen((char const*)ucSimCardError));//个呼模式
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucSimCardError,strlen((char const*)ucSimCardError));//无4G信号
       break;
     case PersonalMode:
       VOICE_SetOutput(ATVOICE_FreePlay,(u8 *)ucPersonalMode,strlen((char const*)ucPersonalMode));//个呼模式

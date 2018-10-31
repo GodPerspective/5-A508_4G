@@ -641,12 +641,11 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       {
         set_power_off(OFF);//关闭模块电源
       }
-      if(DelDrvObj.Count.poc_status_count>2*2*60+2*2)
+      if(DelDrvObj.Count.poc_status_count>2*2*60+2*4)
       {
         DelDrvObj.Count.poc_status_count=0;
         set_power_off(ON);//关闭模块电源
         main_all_init();//重启
-        
       }
     }
     else
@@ -735,7 +734,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       }
     }
 /*****获取中：换组时更新组列表后播报及显示当前选中的用户名************/
-    if(PocCmdDrvobj.getting_group_all_done_flag==2)
+    if(AtCmdDrvobj.getting_info_flag==TRUE&&PocCmdDrvobj.getting_group_all_done_flag==2)
     {
       PocCmdDrvobj.getting_group_all_done_flag=0;
       changing_group_voice_and_display(GroupCallingNum-1);
@@ -743,7 +742,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       AtCmdDrvobj.getting_info_flag=FALSE;
     }
 /*****获取中：换组时更新组列表后播报及显示当前选中的用户名************/
-    if(PocCmdDrvobj.getting_user_all_done_flag==3)
+    if(AtCmdDrvobj.getting_info_flag==TRUE&&PocCmdDrvobj.getting_user_all_done_flag==3)
     {
       PocCmdDrvobj.getting_user_all_done_flag=0;
       changing_user_voice_and_display(PersonalCallingNum);
@@ -783,7 +782,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
       DelDrvObj.Count.choose_write_freq_or_gps_count = 0;
     }    
 /****定位成功后5s上报一次定位*****/
-    if(beidou_valid()==TRUE)
+    if(beidou_valid()==TRUE&&ReadInput_KEY_PTT!=0)//当定位成功,且没有按下PTT则上报位置
     {
       DelDrvObj.Count.beidou_valid_count++;
       if(DelDrvObj.Count.beidou_valid_count>2*5)
