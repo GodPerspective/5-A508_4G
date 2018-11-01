@@ -1,12 +1,12 @@
 #include "AllHead.h"
-
+//testæµ‹è¯•
 void main_all_init(void);
 void main_task(void);
 
 void main(void)
 {
   
-#if 1//Ê¹ÄÜ´®¿ÚÏÂÔØ³ÌÐò
+#if 1//Ê¹ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½
   FLASH_SetProgrammingTime(FLASH_PROGRAMTIME_STANDARD);
   FLASH_Unlock(FLASH_MEMTYPE_DATA);
   FLASH_ProgramOptionByte(0x487E,0x55);
@@ -59,74 +59,74 @@ void main_all_init(void)
   ITC_SetSoftwarePriority(ITC_IRQ_TIM1_OVF,ITC_PRIORITYLEVEL_2);
   ITC_SetSoftwarePriority(ITC_IRQ_TIM3_OVF,ITC_PRIORITYLEVEL_1);
   
-  //ÈÎÎñ³õÊ¼»¯
+  //ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
   Task_Init();
   
-  //Ä£¿éÍ¨Ñ¶´®¿Úuart1³õÊ¼»¯
+  //Ä£ï¿½ï¿½Í¨Ñ¶ï¿½ï¿½ï¿½ï¿½uart1ï¿½ï¿½Ê¼ï¿½ï¿½
   DrvUart1_init();
   DrvMC8332_Software_Initial();
 
-  //POC³õÊ¼»¯
+  //POCï¿½ï¿½Ê¼ï¿½ï¿½
   ApiPocCmd_PowerOnInitial();
   
-  //AT³õÊ¼»¯
+  //ATï¿½ï¿½Ê¼ï¿½ï¿½
   ApiAtCmd_PowerOnInitial();
   
-  //¶¨Ê±³õÊ¼»¯
+  //ï¿½ï¿½Ê±ï¿½ï¿½Ê¼ï¿½ï¿½
   DEL_PowerOnInitial();
   
-  //GPS³õÊ¼»¯
+  //GPSï¿½ï¿½Ê¼ï¿½ï¿½
   ApiBeidou_PowerOnInitial();
   
-  //À®°È¿ØÖÆ½Å
+  //ï¿½ï¿½ï¿½È¿ï¿½ï¿½Æ½ï¿½
   Noise_Mute_Init();
   VOICE_PowerOnInitial();
-  //ÏÔÊ¾ÆÁ
+  //ï¿½ï¿½Ê¾ï¿½ï¿½
   drv_gt20_pwr_on_init();
   drv_htg_pwr_on_init();
   ApiDisplay_PowerOnInitial();
   
-  //²Ëµ¥³õÊ¼»¯
+  //ï¿½Ëµï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
   ApiMenu_init();
   
-  //Ð´Æµ³õÊ¼»¯
-  Uart3_Init(); //´®¿ÚÐ´ÆµÊ¹ÓÃ
+  //Ð´Æµï¿½ï¿½Ê¼ï¿½ï¿½
+  Uart3_Init(); //ï¿½ï¿½ï¿½ï¿½Ð´ÆµÊ¹ï¿½ï¿½
   
-  //°´¼ü³õÊ¼»¯
+  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
   Key_Init();
   ApiKeyCmd_PowerOnInitial();
   ApiKeyboard_PowerOnInitial();
-  //Ö¸Ê¾µÆ³õÊ¼»¯
+  //Ö¸Ê¾ï¿½Æ³ï¿½Ê¼ï¿½ï¿½
   LED_Init();
   ApiLED_PowerOnInitial();
   
-  //Èí¼þ°æ±¾¶ÁÈ¡º¯Êý³õÊ¼»¯
+  //ï¿½ï¿½ï¿½ï¿½æ±¾ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
   ApiMcuVersion_PowerOnInitial();
   //BEEP
   BEEP_PowerOnInitial();
   TONE_PowerOnInitial();
   
-  //µç³ØµçÑ¹²É¼¯
+  //ï¿½ï¿½Øµï¿½Ñ¹ï¿½É¼ï¿½
   ADC_Init();
   ApiBattery_PowerOnInitial();
   
   enableInterrupts();
   AUDIO_IOAFPOW(ON);
   GPIO_Init(GPIOB,GPIO_PIN_3,GPIO_MODE_OUT_PP_LOW_FAST);//NFC
-  GPIO_Init(GPIOB,GPIO_PIN_4,GPIO_MODE_OUT_PP_LOW_FAST);//±±¶·
-#if 0//±±¶·¶¨Î»
+  GPIO_Init(GPIOB,GPIO_PIN_4,GPIO_MODE_OUT_PP_LOW_FAST);//ï¿½ï¿½ï¿½ï¿½
+#if 0//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»
   GPIO_WriteLow(GPIOB,GPIO_PIN_3);//NFC
-  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//±±¶·
-#else//Ð´Æµ£¨¿ª»úÄ¬ÈÏÐ´Æµ£¬Ò»·ÖÖÓºó×ªÎª±±¶·¶¨Î»£©
+  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//ï¿½ï¿½ï¿½ï¿½
+#else//Ð´Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Ð´Æµï¿½ï¿½Ò»ï¿½ï¿½ï¿½Óºï¿½×ªÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
   GPIO_WriteHigh(GPIOB,GPIO_PIN_3);//NFC
-  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//±±¶·
+  GPIO_WriteHigh(GPIOB,GPIO_PIN_4);//ï¿½ï¿½ï¿½ï¿½
 #endif
   DISPLAY_Show(d_ABELL);
   BEEP_Time(100);
   MCU_LCD_BACKLIGTH(ON);
-  api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//ÏÔÊ¾µç³ØÂúµçÍ¼±ê
-  api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//ÃâÌáÄ£Ê½
-  //IIC-AW87319¹¦·Å
+  api_disp_icoid_output( eICO_IDBATT5, TRUE, TRUE);//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½
+  api_disp_icoid_output( eICO_IDTemper, TRUE, TRUE);//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+  //IIC-AW87319ï¿½ï¿½ï¿½ï¿½
   //iic_init();
   //ApiAtCmd_WritCommand(ATCOMM_RESET,(void*)0, 0);
 }
