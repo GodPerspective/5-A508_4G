@@ -56,6 +56,7 @@ typedef struct {
     u8 punch_the_clock_gps_key_press_flag_count;
     u8 getting_info_flag_count;
     u8 voice_tone_play_count;
+    u8 ready_return_to_default_state_flag_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -113,6 +114,7 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
   DelDrvObj.Count.getting_info_flag_count=0;
   DelDrvObj.Count.voice_tone_play_count=0;
+  DelDrvObj.Count.ready_return_to_default_state_flag_count=0;
   //DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
@@ -843,19 +845,42 @@ static void DEL_500msProcess(void)			//delay 500ms process server
     if(AtCmdDrvobj.punch_the_clock_gps_key_press_flag==TRUE)
     {
       DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count++;
-      if(DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count>2*5)
+      if(DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count==2*5)//5s后播报定位失败
       {
-        VOICE_Play(punch_the_clock_fail);
-        DISPLAY_Show(d_punch_the_clock_fail);
-        AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
+        if(beidou_valid()==TRUE)//如果定位成功，则播报打卡失败
+        {
+          VOICE_Play(punch_the_clock_fail);
+          DISPLAY_Show(d_punch_the_clock_fail);
+        }
+        else//如果未定位成功，则播报未定位
+        {
+          VOICE_Play(gps_not_located);
+          DISPLAY_Show(d_gps_not_located);
+        }
         DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
+        AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
+        AtCmdDrvobj.ready_return_to_default_state_flag=TRUE;
       }
     }
     else
     {
       DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
     }
-    
+/***********消除打卡后屏幕的提示信息*********************/
+    if(AtCmdDrvobj.ready_return_to_default_state_flag==TRUE)
+    {
+      DelDrvObj.Count.ready_return_to_default_state_flag_count++;
+      if(DelDrvObj.Count.ready_return_to_default_state_flag_count>=2*5)
+      {
+        DelDrvObj.Count.ready_return_to_default_state_flag_count=0;
+        AtCmdDrvobj.ready_return_to_default_state_flag=FALSE;
+        if(get_current_working_status()==m_personal_mode)
+        {
+          ApiPocCmd_WritCommand(PocComm_EnterGroup,0,0);
+        }
+        return_group_and_clear_flag();//返回默认群组标志位
+      }
+    }
 /****定位成功后3s后在菜单模式下才能查看到经纬度信息（解决刚定位成功查看经纬度异常的问题）*********************************************************/
 
 /******登录状态下的低电报警**********************************************/

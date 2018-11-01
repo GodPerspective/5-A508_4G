@@ -57,6 +57,7 @@ typedef struct{
   bool punch_the_clock_gps_key_press_flag;
   bool getting_info_flag;
   bool voice_tone_play;
+  bool ready_return_to_default_state_flag;
 }AtCmdDrv;
 
 typedef enum{

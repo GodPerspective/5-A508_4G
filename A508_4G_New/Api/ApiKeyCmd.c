@@ -271,7 +271,10 @@ void key_2_3_4_long_press_function_setting(u8 a)
   case 3://´ò¿¨¹¦ÄÜ
     VOICE_Play(punch_the_clock);
     DISPLAY_Show(d_punch_the_clock);
-    ApiPocCmd_WritCommand(PocComm_Punch_the_clock_gps,0,0);
+    if(beidou_valid()==TRUE)
+    {
+      ApiPocCmd_WritCommand(PocComm_Punch_the_clock_gps,0,0);
+    }
     AtCmdDrvobj.punch_the_clock_gps_key_press_flag=TRUE;
     break;
   default:

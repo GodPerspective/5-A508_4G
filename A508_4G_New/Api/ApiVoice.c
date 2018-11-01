@@ -32,6 +32,7 @@ const u8 *ucSet_network_wcdma_only      = "517fdc7ebe8b6e7f3a4ec54e5096094ec45b"
 const u8 *ucSet_network_gsm_only        = "517fdc7ebe8b6e7f3a4ec54e50968c4ec45b";//网络设置为仅限2G
 const u8 *ucpunch_the_clock             = "636b285753626153";//正在打卡
 const u8 *ucpunch_the_clock_fail        = "536261533159258d";//打卡失败
+const u8 *ucgps_not_located             = "4700500053002a679a5b4d4f0cff536261533159258d";//gps未定位，打卡失败
 
 const u8 *ucPersonalMode2                = "50006500720073006f006e0061006c0020004d006f0064006500";//personal mode
 const u8 *ucABELL2                       = "4100620065006C006C00";//ABELL
@@ -65,7 +66,7 @@ const u8 *ucSet_network_wcdma_only2      = "5700430044004d00410020006f006e006c00
 const u8 *ucSet_network_gsm_only2        = "470053004d0020006f006e006c007900";//GSM only
 const u8 *ucpunch_the_clock2             = "636b285753626153";//正在打卡
 const u8 *ucpunch_the_clock_fail2        = "536261533159258d";//打卡失败
-
+const u8 *ucgps_not_located2             = "4700500053002a679a5b4d4f0cff536261533159258d";//gps未定位，打卡失败
 typedef struct{
   union{
     struct{
@@ -205,6 +206,9 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     case punch_the_clock_fail://打卡失败
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock_fail,strlen((char const*)ucpunch_the_clock_fail));
       break;
+    case gps_not_located://GPS未定位
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucgps_not_located,strlen((char const*)ucgps_not_located));
+      break;
     default:
       break;
     }
@@ -311,6 +315,9 @@ void VOICE_Play(VOICEPLAY_TYPE id)
       break;
     case punch_the_clock_fail://打卡失败
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucpunch_the_clock_fail2,strlen((char const*)ucpunch_the_clock_fail2));
+      break;
+    case gps_not_located://GPS未定位
+      VOICE_SetOutput(ATVOICE_FreePlay,(u8*)ucgps_not_located2,strlen((char const*)ucgps_not_located2));
       break;
     default:
       break;

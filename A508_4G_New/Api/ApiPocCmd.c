@@ -912,6 +912,7 @@ void ApiPocCmd_10msRenew(void)
       ReceiveMessagesPunchTheClock_UTF8_to_UNICODE();
       VOICE_SetOutput(ATVOICE_FreePlay,(u8*)punch_the_clock_buf_for_Voice(),strlen((char const*)punch_the_clock_buf_for_Voice()));
       api_lcd_pwr_on_hint(0,2,UNICODE,punch_the_clock_buf_for_display());
+      AtCmdDrvobj.ready_return_to_default_state_flag=TRUE;
     default:
       break;
     }

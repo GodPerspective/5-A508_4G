@@ -94,7 +94,7 @@ void ApiAtCmd_PowerOnInitial(void)
   AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
   AtCmdDrvobj.getting_info_flag=FALSE;
   AtCmdDrvobj.voice_tone_play=FALSE;
-  
+  AtCmdDrvobj.ready_return_to_default_state_flag=FALSE;
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read
   FILE_Read(598,1,&(AtCmdDrvobj.Key3_PlayValue));

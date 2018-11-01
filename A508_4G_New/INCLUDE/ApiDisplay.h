@@ -57,7 +57,8 @@ typedef enum{
   d_getting_info                = 0x21,
   d_not_in_groups               = 0x22,
   d_punch_the_clock             = 0x23,//正在打卡
-  d_punch_the_clock_fail        = 0x24//打卡失败
+  d_punch_the_clock_fail        = 0x24,//打卡失败
+  d_gps_not_located           = 0x25
 }DISPLAY_TYPE;
 
 typedef struct

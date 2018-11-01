@@ -147,7 +147,7 @@ const u8 *dp_getting_info       = "获取中...       ";
 const u8 *dp_not_in_groups      = "不在群组        ";
 const u8 *dp_punch_the_clock    = "正在打卡...     ";
 const u8 *dp_punch_the_clock_fail="打卡失败        ";
-
+const u8 *dp_gps_not_located    = "GPS未定位       ";
 #if 0
 const u8 *dp_abell2              = "     ABELL      ";//1
 const u8 *dp_personal_mode2      = "Personal Mode   ";//2
@@ -183,7 +183,9 @@ const u8 *dp_no_service2         = "No service      ";//
 const u8 *dp_getting_info2       = "getting info... ";
 const u8 *dp_not_in_groups2      = "Not in groups   ";
 const u8 *dp_punch_the_clock2     = "正在打卡...     ";
+
 //const u8 *dp_punch_the_clock_fail2="打卡失败        ";
+const u8 *dp_gps_not_located2    = "GPS未定位       ";
 
 #endif
 
@@ -322,11 +324,15 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     case d_punch_the_clock_fail:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail);
       break;
+    case d_gps_not_located:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_not_located);
+      break;
     default:
       break;
     }
     break;
   case m_ENGLISH:
+#if 0//暂时屏蔽英文显示
     switch(id)
     {
     case d_ABELL:
@@ -439,12 +445,16 @@ void DISPLAY_Show(DISPLAY_TYPE id)
     case d_punch_the_clock:
       api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock);
       break;
-//    case d_punch_the_clock_fail:
-//      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail2);
-//      break;
+    case d_punch_the_clock_fail:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_punch_the_clock_fail2);
+      break;
+    case d_gps_not_located:
+      api_lcd_pwr_on_hint(0,2,GBK,(u8 *)dp_gps_not_located);
+      break;
     default:
       break;
     }
+#endif
     break;
   }
 }

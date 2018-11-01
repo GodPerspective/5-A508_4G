@@ -34,7 +34,9 @@ typedef enum{
   set_network_wcdma_only= 0x1D,
   set_network_gsm_only  = 0x1F,
   punch_the_clock       = 0x20,//正在打卡
-  punch_the_clock_fail  = 0x21//打卡失败
+  punch_the_clock_fail  = 0x21,//打卡失败
+  gps_not_located       = 0x22
+   
 }VOICEPLAY_TYPE;
 typedef enum
 {	
