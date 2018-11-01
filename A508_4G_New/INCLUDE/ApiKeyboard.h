@@ -21,5 +21,5 @@ extern void keyboard_process(void);
 extern void changing_group_voice_and_display(u8 a);
 extern void changing_user_voice_and_display(u8 a);
 extern void return_group_and_clear_flag(void);
-
+extern void voice_tone(void);
 #endif

@@ -276,6 +276,8 @@ void keyboard_process(void)
           network_count=0;
           break;
         }
+#else
+       voice_tone();
 #endif
       }
       set_keyboard_menu_states(m_key_idle);
@@ -913,4 +915,12 @@ void return_group_and_clear_flag(void)
     ApiMenu_NativeInfo_Flag=0;
     ApiMenu_BeiDouOrWritingFrequency_Flag=0;
   }
+}
+void voice_tone(void)
+{
+  Set_TIM1_PWM_Frequency(3300);
+  Set_TIM1_PWM1_DutyCycle(3300/2);
+  AtCmdDrvobj.voice_tone_play=TRUE;
+  AUDIO_IOAFPOW(ON);
+  BEEP_SetOutput(BEEP_IDPowerOff,ON,0x00,TRUE);
 }

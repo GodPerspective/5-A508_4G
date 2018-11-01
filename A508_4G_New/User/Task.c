@@ -141,8 +141,8 @@ void Task_normal_progress(void)
     break;
   case 1://1:按下ptt瞬间
     ApiPocCmd_SetKeyPttState(2);
+    voice_tone();
     api_disp_icoid_output( eICO_IDTX, TRUE, TRUE);//发射信号图标
-    //api_lcd_pwr_on_hint(0,2,GBK,"                ");
     if(MenuMode_Flag!=0)
     {
       MenuDisplay(Menu_RefreshAllIco);
@@ -166,6 +166,7 @@ void Task_normal_progress(void)
     break;
   case 3://3：松开PTT瞬间
     ApiPocCmd_SetKeyPttState(0);
+    voice_tone();
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//默认无发射无接收信号图标
     if(get_current_working_status()==m_group_mode)//组呼模式
     {
@@ -188,6 +189,7 @@ void Task_normal_progress(void)
   case ReceivedStartVoice:
     api_lcd_pwr_on_hint(0,2,GBK,"                ");
     api_lcd_pwr_on_hint(0,2,UNICODE,GetSpeakingUserNameForDisplay());
+    voice_tone();
     api_disp_icoid_output( eICO_IDVOX, TRUE, TRUE);//接收信号图标
     ApiPocCmd_ReceivedVoicePlayStatesForDisplaySet(ReceivedBeingVoice);
 
@@ -222,6 +224,7 @@ void Task_normal_progress(void)
     break;
   case ReceivedEndVoice:
     get_screen_display_group_name();
+    voice_tone();
     api_disp_icoid_output( eICO_IDTALKAR, TRUE, TRUE);//无发射无接收空图标
     api_disp_all_screen_refresh();// 全屏统一刷新
     ApiPocCmd_ReceivedVoicePlayStatesForDisplaySet(ReceivedNone);
@@ -243,7 +246,16 @@ else
   }
   else
   {
-#if 1
+#if 1 //MCU Tone音
+        if(AtCmdDrvobj.voice_tone_play==TRUE)//本地播放tone音
+        {
+          AUDIO_IOAFPOW(ON);
+        }
+        else
+        {
+          AUDIO_IOAFPOW(OFF);
+        }
+#else //模块Tone音
       if(ApiPocCmd_ToneState()==TRUE)
       {
         AUDIO_IOAFPOW(ON);
@@ -252,22 +264,6 @@ else
       {
         AUDIO_IOAFPOW(OFF);
       }
-#else
-    if(ApiAtCmd_bZTTSStates()==1)//解决报警的时候异常关闭喇叭，导致声音卡顿的文体
-    {
-      AUDIO_IOAFPOW(ON);
-    }
-    else
-    {
-      if(ApiPocCmd_ToneState()==TRUE)
-      {
-        AUDIO_IOAFPOW(ON);
-      }
-      else
-      {
-        AUDIO_IOAFPOW(OFF);
-      }
-    }
 #endif
   }
 }

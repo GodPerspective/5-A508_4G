@@ -44,7 +44,7 @@ void LED_IntOutputRenew(void)
           else
           {
             Set_GreenLed(ON);
-          } 
+          }
         }
         if(LED_Conut>=51)
         {
@@ -65,6 +65,5 @@ void LED_IntOutputRenew(void)
         }
       }
     }
-
   }
 }

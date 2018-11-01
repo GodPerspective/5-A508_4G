@@ -93,6 +93,7 @@ void ApiAtCmd_PowerOnInitial(void)
   AtCmdDrvobj.key_top_option=REMOTE_AND_LOCAL_ALARM;
   AtCmdDrvobj.punch_the_clock_gps_key_press_flag=FALSE;
   AtCmdDrvobj.getting_info_flag=FALSE;
+  AtCmdDrvobj.voice_tone_play=FALSE;
   
   FILE_Read(0x230,1,&(AtCmdDrvobj.apn_set));//FILE_Read
   FILE_Read(0x23A,1,&(AtCmdDrvobj.language_value));//FILE_Read

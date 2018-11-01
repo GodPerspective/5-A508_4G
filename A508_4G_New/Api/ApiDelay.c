@@ -55,6 +55,7 @@ typedef struct {
     u16 all_power_off_count;
     u8 punch_the_clock_gps_key_press_flag_count;
     u8 getting_info_flag_count;
+    u8 voice_tone_play_count;
   }Count;
   u8 BacklightTimeBuf[1];//背光灯时间(需要设置进入eeprom)
   u8 KeylockTimeBuf[1];//键盘锁时间(需要设置进入eeprom)
@@ -111,6 +112,7 @@ void DEL_PowerOnInitial(void)//原瑞撒單片機多長時間進一次中斷
   DelDrvObj.Count.all_power_off_count=0;
   DelDrvObj.Count.punch_the_clock_gps_key_press_flag_count=0;
   DelDrvObj.Count.getting_info_flag_count=0;
+  DelDrvObj.Count.voice_tone_play_count=0;
   //DelDrvObj.BacklightTimeBuf[0]=0;
   DelDrvObj.KeylockTimeBuf[0]=0;
   
@@ -294,6 +296,7 @@ static void DEL_100msProcess(void)
     {
       DelDrvObj.Msg.Bit.b500Alternate = DEL_IDLE;
     }
+
 /******背光灯定时*********************************/
     FILE_Read(0x236,1,DelDrvObj.BacklightTimeBuf);//背光时间【秒】
     FILE_Read(0x247,1,DelDrvObj.KeylockTimeBuf);//键盘锁时间【秒】
@@ -896,9 +899,21 @@ static void DEL_10msProcess(void)
   {
     keyboard_scan();
     DelDrvObj.Msg.Bit.b10ms = DEL_IDLE;
-    //ApGpsCmd_10msRenew();
-
-      DelDrvObj.Count.alarm_count++;
+    
+/**********对讲Tone音本地播放（MZ389新基带版本要求）******************/
+    if(AtCmdDrvobj.voice_tone_play==TRUE)
+    {
+      DelDrvObj.Count.voice_tone_play_count++;
+      if(DelDrvObj.Count.voice_tone_play_count>=5)//0.2s tone音
+      {
+        BEEP_SetOutput(BEEP_IDPowerOff,OFF,0x00,TRUE);
+        AUDIO_IOAFPOW(OFF);
+        DelDrvObj.Count.voice_tone_play_count=0;
+        AtCmdDrvobj.voice_tone_play=FALSE;
+      }
+    }
+/**********************************************************************/
+    DelDrvObj.Count.alarm_count++;
       if(poc_receive_sos_statas()==TRUE)
       {
         if(DelDrvObj.Count.alarm_count>=3)
