@@ -91,6 +91,15 @@ void Task_login_progress(void)
     //api_lcd_pwr_on_hint(14,2,GBK,"-8");
     break;
   }
+/********øÿ÷∆π¶∑≈¿Æ∞»*************************************/
+  if(ApiPocCmd_ReceivedVoicePlayStates()==TRUE)
+  {
+    AUDIO_IOAFPOW(ON);
+  }
+  else
+  {
+    AUDIO_IOAFPOW(OFF);
+  }
 }
 
 

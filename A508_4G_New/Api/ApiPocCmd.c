@@ -213,6 +213,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
   case PocComm_GroupListInfo://5
      DrvGD83_UART_TxCommand((u8*)ucGroupListInfo, strlen((char const *)ucGroupListInfo));
      PocCmdDrvobj.getting_group_all_done_flag=0;
+     PocCmdDrvobj.getting_user_all_done_flag=0;
     break;
   case PocComm_UserListInfo://6
 #if 1//Test OK
@@ -240,6 +241,7 @@ void ApiPocCmd_WritCommand(PocCommType id, u8 *buf, u16 len)
     COML_StringReverse(4,cBuf);
     DrvGD83_UART_TxCommand(cBuf,4);
     PocCmdDrvobj.getting_user_all_done_flag=1;
+    PocCmdDrvobj.getting_group_all_done_flag=0;
 #endif
     break;
   case PocComm_SetGps:
@@ -862,11 +864,11 @@ void ApiPocCmd_10msRenew(void)
       break;
     case 0x8B://通知音频播放状态
       ucId = COML_AscToHex(pBuf+4, 0x02);
-      if(ucId==0x02)
+      if(ucId==0x02)//播放tts
       {
         PocCmdDrvobj.States.ReceivedVoicePlayStates=TRUE;//喇叭控制
         PocCmdDrvobj.States.ReceivedVoicePlayStates_Intermediate=FALSE;//解决连续按ptt，第二次喇叭不出声
-        PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED=TRUE;//指示灯使用
+        //PocCmdDrvobj.States.ReceivedVoicePlayStatesForLED=TRUE;//指示灯使用
         PocCmdDrvobj.States.ReceivedVoicePlayStatesForDisplay=ReceivedStartTTS;//接收图标/显示呼叫用户名/使用
       }
       else if(ucId==0x01)

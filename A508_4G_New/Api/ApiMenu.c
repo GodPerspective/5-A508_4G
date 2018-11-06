@@ -140,7 +140,7 @@ void SubmenuMenuDisplay(SubmenuMenuDisplayType id)
   case GpsInfoMenu:
      api_lcd_pwr_on_hint(0,0,GBK,"                ");//«Â∆¡
      api_lcd_pwr_on_hint(0,2,GBK,"                ");//«Â∆¡
-    if(poc_gps_value_for_display_flag()==FALSE)
+    if(delay_gps_value_for_display_flag2()==FALSE)
     {
       DISPLAY_Show(d_longitude_and_latitude0);
     }
