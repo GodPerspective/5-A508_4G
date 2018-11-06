@@ -97,6 +97,7 @@ void keyboard_process(void)
                   AtCmdDrvobj.getting_info_flag=TRUE;
                   DISPLAY_Show(d_getting_info);
                   PocCmdDrvobj.getting_info_flag=KEYUP;
+                  PocCmdDrvobj.offline_user_count=0;//发射0E指令前清零
                   ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
               }
               else//正常状态

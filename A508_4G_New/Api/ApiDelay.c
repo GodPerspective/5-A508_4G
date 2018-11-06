@@ -768,6 +768,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
         DelDrvObj.Count.getting_info_flag_count=0;
         if(KEYCMD_PersonalKeyMode()==TRUE)
         {
+          PocCmdDrvobj.offline_user_count=0;//发射0E指令前清零
           ApiPocCmd_WritCommand(PocComm_UserListInfo,0,0);
         }
         else
@@ -775,6 +776,10 @@ static void DEL_500msProcess(void)			//delay 500ms process server
           ApiPocCmd_WritCommand(PocComm_GroupListInfo,0,0);
         }
       }
+    }
+    else
+    {
+      DelDrvObj.Count.getting_info_flag_count=0;//解决会出现连续获取的情况
     }
 /****登录成功一分钟后禁用写频功能，开启外部定位上报模式*********/
     if(TaskDrvobj.Id==TASK_NORMAL)
