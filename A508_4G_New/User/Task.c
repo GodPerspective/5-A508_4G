@@ -2,6 +2,7 @@
 
 TaskDrv TaskDrvobj;
 const u8 *cTxHardwareid         ="at^hardwareid=2,0";
+const u8 *cTxCLVL0         ="AT+CLVL=0";
 u8 Key_PersonalCalling_Flag;
 
 void Task_Init(void)
@@ -21,8 +22,11 @@ void Task_login_progress(void)
     //api_lcd_pwr_on_hint(14,2,GBK,"-0");
     if(AtCmdDrvobj.Msg.Bits.bCommunicationTest==1)//开启上报回复
     {
+      
+      
       //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)ATCOMM_POCID, strlen((char const*)ATCOMM_POCID));
-      ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
+      //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxHardwareid, strlen((char const*)cTxHardwareid));
+      
       //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
       TaskDrvobj.login_step=1;
     }
@@ -80,6 +84,8 @@ void Task_login_progress(void)
     break;
   case 7:
     //api_lcd_pwr_on_hint(14,2,GBK,"-7");
+    ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
+    ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxCLVL0, strlen((char const*)cTxCLVL0));
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
     ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
     ApiPocCmd_WritCommand(PocComm_SetURL,0,0);//设置URL
