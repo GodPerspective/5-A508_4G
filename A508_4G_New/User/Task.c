@@ -84,7 +84,7 @@ void Task_login_progress(void)
     break;
   case 7:
     //api_lcd_pwr_on_hint(14,2,GBK,"-7");
-    ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
+    //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
     //ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxCLVL0, strlen((char const*)cTxCLVL0));
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
     ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
