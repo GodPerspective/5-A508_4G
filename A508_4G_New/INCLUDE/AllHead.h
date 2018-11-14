@@ -27,6 +27,7 @@
 
 //×Ö¿âIC
 #include "GT20L16P1Y.h"
+#include "GT20L16P1Y2.h"
 #include "GT20L16P1Y_D.h"//×Ö¿â²¹¶¡
 
 //´ò¿¨½âÂë-UTF8×ªUNICODE

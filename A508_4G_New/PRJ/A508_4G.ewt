@@ -1993,7 +1993,13 @@
         <name>$PROJ_DIR$\..\Drv\GT20L16_STM8_DOUBLE_MEDIUM_IAR.a</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\Drv\DrvGT20L16P1Y\new\GT20L16P1Y2.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\Drv\DrvGT20L16P1Y\GT20L16P1Y_D.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Drv\DrvGT20L16P1Y\new\GT20L16P1Y_STM8S007C8_IAR.a</name>
       </file>
     </group>
     <file>

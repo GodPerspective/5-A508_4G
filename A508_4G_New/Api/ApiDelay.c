@@ -468,7 +468,7 @@ static void DEL_500msProcess(void)			//delay 500ms process server
        &&AtCmdDrvobj.Msg.Bits.bNoSimCard==0
        &&TaskDrvobj.login_step<=2)
     {
-      api_lcd_pwr_on_hint(0,2,GBK,"初始化...      ");
+      api_lcd_pwr_on_hint(0,2,GBK,"初始化...       ");
     }
 /*********卡异常*****************/
     if(AtCmdDrvobj.ZLTENOCELL==1)

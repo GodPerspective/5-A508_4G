@@ -10,6 +10,8 @@ E:\1-source\5-A508_4G\A508_4G_New\PRJ\..\Lib\inc
 -I
 E:\1-source\5-A508_4G\A508_4G_New\PRJ\..\Suport
 -I
+E:\1-source\5-A508_4G\A508_4G_New\PRJ\..\Drv\DrvGT20L16P1Y\new
+-I
 C:\Program Files\IAR Systems\Embedded Workbench 7.3\stm8\inc
 -I
 C:\Program Files\IAR Systems\Embedded Workbench 7.3\stm8\inc\c
@@ -21,6 +23,8 @@ E:\1-source\5-A508_4G\A508_4G_New\User
 E:\1-source\5-A508_4G\A508_4G_New\Lib\inc
 -I
 E:\1-source\5-A508_4G\A508_4G_New\Suport
+-I
+E:\1-source\5-A508_4G\A508_4G_New\Drv\DrvGT20L16P1Y\new
 -DSTM8S007=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff

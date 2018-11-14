@@ -33,7 +33,7 @@ const u8 *ucSet_network_gsm_only        = "517fdc7ebe8b6e7f3a4ec54e50968c4ec45b"
 const u8 *ucpunch_the_clock             = "636b285753626153";//正在打卡
 const u8 *ucpunch_the_clock_fail        = "536261533159258d";//打卡失败
 const u8 *ucgps_not_located             = "4700500053002a679a5b4d4f0cff536261533159258d";//gps未定位，打卡失败
-
+#if 0
 const u8 *ucPersonalMode2                = "50006500720073006f006e0061006c0020004d006f0064006500";//personal mode
 const u8 *ucABELL2                       = "4100620065006C006C00";//ABELL
 const u8 *ucGroupSelected2               = "530065006c0065006300740065006400";//Group Selected
@@ -67,6 +67,7 @@ const u8 *ucSet_network_gsm_only2        = "470053004d0020006f006e006c007900";//
 const u8 *ucpunch_the_clock2             = "636b285753626153";//正在打卡
 const u8 *ucpunch_the_clock_fail2        = "536261533159258d";//打卡失败
 const u8 *ucgps_not_located2             = "4700500053002a679a5b4d4f0cff536261533159258d";//gps未定位，打卡失败
+#endif
 typedef struct{
   union{
     struct{
@@ -214,6 +215,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     }
     break;
   case m_ENGLISH:
+#if 0
     switch(id)
     {
     case SimCardError:
@@ -322,6 +324,7 @@ void VOICE_Play(VOICEPLAY_TYPE id)
     default:
       break;
     }
+#endif
     break;
   }
 
