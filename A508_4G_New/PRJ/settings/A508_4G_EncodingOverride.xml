@@ -5,6 +5,10 @@
     <path>E:\1-source\5-A508_4G\A508_4G_New\Api\ApiDelay.c</path>
     <encoding>GB2312</encoding>
   </override>
+  <override>
+    <path>E:\1-source\5-A508_4G\A508_4G_New\User\main.c</path>
+    <encoding>GB2312</encoding>
+  </override>
 </userOverrides>
 
 
