@@ -2,7 +2,13 @@
 
 TaskDrv TaskDrvobj;
 const u8 *cTxHardwareid         ="at^hardwareid=2,0";
-const u8 *cTxCLVL0         ="AT+TLVL=7";
+#if 1
+const u8 *cTxTLVL         ="AT+TLVL=7";
+const u8 *cTxCLVL         ="AT+CLVL=7";
+#else////默认参数TLVL=7 //CLVL=3
+const u8 *cTxTLVL         ="AT+TLVL=7";
+const u8 *cTxCLVL         ="AT+TLVL=7";
+#endif
 u8 Key_PersonalCalling_Flag;
 
 void Task_Init(void)
@@ -85,7 +91,8 @@ void Task_login_progress(void)
   case 7:
     //api_lcd_pwr_on_hint(14,2,GBK,"-7");
     //ApiAtCmd_WritCommand(ATCOMM_ATE1,0,0);//出货前将此处屏蔽，解决poc识别TX指令造成干扰
-    ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxCLVL0, strlen((char const*)cTxCLVL0));
+    ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxTLVL, strlen((char const*)cTxTLVL));
+    ApiAtCmd_WritCommand(ATCOMM_Test,(u8*)cTxCLVL, strlen((char const*)cTxCLVL));
     ApiPocCmd_WritCommand(PocComm_OpenPOC,0,0);//打开POC应用
     ApiPocCmd_WritCommand(PocComm_SetParam,0,0);//配置登录账号密码、IP
     ApiPocCmd_WritCommand(PocComm_SetURL,0,0);//设置URL

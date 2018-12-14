@@ -119,7 +119,7 @@ void LowVoltageDetection(void)
         Count=0;
       }
     }
-    else if(ADValue<=350&&ADValue>345)
+    else if(ADValue<=360&&ADValue>345)
     {
       Count2++;
       if(Count2>=100)
@@ -136,13 +136,13 @@ void LowVoltageDetection(void)
     else
     {
       TaskDrvobj.Id=TASK_NORMAL;
-      if(ADValue<=350&&ADValue>=200)
+      if(ADValue<=360&&ADValue>=200)
       {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT , TRUE, TRUE);
         BatteryLevel=0;
       }//电池电量0级
-      else if(ADValue<=360&&ADValue>350)
+      else if(ADValue<=365&&ADValue>360)
       {
         if(MenuMode_Flag==0)
         api_disp_icoid_output( eICO_IDBATT1, TRUE, TRUE);
